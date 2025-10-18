@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: "IndoPak";
+    src: url("/fonts/font.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Uthmani";
+    src: url("/fonts/usman.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Tajweed";
+    src: url("/fonts/Tajweed.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* helper classes */
+.font-indopak {
+    font-family: "IndoPak", "Noto Nastaliq Urdu", serif;
+}
+.font-uthmani {
+    font-family: "Uthmani", "Scheherazade", serif;
+}
+.font-tajweed {
+    font-family: "Tajweed", "Amiri", serif;
+}
