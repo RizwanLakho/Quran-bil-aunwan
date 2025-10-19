@@ -44,8 +44,8 @@ export default function Header() {
       }`}
     >
       <div className="p-6 flex items-center justify-between border-b border-orange-100 flex-shrink-0">
-        <h1 className="text-2xl font-bold text-orange-400">Quran Title</h1>
-        <button className="text-orange-400 hover:text-orange-500">
+        <h1 className="text-2xl font-bold text-primary">Quran Title</h1>
+        <button className="text-primary hover:text-orange-500">
           <Menu size={24} />
         </button>
       </div>
@@ -57,14 +57,26 @@ export default function Header() {
           <LayoutGrid size={20} />
           <span className="font-medium">Overview</span>
         </button>
-
-        {/* Read Quran - Active */}
         <NavLink
-          to="/"
+          to="/topics"
           className={({ isActive }) =>
             `w-full flex items-center gap-3 px-4 py-3 rounded-full transition-colors mb-2 ${
               isActive
-                ? "bg-orange-400 text-white shadow-md"
+                ? "bg-primary text-white shadow-md"
+                : "text-gray-700 hover:bg-orange-50"
+            }`
+          }
+        >
+          <BookOpen size={20} />
+          <span className="font-medium">Your Topics</span>
+        </NavLink>
+        {/* Read Quran - Active */}
+        <NavLink
+          to="/read-quran"
+          className={({ isActive }) =>
+            `w-full flex items-center gap-3 px-4 py-3 rounded-full transition-colors mb-2 ${
+              isActive
+                ? "bg-primary text-white shadow-md"
                 : "text-gray-700 hover:bg-orange-50"
             }`
           }
@@ -76,11 +88,11 @@ export default function Header() {
         {/* Quranic Topics - Main Expandable */}
         <div className="mb-2">
           <NavLink
-            to="/topics"
+            to="/quran-topics"
             className={({ isActive }) =>
               `w-full flex items-center gap-3 px-4 py-3 rounded-full transition-colors mb-2 ${
                 isActive
-                  ? "bg-orange-400 text-white shadow-md"
+                  ? "bg-primary text-white shadow-md"
                   : "text-gray-700 hover:bg-orange-50"
               }`
             }
@@ -110,18 +122,27 @@ export default function Header() {
 
                 {expandedTopics.allah && (
                   <div className="ml-8 mt-1 space-y-1">
-                    <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-orange-50 rounded-lg transition-colors text-sm">
+                    <NavLink
+                      to="/quran-topics/names-of-allah"
+                      className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-orange-50 rounded-lg transition-colors text-sm"
+                    >
                       <Circle size={8} className="text-orange-300" />
                       <span>Names of Allah</span>
-                    </button>
-                    <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-orange-50 rounded-lg transition-colors text-sm">
+                    </NavLink>
+                    <NavLink
+                      to="/quran-topics/Attributes"
+                      className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-orange-50 rounded-lg transition-colors text-sm"
+                    >
                       <Circle size={8} className="text-orange-300" />
                       <span>Attributes</span>
-                    </button>
-                    <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-orange-50 rounded-lg transition-colors text-sm">
+                    </NavLink>
+                    <NavLink
+                      to="/quran-topics/Worship"
+                      className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-orange-50 rounded-lg transition-colors text-sm"
+                    >
                       <Circle size={8} className="text-orange-300" />
                       <span>Worship</span>
-                    </button>
+                    </NavLink>
                   </div>
                 )}
               </div>
@@ -269,7 +290,7 @@ export default function Header() {
                   className="w-full flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-orange-50 rounded-lg transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <Folder size={18} className="text-orange-400" />
+                    <Folder size={18} className="text-primary" />
                     <span>Parenting</span>
                   </div>
                   <ChevronDown
@@ -281,15 +302,15 @@ export default function Header() {
                 {expandedTopics.parenting && (
                   <div className="ml-8 mt-1 space-y-1">
                     <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-orange-50 rounded-lg transition-colors text-sm">
-                      <Circle size={8} className="text-orange-300" />
+                      <Circle size={8} className="text-primary" />
                       <span>Children Rights</span>
                     </button>
                     <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-orange-50 rounded-lg transition-colors text-sm">
-                      <Circle size={8} className="text-orange-300" />
+                      <Circle size={8} className="text-primary" />
                       <span>Education</span>
                     </button>
                     <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-orange-50 rounded-lg transition-colors text-sm">
-                      <Circle size={8} className="text-orange-300" />
+                      <Circle size={8} className="text-primary" />
                       <span>Family Values</span>
                     </button>
                   </div>
@@ -303,7 +324,7 @@ export default function Header() {
                   className="w-full flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-orange-50 rounded-lg transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <Folder size={18} className="text-orange-400" />
+                    <Folder size={18} className="text-primary" />
                     <span>Ilam</span>
                   </div>
                   <ChevronDown
@@ -315,11 +336,11 @@ export default function Header() {
                 {expandedTopics.ilam && (
                   <div className="ml-8 mt-1 space-y-1">
                     <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-orange-50 rounded-lg transition-colors text-sm">
-                      <Circle size={8} className="text-orange-300" />
+                      <Circle size={8} className="text-primary" />
                       <span>Seeking Knowledge</span>
                     </button>
                     <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-orange-50 rounded-lg transition-colors text-sm">
-                      <Circle size={8} className="text-orange-300" />
+                      <Circle size={8} className="text-primary" />
                       <span>Scholars</span>
                     </button>
                   </div>
@@ -334,19 +355,19 @@ export default function Header() {
 
         {/* History */}
         <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-orange-50 rounded-lg transition-colors mb-2">
-          <Clock size={20} className="text-orange-400" />
+          <Clock size={20} className="text-primary" />
           <span className="font-medium">History</span>
         </button>
 
         {/* Liked */}
         <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-orange-50 rounded-lg transition-colors mb-2">
-          <Heart size={20} className="text-orange-400" />
+          <Heart size={20} className="text-primary" />
           <span className="font-medium">Liked</span>
         </button>
 
         {/* Favorites */}
         <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-orange-50 rounded-lg transition-colors mb-2">
-          <Bookmark size={20} className="text-orange-400" />
+          <Bookmark size={20} className="text-primary" />
           <span className="font-medium">Favorites</span>
         </button>
 
@@ -355,7 +376,7 @@ export default function Header() {
 
         {/* Settings */}
         <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-orange-50 rounded-lg transition-colors mb-2">
-          <Settings size={20} className="text-orange-400" />
+          <Settings size={20} className="text-primary" />
           <span className="font-medium">Settings</span>
         </button>
 

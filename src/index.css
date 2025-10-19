@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+@colors: {
+    main: {
+        light: #da8856;
+        dark: #333;
+    }
+}
+@theme {
+    --color-primary: #da8856; /* Example: Tomato red */
+    --color-secondary: #4682b4; /* Example: Steel blue */
+    --color-accent: #ffd700; /* Example: Gold */
+    --color-midnight: #121063; /* Example from Tailwind docs */
+}
 @font-face {
     font-family: "IndoPak";
     src: url("/fonts/font.woff") format("woff");
@@ -18,13 +30,22 @@
 
 @font-face {
     font-family: "Tajweed";
-    src: url("/fonts/Tajweed.woff2") format("woff2");
+    src: url("/fonts/mfont.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Urdu";
+    src: url("/fonts/urdu.ttf") format("truetype");
     font-weight: normal;
     font-style: normal;
     font-display: swap;
 }
 
 /* helper classes */
+
 .font-indopak {
     font-family: "IndoPak", "Noto Nastaliq Urdu", serif;
 }
@@ -33,4 +54,7 @@
 }
 .font-tajweed {
     font-family: "Tajweed", "Amiri", serif;
+}
+.font-urdu {
+    font-family: "Urdu", "Amiri", serif;
 }

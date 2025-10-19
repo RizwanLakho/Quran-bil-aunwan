@@ -50,8 +50,8 @@ export default function QuranReadingPage() {
     >
       <div className="max-w-5xl mx-auto space-y-6">
         {/* Motivational Card */}
-        <div className="relative bg-gradient-to-r from-orange-400 to-orange-500 rounded-3xl p-8 shadow-lg overflow-hidden">
-          <div className="absolute top-4 right-8 text-orange-300 opacity-40 text-6xl font-serif">
+        <div className="relative bg-[#da8856] rounded-3xl p-8 shadow-lg overflow-hidden">
+          <div className="absolute top-4 right-8 text-primary opacity-40 text-6xl font-serif">
             "
           </div>
 
@@ -96,7 +96,7 @@ export default function QuranReadingPage() {
               <select
                 value={selectedSurah}
                 onChange={(e) => setSelectedSurah(e.target.value)}
-                className={`appearance-none border-2 rounded-xl px-6 py-3 pr-12 font-medium focus:outline-none focus:border-orange-400 cursor-pointer transition-colors ${
+                className={`appearance-none border-2 rounded-xl px-6 py-3 pr-12 font-medium focus:outline-none focus:border-primary cursor-pointer transition-colors ${
                   theme === "dark"
                     ? "bg-gray-700 border-gray-600 text-white"
                     : "bg-white border-gray-200 text-gray-700"
@@ -115,7 +115,7 @@ export default function QuranReadingPage() {
 
             {/* Surah Title */}
             <div className="text-center">
-              <h3 className="text-orange-500 text-2xl font-bold">Al-Baqarah</h3>
+              <h3 className="text-primary text-2xl font-bold">Al-Baqarah</h3>
               <p
                 className={theme === "dark" ? "text-gray-400" : "text-gray-500"}
               >
@@ -128,7 +128,7 @@ export default function QuranReadingPage() {
               <select
                 value={selectedAyah}
                 onChange={(e) => setSelectedAyah(e.target.value)}
-                className={`appearance-none border-2 rounded-xl px-6 py-3 pr-12 font-medium focus:outline-none focus:border-orange-400 cursor-pointer transition-colors ${
+                className={`appearance-none border-2 rounded-xl px-6 py-3 pr-12 font-medium focus:outline-none focus:border-primary cursor-pointer transition-colors ${
                   theme === "dark"
                     ? "bg-gray-700 border-gray-600 text-white"
                     : "bg-white border-gray-200 text-gray-700"
@@ -151,7 +151,7 @@ export default function QuranReadingPage() {
           <div className="text-center mb-8">
             <p
               className={`${getFontClass()} ${
-                theme === "dark" ? "text-orange-400" : "text-orange-500"
+                theme === "dark" ? "text-primary" : "text-primary"
               }`}
               style={{ fontSize: `${arabicSize + 8}px` }}
             >
@@ -207,7 +207,7 @@ export default function QuranReadingPage() {
           >
             <h4
               className={`font-bold mb-3 ${
-                theme === "dark" ? "text-orange-400" : "text-orange-600"
+                theme === "dark" ? "text-primary" : "text-primary"
               }`}
             >
               Translation by {translator}
@@ -232,7 +232,7 @@ export default function QuranReadingPage() {
           {/* Bottom Controls */}
           <div className="flex items-center justify-between flex-wrap gap-4">
             {/* Continue Reading Button */}
-            <button className="flex items-center gap-3 bg-orange-400 hover:bg-orange-500 text-white font-medium px-8 py-4 rounded-xl transition-colors shadow-md">
+            <button className="flex items-center gap-3 bg-primary hover:bg-orange-500 text-white font-medium px-8 py-4 rounded-xl transition-colors shadow-md">
               <BookOpen size={20} />
               <span>Continue Reading</span>
             </button>
@@ -266,7 +266,7 @@ export default function QuranReadingPage() {
               </div>
 
               {/* Play Button */}
-              <button className="bg-orange-400 hover:bg-orange-500 text-white p-4 rounded-full transition-colors shadow-md">
+              <button className="bg-primary hover:bg-orange-500 text-white p-4 rounded-full transition-colors shadow-md">
                 <Play size={24} fill="white" />
               </button>
             </div>

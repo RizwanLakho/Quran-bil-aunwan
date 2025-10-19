@@ -54,7 +54,7 @@ export default function QuranSettingsPanel() {
         className={`px-6 py-5 flex items-center gap-3 ${
           theme === "dark"
             ? "bg-gradient-to-r from-gray-700 to-gray-800"
-            : "bg-gradient-to-r from-orange-400 to-orange-500"
+            : "bg-primary"
         }`}
       >
         <Settings className="text-white" size={24} />
@@ -67,12 +67,10 @@ export default function QuranSettingsPanel() {
         <div>
           <div className="flex items-center gap-2 mb-3">
             <Sun
-              className={
-                theme === "dark" ? "text-yellow-400" : "text-orange-500"
-              }
+              className={theme === "dark" ? "text-yellow-400" : "text-primary"}
               size={20}
             />
-            <h3 className="font-bold">{t("theme")}</h3>
+            <h3 className="font-bold font-urdu">{t("theme")}</h3>
           </div>
           <div
             className={`flex gap-2 p-1 rounded-full ${
@@ -83,7 +81,7 @@ export default function QuranSettingsPanel() {
               onClick={() => setTheme("light")}
               className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-full font-medium transition-all ${
                 theme === "light"
-                  ? "bg-orange-400 text-white shadow-md"
+                  ? "bg-primary text-white shadow-md"
                   : theme === "dark"
                     ? "text-gray-300 hover:bg-gray-700"
                     : "text-gray-600 hover:bg-gray-200"
@@ -96,7 +94,7 @@ export default function QuranSettingsPanel() {
               onClick={() => setTheme("dark")}
               className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-full font-medium transition-all ${
                 theme === "dark"
-                  ? "bg-orange-400 text-white shadow-md"
+                  ? "bg-primary text-white shadow-md"
                   : "text-gray-600 hover:bg-gray-200"
               }`}
             >
@@ -126,7 +124,7 @@ export default function QuranSettingsPanel() {
         {/* Quran Font */}
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-orange-500 text-xl font-serif">Aa</span>
+            <span className="text-primary text-xl font-serif">Aa</span>
             <h3 className="font-bold">Quran Font</h3>
           </div>
           <div
@@ -138,7 +136,7 @@ export default function QuranSettingsPanel() {
               onClick={() => setQuranFont("Uthmani")}
               className={`flex-1 px-4 py-2 rounded-full font-medium transition-all ${
                 quranFont === "Uthmani"
-                  ? "bg-orange-400 text-white shadow-md"
+                  ? "bg-primary text-white shadow-md"
                   : theme === "dark"
                     ? "text-gray-300 hover:bg-gray-700"
                     : "text-gray-600 hover:bg-gray-200"
@@ -150,7 +148,7 @@ export default function QuranSettingsPanel() {
               onClick={() => setQuranFont("IndoPak")}
               className={`flex-1 px-4 py-2 rounded-full font-medium transition-all ${
                 quranFont === "IndoPak"
-                  ? "bg-orange-400 text-white shadow-md"
+                  ? "bg-primary text-white shadow-md"
                   : theme === "dark"
                     ? "text-gray-300 hover:bg-gray-700"
                     : "text-gray-600 hover:bg-gray-200"
@@ -162,7 +160,7 @@ export default function QuranSettingsPanel() {
               onClick={() => setQuranFont("Tajweed")}
               className={`flex-1 px-4 py-2 rounded-full font-medium transition-all ${
                 quranFont === "Tajweed"
-                  ? "bg-orange-400 text-white shadow-md"
+                  ? "bg-primary text-white shadow-md"
                   : theme === "dark"
                     ? "text-gray-300 hover:bg-gray-700"
                     : "text-gray-600 hover:bg-gray-200"
@@ -173,7 +171,7 @@ export default function QuranSettingsPanel() {
           </div>
 
           {/* ✅ ADD PREVIEW TO SEE CHANGES */}
-          <div
+          {/* <div
             className={`mt-4 p-4 rounded-lg ${
               theme === "dark" ? "bg-gray-800" : "bg-gray-50"
             }`}
@@ -197,13 +195,13 @@ export default function QuranSettingsPanel() {
             >
               بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
             </p>
-          </div>
+          </div>*/}
         </div>
 
         {/* Translation By */}
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-orange-500 text-xl">📋</span>
+            <span className="text-primary text-xl">📋</span>
             <h3 className="font-bold">Translation By</h3>
           </div>
           <div className="relative">
@@ -233,7 +231,7 @@ export default function QuranSettingsPanel() {
         {/* Font Size */}
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-orange-500 text-xl">↔️</span>
+            <span className="text-primary text-xl">↔️</span>
             <h3 className="font-bold">Font Size</h3>
           </div>
           <div className="flex gap-4">
@@ -346,7 +344,7 @@ export default function QuranSettingsPanel() {
         {/* Select Reciter */}
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <Mic className="text-orange-500" size={20} />
+            <Mic className="text-primary" size={20} />
             <h3 className="font-bold">Select Reciter</h3>
           </div>
           <div className="relative">
@@ -376,7 +374,7 @@ export default function QuranSettingsPanel() {
         {/* Playback Speed */}
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <FastForward className="text-orange-500" size={20} />
+            <FastForward className="text-primary" size={20} />
             <h3 className="font-bold">Playback Speed</h3>
           </div>
           <div
