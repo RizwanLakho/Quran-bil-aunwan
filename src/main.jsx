@@ -5,6 +5,8 @@ import "./index.css";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 import { FontProvider } from "./context/FontContext";
 import { TranslationProvider } from "./context/TranslationContext.jsx";
+import { AuthProvider } from "./context/AuthContext.jsx";
+
 import "./i18n";
 import { BrowserRouter } from "react-router-dom";
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -13,7 +15,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <FontProvider>
         <TranslationProvider>
           <BrowserRouter>
-            <App />
+            <AuthProvider>
+              <App />
+            </AuthProvider>
           </BrowserRouter>
         </TranslationProvider>
       </FontProvider>

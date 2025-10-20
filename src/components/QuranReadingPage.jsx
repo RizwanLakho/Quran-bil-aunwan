@@ -46,7 +46,7 @@ export default function QuranReadingPage() {
         theme === "dark" ? "bg-gray-900 text-white" : "bg-orange-50"
       }`}
     >
-      <div className="max-w-5xl mx-auto space-y-6">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* Motivational Card */}
         <div className="relative bg-[#da8856] rounded-3xl p-8 shadow-lg overflow-hidden">
           <div className="absolute top-4 right-8 text-primary opacity-40 text-6xl font-serif">

@@ -7,22 +7,34 @@ import {
   Bell,
   User,
   ChevronDown,
+  Menu,
 } from "lucide-react";
 import { ThemeContext } from "../context/ThemeContext";
 
-export default function Navbar() {
+export default function Navbar({ isMenuOpen, toggleMenu }) {
   const { theme } = useContext(ThemeContext);
   const [searchText, setSearchText] = useState("");
 
   return (
     <div
-      className={` w-full px-8 py-4 flex-shrink-0  ${
+      className={`w-full px-8 py-4 flex-shrink-0 ${
         theme === "dark"
           ? "bg-gray-800 text-white"
           : "bg-[#DA885633] text-gray-800"
       }`}
     >
       <div className="flex items-center justify-between gap-4">
+        {/* Left Side: Menu Button and Title */}
+        <div className="flex items-center gap-4">
+          <button
+            onClick={toggleMenu}
+            className="text-primary hover:text-orange-500 transition-colors"
+          >
+            <Menu size={22} />
+          </button>
+          <h1 className="text-xl font-bold text-primary">Quran Bil Aunwan</h1>
+        </div>
+
         {/* Search Bar */}
         <div className="flex-1 max-w-xl">
           <div className="relative flex items-center bg-white rounded-full shadow-sm">
@@ -46,17 +58,14 @@ export default function Navbar() {
           <button className="p-3 bg-white rounded-full shadow-sm hover:shadow-md transition-shadow">
             <Bookmark size={20} className="text-primary" />
           </button>
-
           {/* Mail Icon */}
           <button className="p-3 bg-white rounded-full shadow-sm hover:shadow-md transition-shadow">
             <Mail size={20} className="text-primary" />
           </button>
-
           {/* Notification Icon */}
           <button className="p-3 bg-white rounded-full shadow-sm hover:shadow-md transition-shadow">
             <Bell size={20} className="text-primary" />
           </button>
-
           {/* User Profile */}
           <button className="flex items-center gap-3 pl-2 pr-4 py-2 bg-white rounded-full shadow-sm hover:shadow-md transition-shadow">
             <div className="w-9 h-9 bg-primary rounded-full flex items-center justify-center">

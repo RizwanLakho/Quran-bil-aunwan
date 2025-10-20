@@ -6,7 +6,6 @@ import AddTopic from "./AddTopic";
 export default function Topics() {
   return (
     <div>
-      <Navbar />
       <Routes>
         <Route index element={<TopicsData />} /> {/* /topics */}
         <Route path="add-topic" element={<AddTopic />} />
