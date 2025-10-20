@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { ThemeContext } from "../context/ThemeContext";
 import { FontContext } from "../context/FontContext"; // ✅ ADD THIS
+import { TranslationContext } from "../context/TranslationContext";
 
 export default function QuranSettingsPanel() {
   const { t, i18n } = useTranslation();
@@ -40,8 +41,10 @@ export default function QuranSettingsPanel() {
   // const [translatorSize, setTranslatorSize] = useState(16);
 
   // These can stay local (only used in this panel)
-  const [translator, setTranslator] = useState("Dr. Mustafa Khattab");
-  const [reciter, setReciter] = useState("Mishari Rashid Al - Afasy");
+  //
+  const { translator, setTranslator, reciter, setReciter } =
+    useContext(TranslationContext);
+
   const [playbackSpeed, setPlaybackSpeed] = useState(2);
 
   return (
@@ -357,7 +360,7 @@ export default function QuranSettingsPanel() {
                   : "bg-gray-100 text-gray-800"
               }`}
             >
-              <option>Mishari Rashid Al - Afasy</option>
+              <option>Mishari Rashid Al-Afasy</option>
               <option>Abdul Rahman Al-Sudais</option>
               <option>Saad Al-Ghamidi</option>
               <option>Ahmad Al-Ajmi</option>

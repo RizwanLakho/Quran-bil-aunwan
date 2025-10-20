@@ -26,22 +26,20 @@ export default function QuranReadingPage() {
     }
   };
 
-  // ✅ Get translation text based on translator
   const getTranslation = () => {
     const translations = {
       "Dr. Mustafa Khattab":
-        "Alif-Lãm-Mĩm. This is the Book! There is no doubt about it—a guide for those mindful ˹of Allah˺, who believe in the unseen, establish prayer, and donate from what We have provided for them, and who believe in what has been revealed to you ˹O Prophet˺ and what was revealed before you, and have sure faith in the Hereafter.",
+        "Alif-Lãm-Mĩm. This is the Book! There is no doubt about it—a guide for those mindful ˹of Allah˺...",
       "Sahih International":
-        "Alif, Lam, Meem. This is the Book about which there is no doubt, a guidance for those conscious of Allah - Who believe in the unseen, establish prayer, and spend out of what We have provided for them, And who believe in what has been revealed to you, [O Muhammad], and what was revealed before you, and of the Hereafter they are certain [in faith].",
+        "Alif, Lam, Meem. This is the Book about which there is no doubt, a guidance for those conscious of Allah...",
       Pickthall:
-        "Alif. Lam. Mim. This is the Scripture whereof there is no doubt, a guidance unto those who ward off (evil). Who believe in the Unseen, and establish worship, and spend of that We have bestowed upon them; And who believe in that which is revealed unto thee (Muhammad) and that which was revealed before thee, and are certain of the Hereafter.",
+        "Alif. Lam. Mim. This is the Scripture whereof there is no doubt, a guidance unto those who ward off (evil)...",
       "Yusuf Ali":
-        "A.L.M. This is the Book; in it is guidance sure, without doubt, to those who fear Allah; Who believe in the Unseen, are steadfast in prayer, and spend out of what We have provided for them; And who believe in the Revelation sent to thee, and sent before thy time, and (in their hearts) have the assurance of the Hereafter.",
+        "A.L.M. This is the Book; in it is guidance sure, without doubt, to those who fear Allah...",
     };
 
     return translations[translator] || translations["Dr. Mustafa Khattab"];
   };
-
   return (
     <div
       className={`min-h-screen p-8 transition-colors duration-300 ${
@@ -153,7 +151,7 @@ export default function QuranReadingPage() {
               className={`${getFontClass()} ${
                 theme === "dark" ? "text-primary" : "text-primary"
               }`}
-              style={{ fontSize: `${arabicSize + 8}px` }}
+              style={{ fontSize: `${arabicSize}px` }}
             >
               بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
             </p>
@@ -165,7 +163,7 @@ export default function QuranReadingPage() {
               className={`${getFontClass()} ${
                 theme === "dark" ? "text-gray-200" : "text-gray-800"
               }`}
-              style={{ fontSize: `${arabicSize}px`, lineHeight: "2" }}
+              style={{ fontSize: `${arabicSize}px` }}
             >
               الم ۝ ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى
               لِّلْمُتَّقِينَ ۝ الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ وَيُقِيمُونَ
