@@ -8,7 +8,7 @@
 }
 @theme {
     --color-primary: #da8856; /* Example: Tomato red */
-    --color-secondary: #4682b4; /* Example: Steel blue */
+    --color-hover: #da885633; /* Example: Steel blue */
     --color-accent: #ffd700; /* Example: Gold */
     --color-midnight: #121063; /* Example from Tailwind docs */
 }

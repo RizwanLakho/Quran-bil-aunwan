@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { useState, useContext } from "react";
 import Navbar from "../components/Navbar";
 import Header from "../components/Header";
@@ -10,7 +10,7 @@ import { ThemeContext } from "../context/ThemeContext";
 
 export default function Home() {
   const { theme } = useContext(ThemeContext);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(true);
 
   // NEW: settings visibility state
   const [showSettings, setShowSettings] = useState(false);
@@ -47,6 +47,8 @@ export default function Home() {
         <main className="flex flex-1 overflow-hidden">
           <div className="flex-1 overflow-y-auto">
             <Routes>
+              <Route path="/" element={<Navigate to="read-quran" replace />} />{" "}
+              {/* ADD THIS LINE */}
               <Route path="read-quran" element={<QuranReadingPage />} />
               <Route path="quran-topics" element={<QuranTopics />} />
               <Route
