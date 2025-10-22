@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import Home from "./pages/Home";
 import Topics from "./pages/Topics";
 import SignIn from "./pages/auth/Login";
@@ -8,6 +9,22 @@ import { AuthContext } from "./context/AuthContext";
 
 export default function App() {
   const { user } = useContext(AuthContext);
+  const { i18n } = useTranslation();
+
+  // ✅ Dynamically apply Urdu font class to body
+  useEffect(() => {
+    if (i18n.language === "ur") {
+      document.body.classList.add("font-urdu");
+      document.body.classList.remove("font-english");
+      // Set direction to RTL for Urdu
+      document.documentElement.dir = "rtl";
+    } else {
+      document.body.classList.add("font-english");
+      document.body.classList.remove("font-urdu");
+      // Set direction to LTR for English
+      document.documentElement.dir = "ltr";
+    }
+  }, [i18n.language]);
 
   return (
     <div>
@@ -29,7 +46,7 @@ export default function App() {
           )}
         </Routes>
       </div>
-      <div className="block md:hidden min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 p-6 flex items-center justify-center">
+      <div className=" md:hidden min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 p-6 flex items-center justify-center">
         <div className="max-w-md w-full">
           {/* Main Card */}
           <div

@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Header from "../components/Header";
 import QuranReadingPage from "../components/QuranReadingPage";
@@ -10,15 +11,22 @@ import { ThemeContext } from "../context/ThemeContext";
 
 export default function Home() {
   const { theme } = useContext(ThemeContext);
+  const { i18n } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(true);
-
-  // NEW: settings visibility state
   const [showSettings, setShowSettings] = useState(false);
 
-  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
-  const toggleSettings = () => setShowSettings((prev) => !prev); // NEW
+  // Check if current language is RTL
+  const isRTL = i18n.language === "ur";
 
-  // Navbar height
+  // Update document direction when language changes
+  useEffect(() => {
+    document.documentElement.dir = isRTL ? "rtl" : "ltr";
+    document.documentElement.lang = i18n.language;
+  }, [isRTL, i18n.language]);
+
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+  const toggleSettings = () => setShowSettings((prev) => !prev);
+
   const NAVBAR_HEIGHT = 84; // pixels
 
   return (
@@ -26,6 +34,7 @@ export default function Home() {
       className={`flex flex-col h-screen transition-colors duration-300 ${
         theme === "dark" ? "bg-gray-900" : "bg-orange-50"
       }`}
+      dir={isRTL ? "rtl" : "ltr"}
     >
       {/* Navbar on Top */}
       <div style={{ height: `${NAVBAR_HEIGHT}px` }}>
@@ -34,21 +43,21 @@ export default function Home() {
 
       {/* Main Section: Sidebar + Content + Settings */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
+        {/* Sidebar - Position changes based on language */}
         <Header
           isMenuOpen={isMenuOpen}
-          toggleSettings={toggleSettings} // PASS TO HEADER
+          toggleSettings={toggleSettings}
           style={{
-            height: `calc(100vh - ${NAVBAR_HEIGHT}px)`, // sidebar below navbar
+            height: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
           }}
         />
 
         {/* Main Content */}
         <main className="flex flex-1 overflow-hidden">
-          <div className="flex-1 overflow-y-auto">
+          {/* Content Area */}
+          <div className="flex-1 overflow-hidden">
             <Routes>
-              <Route path="/" element={<Navigate to="read-quran" replace />} />{" "}
-              {/* ADD THIS LINE */}
+              <Route path="/" element={<Navigate to="read-quran" replace />} />
               <Route path="read-quran" element={<QuranReadingPage />} />
               <Route path="quran-topics" element={<QuranTopics />} />
               <Route
@@ -58,10 +67,12 @@ export default function Home() {
             </Routes>
           </div>
 
-          {/* Right Settings Panel (shown/hidden by state) */}
+          {/* Settings Panel - Always on the opposite side of header */}
           {showSettings && (
             <aside
-              className={`w-96 flex-shrink-0 flex flex-col border-l transition-colors duration-300 ${
+              className={`w-96 flex-shrink-0 flex flex-col transition-colors duration-300 ${
+                isRTL ? "border-r" : "border-l"
+              } ${
                 theme === "dark"
                   ? "border-gray-700 bg-gray-900"
                   : "border-orange-200 bg-white"

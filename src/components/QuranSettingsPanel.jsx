@@ -11,12 +11,12 @@ import {
   FastForward,
 } from "lucide-react";
 import { ThemeContext } from "../context/ThemeContext";
-import { FontContext } from "../context/FontContext"; // ✅ ADD THIS
+import { FontContext } from "../context/FontContext";
 import { TranslationContext } from "../context/TranslationContext";
 
 export default function QuranSettingsPanel() {
   const { t, i18n } = useTranslation();
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState(i18n.language || "en");
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -25,7 +25,6 @@ export default function QuranSettingsPanel() {
 
   const { theme, setTheme } = useContext(ThemeContext);
 
-  // ✅ REPLACE LOCAL STATE WITH CONTEXT
   const {
     quranFont,
     setQuranFont,
@@ -35,13 +34,6 @@ export default function QuranSettingsPanel() {
     setTranslatorSize,
   } = useContext(FontContext);
 
-  // ❌ DELETE THESE LINES (24-27):
-  // const [quranFont, setQuranFont] = useState("IndoPak");
-  // const [arabicSize, setArabicSize] = useState(16);
-  // const [translatorSize, setTranslatorSize] = useState(16);
-
-  // These can stay local (only used in this panel)
-  //
   const { translator, setTranslator, reciter, setReciter } =
     useContext(TranslationContext);
 
@@ -128,7 +120,7 @@ export default function QuranSettingsPanel() {
         <div>
           <div className="flex items-center gap-2 mb-3">
             <span className="text-primary text-xl font-serif">Aa</span>
-            <h3 className="font-bold">Quran Font</h3>
+            <h3 className="font-bold">{t("quran_font")}</h3>
           </div>
           <div
             className={`flex gap-2 p-1 rounded-full ${
@@ -172,40 +164,13 @@ export default function QuranSettingsPanel() {
               Tajweed
             </button>
           </div>
-
-          {/* ✅ ADD PREVIEW TO SEE CHANGES */}
-          {/* <div
-            className={`mt-4 p-4 rounded-lg ${
-              theme === "dark" ? "bg-gray-800" : "bg-gray-50"
-            }`}
-          >
-            <p
-              className={`text-xs mb-2 ${
-                theme === "dark" ? "text-gray-400" : "text-gray-500"
-              }`}
-            >
-              Preview - Current Font: {quranFont}
-            </p>
-            <p
-              className={`text-center ${
-                quranFont === "Uthmani"
-                  ? "font-uthmani"
-                  : quranFont === "IndoPak"
-                    ? "font-indopak"
-                    : "font-tajweed"
-              }`}
-              style={{ fontSize: `${arabicSize}px`, lineHeight: "1.8" }}
-            >
-              بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
-            </p>
-          </div>*/}
         </div>
 
         {/* Translation By */}
         <div>
           <div className="flex items-center gap-2 mb-3">
             <span className="text-primary text-xl">📋</span>
-            <h3 className="font-bold">Translation By</h3>
+            <h3 className="font-bold">{t("translation_by")}</h3>
           </div>
           <div className="relative">
             <select
@@ -235,7 +200,7 @@ export default function QuranSettingsPanel() {
         <div>
           <div className="flex items-center gap-2 mb-3">
             <span className="text-primary text-xl">↔️</span>
-            <h3 className="font-bold">Font Size</h3>
+            <h3 className="font-bold">{t("font_size")}</h3>
           </div>
           <div className="flex gap-4">
             {/* Arabic */}
@@ -245,7 +210,7 @@ export default function QuranSettingsPanel() {
                   theme === "dark" ? "text-gray-400" : "text-gray-600"
                 }`}
               >
-                Arabic
+                {t("arabic")}
               </p>
               <div
                 className={`flex items-center gap-2 rounded-full p-1 ${
@@ -295,7 +260,7 @@ export default function QuranSettingsPanel() {
                   theme === "dark" ? "text-gray-400" : "text-gray-600"
                 }`}
               >
-                Translation
+                {t("translation")}
               </p>
               <div
                 className={`flex items-center gap-2 rounded-full p-1 ${
@@ -348,7 +313,7 @@ export default function QuranSettingsPanel() {
         <div>
           <div className="flex items-center gap-2 mb-3">
             <Mic className="text-primary" size={20} />
-            <h3 className="font-bold">Select Reciter</h3>
+            <h3 className="font-bold">{t("select_reciter")}</h3>
           </div>
           <div className="relative">
             <select
@@ -378,7 +343,7 @@ export default function QuranSettingsPanel() {
         <div>
           <div className="flex items-center gap-2 mb-3">
             <FastForward className="text-primary" size={20} />
-            <h3 className="font-bold">Playback Speed</h3>
+            <h3 className="font-bold">{t("playback_speed")}</h3>
           </div>
           <div
             className={`flex items-center gap-2 rounded-full p-1 w-48 ${
