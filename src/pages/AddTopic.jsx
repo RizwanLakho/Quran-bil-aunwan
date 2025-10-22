@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Plus, Send } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 // Topic Info Component
 const TopicInfo = ({ formData, setFormData }) => {
+  const { t } = useTranslation();
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -15,58 +17,58 @@ const TopicInfo = ({ formData, setFormData }) => {
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Topic name
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            {t("topic_name")}
           </label>
           <input
             type="text"
             name="topicName"
             value={formData.topicName}
             onChange={handleChange}
-            placeholder="eg. Allah"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
+            placeholder={t("topic_name_placeholder")}
+            className="w-full px-4 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-white placeholder-gray-400"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Alternative Name
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            {t("alternative_name")}
           </label>
           <input
             type="text"
             name="alternativeName"
             value={formData.alternativeName}
             onChange={handleChange}
-            placeholder="eg. الله"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
+            placeholder={t("alternative_name_placeholder")}
+            className="w-full px-4 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-white placeholder-gray-400"
           />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Topic Description
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            {t("topic_description")}
           </label>
           <input
             type="text"
             name="topicDescription"
             value={formData.topicDescription}
             onChange={handleChange}
-            placeholder="eg. Short Description for the topic"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
+            placeholder={t("topic_description_placeholder")}
+            className="w-full px-4 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-white placeholder-gray-400"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Suggested Arrangement
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            {t("suggested_arrangement")}
           </label>
           <input
             type="text"
             name="suggestedArrangement"
             value={formData.suggestedArrangement}
             onChange={handleChange}
-            placeholder="eg. Dropdown - Available # only"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
+            placeholder={t("suggested_arrangement_placeholder")}
+            className="w-full px-4 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-white placeholder-gray-400"
           />
         </div>
       </div>
@@ -76,6 +78,7 @@ const TopicInfo = ({ formData, setFormData }) => {
 
 // Aayaat Component
 const Aayaat = ({ ayaatList, setAyaatList }) => {
+  const { t } = useTranslation();
   const [newAyat, setNewAyat] = useState({
     surah: "",
     ayat: "",
@@ -96,136 +99,133 @@ const Aayaat = ({ ayaatList, setAyaatList }) => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-semibold text-gray-800 mb-1">Topics</h2>
-        <p className="text-sm text-gray-500 mb-4">
-          Manage your ayaat and hadith associated with and their topics here.
+        <h2 className="text-2xl font-semibold text-white mb-1">
+          {t("topics")}
+        </h2>
+        <p className="text-sm text-gray-400 mb-4">
+          {t("manage_topics_description")}
         </p>
-        <h3 className="text-lg text-gray-400 mb-6">Add Ayats</h3>
+        <h3 className="text-lg text-gray-500 mb-6">{t("add_ayats")}</h3>
       </div>
 
       {/* Add Ayats Section */}
       <div>
-        <h4 className="text-base font-semibold text-gray-800 mb-2">
-          Add Ayats
+        <h4 className="text-base font-semibold text-white mb-2">
+          {t("add_ayats")}
         </h4>
-        <p className="text-sm text-gray-500 mb-4">
-          Get your projects up and running faster by inviting your team to
-          collaborate.
+        <p className="text-sm text-gray-400 mb-4">
+          {t("add_ayats_description")}
         </p>
 
         <div className="grid grid-cols-3 gap-4 mb-4">
           <select
-            className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-4 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-white"
             value={newAyat.surah}
             onChange={(e) => setNewAyat({ ...newAyat, surah: e.target.value })}
           >
-            <option value="">Select Surah</option>
-            <option value="Al-Fatiha">Al-Fatiha</option>
-            <option value="Al-Baqarah">Al-Baqarah</option>
+            <option value="">{t("select_surah")}</option>
+            <option value="Al-Fatiha">{t("al_fatiha")}</option>
+            <option value="Al-Baqarah">{t("al_baqarah")}</option>
           </select>
 
           <select
-            className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-4 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-white"
             value={newAyat.ayat}
             onChange={(e) => setNewAyat({ ...newAyat, ayat: e.target.value })}
           >
-            <option value="">Select Ayat</option>
-            <option value="1">Ayat 1</option>
-            <option value="2">Ayat 2</option>
+            <option value="">{t("select_ayat")}</option>
+            <option value="1">{t("ayat_1")}</option>
+            <option value="2">{t("ayat_2")}</option>
           </select>
 
           <button
             onClick={handleAddAyat}
-            className="bg-primary text-white px-6 py-2 rounded-md hover:bg-orange-400 transition"
+            className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 transition"
           >
-            Load Ayat
+            {t("load_ayat")}
           </button>
         </div>
 
         <input
           type="text"
-          placeholder="Ayat will apear after selection. It would be graded-out. Ready-only..."
-          className="w-full px-4 py-2 border border-gray-300 rounded-md mb-4 bg-gray-50"
+          placeholder={t("ayat_placeholder")}
+          className="w-full px-4 py-2 border border-gray-600 rounded-md mb-4 bg-gray-700 text-gray-400"
           readOnly
         />
 
         <input
           type="text"
-          placeholder="user description for ayaat, may be translations / explanations et."
+          placeholder={t("ayat_description_placeholder")}
           value={newAyat.description}
           onChange={(e) =>
             setNewAyat({ ...newAyat, description: e.target.value })
           }
-          className="w-full px-4 py-2 border border-gray-300 rounded-md mb-4"
+          className="w-full px-4 py-2 border border-gray-600 rounded-md mb-4 bg-gray-700 text-white placeholder-gray-400"
         />
 
         <div className="flex justify-between items-center">
-          <button className="flex items-center text-gray-600 hover:text-gray-800">
+          <button className="flex items-center text-gray-400 hover:text-gray-200">
             <Plus className="w-4 h-4 mr-1" />
-            Add another
+            {t("add_another")}
           </button>
-          <button className="flex items-center text-primary hover:text-orange-400">
+          <button className="flex items-center text-orange-500 hover:text-orange-400">
             <Send className="w-4 h-4 mr-1" />
-            Assign
+            {t("assign")}
           </button>
         </div>
       </div>
 
       {/* Assigned Ayats List */}
       <div className="mt-8">
-        <h3 className="text-lg text-gray-400 mb-4">Assigned Ayats</h3>
-        <h4 className="text-base font-semibold text-gray-800 mb-2">
-          List of Assigned Ayat
+        <h3 className="text-lg text-gray-500 mb-4">{t("assigned_ayats")}</h3>
+        <h4 className="text-base font-semibold text-white mb-2">
+          {t("list_of_assigned_ayat")}
         </h4>
-        <p className="text-sm text-gray-500 mb-4">
-          Get your projects up and running faster by inviting your team to
-          collaborate.
+        <p className="text-sm text-gray-400 mb-4">
+          {t("add_ayats_description")}
         </p>
 
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
             <label className="flex items-center">
               <input type="checkbox" className="mr-2" />
-              <span className="text-sm">Select All</span>
+              <span className="text-sm text-gray-300">{t("select_all")}</span>
             </label>
-            <span className="text-sm text-gray-600">
-              | {ayaatList.length} Selected |{" "}
-              <span className="text-primary">Delete Selected</span>
+            <span className="text-sm text-gray-400">
+              | {ayaatList.length} {t("selected")} |{" "}
+              <span className="text-orange-500">{t("delete_selected")}</span>
             </span>
           </div>
-          <span className="text-sm text-primary">
-            Total {ayaatList.length} Ayat Assigned
+          <span className="text-sm text-orange-500">
+            {t("total_ayat_assigned").replace("{count}", ayaatList.length)}
           </span>
         </div>
 
         {ayaatList.map((ayat) => (
           <div
             key={ayat.id}
-            className="flex items-center justify-between border-b py-3"
+            className="flex items-center justify-between border-b border-gray-700 py-3"
           >
             <div className="flex items-center gap-3">
               <input type="checkbox" />
               <div>
-                <p
-                  className="text-sm text-gray-800"
-                  style={{ direction: "rtl" }}
-                >
+                <p className="text-sm text-white" style={{ direction: "rtl" }}>
                   وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ
                 </p>
-                <p className="text-xs text-gray-500">
-                  {ayat.surah} - Ayat {ayat.ayat}
+                <p className="text-xs text-gray-400">
+                  {ayat.surah} - {t("ayah")} {ayat.ayat}
                 </p>
               </div>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => handleDelete(ayat.id)}
-                className="text-gray-500 hover:text-gray-700 text-sm"
+                className="text-gray-400 hover:text-gray-200 text-sm"
               >
-                Delete
+                {t("delete")}
               </button>
-              <button className="text-primary hover:text-orange-400 text-sm">
-                Edit
+              <button className="text-orange-500 hover:text-orange-400 text-sm">
+                {t("edit")}
               </button>
             </div>
           </div>
@@ -237,6 +237,7 @@ const Aayaat = ({ ayaatList, setAyaatList }) => {
 
 // Hadith Component
 const Hadith = ({ hadithList, setHadithList }) => {
+  const { t } = useTranslation();
   const [newHadith, setNewHadith] = useState({
     arabicText: "",
     englishTranslation: "",
@@ -265,135 +266,132 @@ const Hadith = ({ hadithList, setHadithList }) => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-semibold text-gray-800 mb-1">Topics</h2>
-        <p className="text-sm text-gray-500 mb-4">
-          Manage your ayaat and hadith associated with and their topics here.
+        <h2 className="text-2xl font-semibold text-white mb-1">
+          {t("topics")}
+        </h2>
+        <p className="text-sm text-gray-400 mb-4">
+          {t("manage_topics_description")}
         </p>
-        <h3 className="text-lg text-gray-400 mb-6">Add Hadith</h3>
+        <h3 className="text-lg text-gray-500 mb-6">{t("add_hadith")}</h3>
       </div>
 
       <div>
-        <h4 className="text-base font-semibold text-gray-800 mb-2">
-          Add Hadith
+        <h4 className="text-base font-semibold text-white mb-2">
+          {t("add_hadith")}
         </h4>
-        <p className="text-sm text-gray-500 mb-4">
-          Get your projects up and running faster by inviting your team to
-          collaborate.
+        <p className="text-sm text-gray-400 mb-4">
+          {t("add_hadith_description")}
         </p>
 
         <input
           type="text"
-          placeholder="Type Hadith Arabic Description..."
+          placeholder={t("hadith_arabic_placeholder")}
           value={newHadith.arabicText}
           onChange={(e) =>
             setNewHadith({ ...newHadith, arabicText: e.target.value })
           }
-          className="w-full px-4 py-2 border border-gray-300 rounded-md mb-4"
+          className="w-full px-4 py-2 border border-gray-600 rounded-md mb-4 bg-gray-700 text-white placeholder-gray-400"
         />
 
         <input
           type="text"
-          placeholder="Type Hadith Translation - English"
+          placeholder={t("hadith_english_placeholder")}
           value={newHadith.englishTranslation}
           onChange={(e) =>
             setNewHadith({ ...newHadith, englishTranslation: e.target.value })
           }
-          className="w-full px-4 py-2 border border-gray-300 rounded-md mb-4"
+          className="w-full px-4 py-2 border border-gray-600 rounded-md mb-4 bg-gray-700 text-white placeholder-gray-400"
         />
 
         <input
           type="text"
-          placeholder="Type Hadith Translation - Urdu"
+          placeholder={t("hadith_urdu_placeholder")}
           value={newHadith.urduTranslation}
           onChange={(e) =>
             setNewHadith({ ...newHadith, urduTranslation: e.target.value })
           }
-          className="w-full px-4 py-2 border border-gray-300 rounded-md mb-4"
+          className="w-full px-4 py-2 border border-gray-600 rounded-md mb-4 bg-gray-700 text-white placeholder-gray-400"
         />
 
         <div className="flex gap-4 mb-4">
           <input
             type="text"
-            placeholder="Reference - Book | Page"
+            placeholder={t("hadith_reference_placeholder")}
             value={newHadith.bookReference}
             onChange={(e) =>
               setNewHadith({ ...newHadith, bookReference: e.target.value })
             }
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-md"
+            className="flex-1 px-4 py-2 border border-gray-600 rounded-md bg-gray-700 text-white placeholder-gray-400"
           />
           <input
             type="text"
-            placeholder="Reference - Book | Page"
+            placeholder={t("hadith_reference_placeholder")}
             value={newHadith.pageReference}
             onChange={(e) =>
               setNewHadith({ ...newHadith, pageReference: e.target.value })
             }
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-md"
+            className="flex-1 px-4 py-2 border border-gray-600 rounded-md bg-gray-700 text-white placeholder-gray-400"
           />
           <button
             onClick={handleAddHadith}
-            className="bg-primary text-white px-6 py-2 rounded-md hover:bg-orange-400 transition"
+            className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 transition"
           >
-            Add More
+            {t("add_more")}
           </button>
           <button className="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition">
-            Remove 1 Ref
+            {t("remove_ref")}
           </button>
         </div>
 
         <div className="flex justify-between items-center">
-          <button className="flex items-center text-gray-600 hover:text-gray-800">
+          <button className="flex items-center text-gray-400 hover:text-gray-200">
             <Plus className="w-4 h-4 mr-1" />
-            Add another
+            {t("add_another")}
           </button>
-          <button className="flex items-center text-primary hover:text-orange-400">
+          <button className="flex items-center text-orange-500 hover:text-orange-400">
             <Send className="w-4 h-4 mr-1" />
-            Submit
+            {t("submit")}
           </button>
         </div>
       </div>
 
       {/* Assigned Hadith List */}
       <div className="mt-8">
-        <h3 className="text-lg text-gray-400 mb-4">Assigned Ayats</h3>
-        <h4 className="text-base font-semibold text-gray-800 mb-2">
-          List of Added Hadith
+        <h3 className="text-lg text-gray-500 mb-4">{t("assigned_ayats")}</h3>
+        <h4 className="text-base font-semibold text-white mb-2">
+          {t("list_of_added_hadith")}
         </h4>
-        <p className="text-sm text-gray-500 mb-4">
-          Get your projects up and running faster by inviting your team to
-          collaborate.
+        <p className="text-sm text-gray-400 mb-4">
+          {t("add_hadith_description")}
         </p>
 
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
             <label className="flex items-center">
               <input type="checkbox" className="mr-2" />
-              <span className="text-sm">Select All</span>
+              <span className="text-sm text-gray-300">{t("select_all")}</span>
             </label>
-            <span className="text-sm text-gray-600">
-              | {hadithList.length} Selected
+            <span className="text-sm text-gray-400">
+              | {hadithList.length} {t("selected")}
             </span>
           </div>
-          <span className="text-sm text-primary">
-            Total {hadithList.length} Hadith Added
+          <span className="text-sm text-orange-500">
+            {t("total_hadith_added").replace("{count}", hadithList.length)}
           </span>
         </div>
 
         {hadithList.map((hadith) => (
           <div
             key={hadith.id}
-            className="flex items-center justify-between border-b py-3"
+            className="flex items-center justify-between border-b border-gray-700 py-3"
           >
             <div className="flex items-center gap-3">
               <input type="checkbox" />
               <div>
-                <p
-                  className="text-sm text-gray-800"
-                  style={{ direction: "rtl" }}
-                >
+                <p className="text-sm text-white" style={{ direction: "rtl" }}>
                   {hadith.arabicText}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-400">
                   {hadith.englishTranslation}
                 </p>
               </div>
@@ -401,12 +399,12 @@ const Hadith = ({ hadithList, setHadithList }) => {
             <div className="flex gap-2">
               <button
                 onClick={() => handleDelete(hadith.id)}
-                className="text-gray-500 hover:text-gray-700 text-sm"
+                className="text-gray-400 hover:text-gray-200 text-sm"
               >
-                Delete
+                {t("delete")}
               </button>
-              <button className="text-primary hover:text-orange-400 text-sm">
-                Edit
+              <button className="text-orange-500 hover:text-orange-400 text-sm">
+                {t("edit")}
               </button>
             </div>
           </div>
@@ -418,38 +416,41 @@ const Hadith = ({ hadithList, setHadithList }) => {
 
 // Review Component
 const Review = ({ formData, ayaatList, hadithList }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-semibold text-gray-800 mb-1">Topics</h2>
-        <p className="text-sm text-gray-500 mb-6">
-          Manage your ayaat and hadith associated with and their topics here.
+        <h2 className="text-2xl font-semibold text-white mb-1">
+          {t("topics")}
+        </h2>
+        <p className="text-sm text-gray-400 mb-6">
+          {t("manage_topics_description")}
         </p>
       </div>
 
       {/* List of Assigned Ayat */}
       <div>
-        <h4 className="text-base font-semibold text-gray-800 mb-2">
-          List of Assigned Ayat
+        <h4 className="text-base font-semibold text-white mb-2">
+          {t("list_of_assigned_ayat")}
         </h4>
-        <p className="text-sm text-gray-500 mb-4">
-          Get your projects up and running faster by inviting your team to
-          collaborate.
+        <p className="text-sm text-gray-400 mb-4">
+          {t("add_ayats_description")}
         </p>
 
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
             <label className="flex items-center">
               <input type="checkbox" className="mr-2" />
-              <span className="text-sm">Select All</span>
+              <span className="text-sm text-gray-300">{t("select_all")}</span>
             </label>
-            <span className="text-sm text-gray-600">
-              | {ayaatList.length} Selected |{" "}
-              <span className="text-primary">Delete Selected</span>
+            <span className="text-sm text-gray-400">
+              | {ayaatList.length} {t("selected")} |{" "}
+              <span className="text-orange-500">{t("delete_selected")}</span>
             </span>
           </div>
           <span className="text-sm text-orange-500">
-            Total {ayaatList.length} Ayat Assigned
+            {t("total_ayat_assigned").replace("{count}", ayaatList.length)}
           </span>
         </div>
 
@@ -457,28 +458,28 @@ const Review = ({ formData, ayaatList, hadithList }) => {
           {ayaatList.map((ayat) => (
             <div
               key={ayat.id}
-              className="flex items-center justify-between border-b py-3"
+              className="flex items-center justify-between border-b border-gray-700 py-3"
             >
               <div className="flex items-center gap-3">
                 <input type="checkbox" defaultChecked />
                 <div>
                   <p
-                    className="text-sm text-gray-800"
+                    className="text-sm text-white"
                     style={{ direction: "rtl" }}
                   >
                     وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ
                   </p>
-                  <p className="text-xs text-gray-500">
-                    {ayat.surah} - Ayat {ayat.ayat}
+                  <p className="text-xs text-gray-400">
+                    {ayat.surah} - {t("ayah")} {ayat.ayat}
                   </p>
                 </div>
               </div>
               <div className="flex gap-2">
-                <button className="text-gray-500 hover:text-gray-700 text-sm">
-                  Delete
+                <button className="text-gray-400 hover:text-gray-200 text-sm">
+                  {t("delete")}
                 </button>
-                <button className="text-primary hover:text-orange-400 text-sm">
-                  Edit
+                <button className="text-orange-500 hover:text-orange-400 text-sm">
+                  {t("edit")}
                 </button>
               </div>
             </div>
@@ -488,27 +489,26 @@ const Review = ({ formData, ayaatList, hadithList }) => {
 
       {/* Hadith List */}
       <div>
-        <h3 className="text-lg text-gray-400 mb-4">Assigned Ayats</h3>
-        <h4 className="text-base font-semibold text-gray-800 mb-2">
-          List of Added Hadith
+        <h3 className="text-lg text-gray-500 mb-4">{t("assigned_ayats")}</h3>
+        <h4 className="text-base font-semibold text-white mb-2">
+          {t("list_of_added_hadith")}
         </h4>
-        <p className="text-sm text-gray-500 mb-4">
-          Get your projects up and running faster by inviting your team to
-          collaborate.
+        <p className="text-sm text-gray-400 mb-4">
+          {t("add_hadith_description")}
         </p>
 
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
             <label className="flex items-center">
               <input type="checkbox" className="mr-2" />
-              <span className="text-sm">Select All</span>
+              <span className="text-sm text-gray-300">{t("select_all")}</span>
             </label>
-            <span className="text-sm text-gray-600">
-              | {hadithList.length} Selected
+            <span className="text-sm text-gray-400">
+              | {hadithList.length} {t("selected")}
             </span>
           </div>
-          <span className="text-sm text-primary">
-            Total {hadithList.length} Hadith Added
+          <span className="text-sm text-orange-500">
+            {t("total_hadith_added").replace("{count}", hadithList.length)}
           </span>
         </div>
 
@@ -516,28 +516,28 @@ const Review = ({ formData, ayaatList, hadithList }) => {
           {hadithList.map((hadith) => (
             <div
               key={hadith.id}
-              className="flex items-center justify-between border-b py-3"
+              className="flex items-center justify-between border-b border-gray-700 py-3"
             >
               <div className="flex items-center gap-3">
                 <input type="checkbox" defaultChecked />
                 <div>
                   <p
-                    className="text-sm text-gray-800"
+                    className="text-sm text-white"
                     style={{ direction: "rtl" }}
                   >
                     {hadith.arabicText}
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-400">
                     {hadith.englishTranslation}
                   </p>
                 </div>
               </div>
               <div className="flex gap-2">
-                <button className="text-gray-500 hover:text-gray-700 text-sm">
-                  Delete
+                <button className="text-gray-400 hover:text-gray-200 text-sm">
+                  {t("delete")}
                 </button>
-                <button className="text-primary hover:text-orange-400 text-sm">
-                  Edit
+                <button className="text-orange-500 hover:text-orange-400 text-sm">
+                  {t("edit")}
                 </button>
               </div>
             </div>
@@ -551,7 +551,7 @@ const Review = ({ formData, ayaatList, hadithList }) => {
 // Progress Bar Component
 const ProgressBar = ({ currentStep, steps }) => {
   return (
-    <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
+    <div className="bg-gray-800 rounded-lg shadow-sm p-8 mb-6">
       <div className="flex items-center justify-between">
         {steps.map((step, index) => (
           <div key={step.id} className="flex items-center flex-1">
@@ -559,10 +559,10 @@ const ProgressBar = ({ currentStep, steps }) => {
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
                   currentStep > step.id
-                    ? "bg-primary"
+                    ? "bg-orange-500"
                     : currentStep === step.id
-                      ? "bg-primary"
-                      : "bg-gray-300"
+                      ? "bg-orange-500"
+                      : "bg-gray-600"
                 }`}
               >
                 {currentStep > step.id ? (
@@ -578,12 +578,12 @@ const ProgressBar = ({ currentStep, steps }) => {
                     />
                   </svg>
                 ) : (
-                  <div className="w-4 h-4 bg-white rounded-full"></div>
+                  <div className="w-4 h-4 bg-gray-800 rounded-full"></div>
                 )}
               </div>
               <p
                 className={`mt-2 text-sm font-medium ${
-                  currentStep >= step.id ? "text-gray-700" : "text-gray-400"
+                  currentStep >= step.id ? "text-gray-200" : "text-gray-500"
                 }`}
               >
                 {step.label}
@@ -592,7 +592,7 @@ const ProgressBar = ({ currentStep, steps }) => {
             {index < steps.length - 1 && (
               <div
                 className={`h-1 flex-1 mx-4 transition-all duration-300 ${
-                  currentStep > step.id ? "bg-primary" : "bg-gray-300"
+                  currentStep > step.id ? "bg-orange-500" : "bg-gray-600"
                 }`}
                 style={{ marginTop: "-28px" }}
               ></div>
@@ -606,6 +606,7 @@ const ProgressBar = ({ currentStep, steps }) => {
 
 // Main App Component
 export default function TopicFormWizard() {
+  const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState(1);
   const [showSuccess, setShowSuccess] = useState(false);
   const [formData, setFormData] = useState({
@@ -618,10 +619,10 @@ export default function TopicFormWizard() {
   const [hadithList, setHadithList] = useState([]);
 
   const steps = [
-    { id: 1, name: "Topic Info", label: "Topic Info" },
-    { id: 2, name: "Aayaat", label: "Aayaat" },
-    { id: 3, name: "Hadith", label: "Hadith" },
-    { id: 4, name: "Review", label: "Review" },
+    { id: 1, name: "Topic Info", label: t("topic_info") },
+    { id: 2, name: "Aayaat", label: t("aayaat") },
+    { id: 3, name: "Hadith", label: t("hadith") },
+    { id: 4, name: "Review", label: t("review") },
   ];
 
   const handleNext = () => {
@@ -676,41 +677,41 @@ export default function TopicFormWizard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gray-900 p-8">
       <div className="max-w-6xl mx-auto">
         {/* Progress Bar */}
         <ProgressBar currentStep={currentStep} steps={steps} />
 
         {/* Dynamic Component Content */}
-        <div className="bg-white rounded-lg shadow-sm border-2 border-blue-400 p-8">
+        <div className="bg-gray-800 rounded-lg shadow-sm border-2 border-blue-500 p-8">
           {renderComponent()}
 
           {/* Navigation Buttons */}
-          <div className="flex justify-between items-center pt-6 mt-6 border-t">
+          <div className="flex justify-between items-center pt-6 mt-6 border-t border-gray-700">
             <button
               onClick={handleBack}
               disabled={currentStep === 1}
               className={`px-6 py-2 rounded-md font-medium ${
                 currentStep === 1
-                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  : "bg-gray-300 text-gray-700 hover:bg-gray-400"
+                  ? "bg-gray-700 text-gray-500 cursor-not-allowed"
+                  : "bg-gray-700 text-gray-200 hover:bg-gray-600"
               } transition`}
             >
-              Back
+              {t("back")}
             </button>
             {currentStep < 4 ? (
               <button
                 onClick={handleNext}
-                className="px-8 py-2 bg-primary text-white rounded-md font-medium hover:bg-orange-400 transition"
+                className="px-8 py-2 bg-orange-500 text-white rounded-md font-medium hover:bg-orange-600 transition"
               >
-                Next
+                {t("next")}
               </button>
             ) : (
               <button
                 onClick={handleSave}
-                className="px-8 py-2 bg-primary text-white rounded-md font-medium hover:bg-orange-400 transition"
+                className="px-8 py-2 bg-orange-500 text-white rounded-md font-medium hover:bg-orange-600 transition"
               >
-                Save
+                {t("save")}
               </button>
             )}
           </div>
@@ -718,33 +719,34 @@ export default function TopicFormWizard() {
 
         {/* Success Modal */}
         {showSuccess && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 relative">
+          <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+            <div className="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 relative border border-gray-700">
               <button
                 onClick={() => setShowSuccess(false)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-200"
               >
                 ✕
               </button>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                Topic Created Successfully!
+              <h3 className="text-xl font-semibold text-white mb-2">
+                {t("topic_created_success")}
               </h3>
-              <p className="text-gray-600 mb-6">
-                Total {ayaatList.length} Ayaats & {hadithList.length} Hadith
-                were added.
+              <p className="text-gray-400 mb-6">
+                {t("topic_created_message")
+                  .replace("{ayaatCount}", ayaatList.length)
+                  .replace("{hadithCount}", hadithList.length)}
               </p>
               <div className="flex gap-3 justify-end">
                 <button
                   onClick={() => setShowSuccess(false)}
-                  className="px-6 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition"
+                  className="px-6 py-2 border border-gray-600 rounded-md hover:bg-gray-700 transition text-gray-200"
                 >
-                  Close
+                  {t("close")}
                 </button>
                 <button
                   onClick={handleAddNew}
-                  className="px-6 py-2 bg-primary text-white rounded-md hover:bg-orange-400 transition"
+                  className="px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition"
                 >
-                  Add New Topic
+                  {t("add_new_topic")}
                 </button>
               </div>
             </div>
@@ -754,7 +756,7 @@ export default function TopicFormWizard() {
       <div className="flex justify-center mb-8 mt-6">
         <button
           onClick={() => window.history.back()}
-          className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 hover:border-primary transition-all duration-200 shadow-sm hover:shadow-md group"
+          className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-gray-200 bg-gray-800 border-2 border-gray-600 rounded-lg hover:bg-gray-700 hover:border-orange-500 transition-all duration-200 shadow-sm hover:shadow-md group"
         >
           <svg
             className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200"
@@ -769,7 +771,7 @@ export default function TopicFormWizard() {
               d="M15 19l-7-7 7-7"
             />
           </svg>
-          Back to Topics
+          {t("back_to_topics")}
         </button>
       </div>
     </div>
