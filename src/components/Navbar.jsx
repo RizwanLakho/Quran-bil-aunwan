@@ -151,10 +151,10 @@ export default function Navbar({ isMenuOpen, toggleMenu }) {
               />
             </button>
 
-            {/* Dropdown Menu */}
+            {/* Dropdown Menu - FIXED VERSION */}
             {isDropdownOpen && (
               <div
-                className={`absolute mt-3 w-48 rounded-2xl shadow-lg border overflow-hidden z-50 ${
+                className={`absolute mt-3 w-52 rounded-2xl shadow-lg border overflow-hidden z-50 ${
                   isRTL ? "left-0" : "right-0"
                 } ${
                   theme === "dark"
@@ -162,43 +162,61 @@ export default function Navbar({ isMenuOpen, toggleMenu }) {
                     : "bg-white border-gray-200 text-gray-700"
                 }`}
               >
+                {/* View Profile */}
                 <button
-                  className={`flex w-full items-center gap-2 px-4 py-3 hover:bg-hover transition-colors ${
-                    isRTL ? "flex-row-reverse" : ""
-                  }`}
+                  className={`flex w-full items-center gap-3 px-4 py-3 hover:bg-orange-50 transition-colors ${
+                    isRTL ? "flex-row-reverse text-right" : "text-left"
+                  } ${theme === "dark" ? "hover:bg-gray-700" : ""}`}
                 >
-                  <UserCircle2 size={18} className="text-primary" />
-                  <span className={isRTL ? "font-urdu" : ""}>
+                  <UserCircle2
+                    size={18}
+                    className="text-primary flex-shrink-0"
+                  />
+                  <span className={`flex-1 ${isRTL ? "font-urdu" : ""}`}>
                     {t("view_profile")}
                   </span>
                 </button>
+
+                {/* Edit Profile */}
                 <button
-                  className={`flex w-full items-center gap-2 px-4 py-3 hover:bg-hover transition-colors ${
-                    isRTL ? "flex-row-reverse" : ""
-                  }`}
+                  className={`flex w-full items-center gap-3 px-4 py-3 hover:bg-orange-50 transition-colors ${
+                    isRTL ? "flex-row-reverse text-right" : "text-left"
+                  } ${theme === "dark" ? "hover:bg-gray-700" : ""}`}
                 >
-                  <Edit3 size={18} className="text-primary" />
-                  <span className={isRTL ? "font-urdu" : ""}>
+                  <Edit3 size={18} className="text-primary flex-shrink-0" />
+                  <span className={`flex-1 ${isRTL ? "font-urdu" : ""}`}>
                     {t("edit_profile")}
                   </span>
                 </button>
+
+                {/* View History */}
                 <button
-                  className={`flex w-full items-center gap-2 px-4 py-3 hover:bg-hover transition-colors ${
-                    isRTL ? "flex-row-reverse" : ""
-                  }`}
+                  className={`flex w-full items-center gap-3 px-4 py-3 hover:bg-orange-50 transition-colors ${
+                    isRTL ? "flex-row-reverse text-right" : "text-left"
+                  } ${theme === "dark" ? "hover:bg-gray-700" : ""}`}
                 >
-                  <History size={18} className="text-primary" />
-                  <span className={isRTL ? "font-urdu" : ""}>
+                  <History size={18} className="text-primary flex-shrink-0" />
+                  <span className={`flex-1 ${isRTL ? "font-urdu" : ""}`}>
                     {t("view_history")}
                   </span>
                 </button>
-                <button
-                  className={`flex w-full items-center gap-2 px-4 py-3 text-red-500 hover:bg-hover transition-colors ${
-                    isRTL ? "flex-row-reverse" : ""
+
+                {/* Divider */}
+                <div
+                  className={`my-1 ${
+                    theme === "dark" ? "border-gray-700" : "border-gray-200"
                   }`}
+                  style={{ borderTopWidth: "1px" }}
+                ></div>
+
+                {/* Logout Button */}
+                <button
+                  className={`flex w-full items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 transition-colors ${
+                    isRTL ? "flex-row-reverse text-right" : "text-left"
+                  } ${theme === "dark" ? "hover:bg-gray-700" : ""}`}
                 >
-                  <LogOut size={18} />
-                  <span className={isRTL ? "font-urdu" : ""}>
+                  <LogOut size={18} className="flex-shrink-0" />
+                  <span className={`flex-1 ${isRTL ? "font-urdu" : ""}`}>
                     {t("logout")}
                   </span>
                 </button>

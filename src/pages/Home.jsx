@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useState, useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
@@ -14,6 +14,7 @@ export default function Home() {
   const { i18n } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
+  const location = useLocation();
 
   // Check if current language is RTL
   const isRTL = i18n.language === "ur";
@@ -28,6 +29,7 @@ export default function Home() {
   const toggleSettings = () => setShowSettings((prev) => !prev);
 
   const NAVBAR_HEIGHT = 84; // pixels
+  const isReadQuran = location.pathname.includes("read-quran");
 
   return (
     <div
@@ -55,7 +57,11 @@ export default function Home() {
         {/* Main Content */}
         <main className="flex flex-1 overflow-hidden">
           {/* Content Area */}
-          <div className="flex-1 overflow-hidden">
+          <div
+            className={`flex-1 transition-all duration-300 ${
+              isReadQuran ? "overflow-hidden" : "overflow-y-auto"
+            }`}
+          >
             <Routes>
               <Route path="/" element={<Navigate to="read-quran" replace />} />
               <Route path="read-quran" element={<QuranReadingPage />} />

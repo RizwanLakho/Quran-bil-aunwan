@@ -133,7 +133,9 @@ export default function Header({ isMenuOpen, toggleSettings }) {
             <LayoutGrid size={20} />
             {isMenuOpen && <span className="font-medium">{t("overview")}</span>}
             {!isMenuOpen && (
-              <span className="text-xs mt-1">{t("overview")}</span>
+              <span className={`text-xs mt-1 ${isRTL ? "font-urdu" : ""}`}>
+                {t("overview")}
+              </span>
             )}
           </button>
 
@@ -153,7 +155,11 @@ export default function Header({ isMenuOpen, toggleSettings }) {
             {isMenuOpen && (
               <span className="font-medium">{t("your_topics")}</span>
             )}
-            {!isMenuOpen && <span className="text-xs mt-1">{t("topics")}</span>}
+            {!isMenuOpen && (
+              <span className={`text-xs mt-1 ${isRTL ? "font-urdu" : ""}`}>
+                {t("topics")}
+              </span>
+            )}
           </NavLink>
 
           {/* Read Quran */}
@@ -172,7 +178,11 @@ export default function Header({ isMenuOpen, toggleSettings }) {
             {isMenuOpen && (
               <span className="font-medium">{t("read_quran")}</span>
             )}
-            {!isMenuOpen && <span className="text-xs mt-1">{t("quran")}</span>}
+            {!isMenuOpen && (
+              <span className={`text-xs mt-1 ${isRTL ? "font-urdu" : ""}`}>
+                {t("quran")}
+              </span>
+            )}
           </NavLink>
         </div>
 
@@ -259,7 +269,9 @@ export default function Header({ isMenuOpen, toggleSettings }) {
               title={t("quranic_topics")}
             >
               <FolderOpen size={20} />
-              <span className="text-xs mt-1">{t("topics")}</span>
+              <span className={`text-xs mt-1 ${isRTL ? "font-urdu" : ""}`}>
+                {t("topics")}
+              </span>
             </NavLink>
 
             {/* Hover Submenu */}
@@ -311,7 +323,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
         )}
 
         {/* Bottom Section - No Scroll */}
-        <div className="flex-shrink-0">
+        <div className="flex-shrink-0 mt-auto">
           <div className="my-4 border-t border-gray-200"></div>
 
           {/* History */}
@@ -324,7 +336,9 @@ export default function Header({ isMenuOpen, toggleSettings }) {
             <Clock size={20} className="text-primary" />
             {isMenuOpen && <span className="font-medium">{t("history")}</span>}
             {!isMenuOpen && (
-              <span className="text-xs mt-1">{t("history")}</span>
+              <span className={`text-xs mt-1 ${isRTL ? "font-urdu" : ""}`}>
+                {t("history")}
+              </span>
             )}
           </button>
 
@@ -337,7 +351,11 @@ export default function Header({ isMenuOpen, toggleSettings }) {
           >
             <Heart size={20} className="text-primary" />
             {isMenuOpen && <span className="font-medium">{t("liked")}</span>}
-            {!isMenuOpen && <span className="text-xs mt-1">{t("liked")}</span>}
+            {!isMenuOpen && (
+              <span className={`text-xs mt-1 ${isRTL ? "font-urdu" : ""}`}>
+                {t("liked")}
+              </span>
+            )}
           </button>
 
           {/* Favorites */}
@@ -352,7 +370,9 @@ export default function Header({ isMenuOpen, toggleSettings }) {
               <span className="font-medium">{t("favorites")}</span>
             )}
             {!isMenuOpen && (
-              <span className="text-xs mt-1">{t("favorites")}</span>
+              <span className={`text-xs mt-1 ${isRTL ? "font-urdu" : ""}`}>
+                {t("favorites")}
+              </span>
             )}
           </button>
 
@@ -369,52 +389,81 @@ export default function Header({ isMenuOpen, toggleSettings }) {
             <Settings size={20} className="text-primary" />
             {isMenuOpen && <span className="font-medium">{t("settings")}</span>}
             {!isMenuOpen && (
-              <span className="text-xs mt-1">{t("settings")}</span>
+              <span className={`text-xs mt-1 ${isRTL ? "font-urdu" : ""}`}>
+                {t("settings")}
+              </span>
             )}
           </button>
 
-          {/* Language Selector */}
-          <button
-            className={`w-full flex items-center justify-between px-4 py-2 text-gray-700
-              rounded-lg transition ${
-                !isMenuOpen ? "flex-col justify-center px-2" : ""
+          {/* Language Selector - FIXED VERSION */}
+          {isMenuOpen ? (
+            /* Full Width Language Selector - Expanded State */
+            <div
+              className={`w-full rounded-xl border p-3 transition-colors ${
+                theme === "dark"
+                  ? "bg-gray-700 border-gray-600"
+                  : "bg-orange-50 border-orange-200"
               }`}
-            title={!isMenuOpen ? t("language") : ""}
-          >
-            {isMenuOpen ? (
-              <>
-                {/* 🌐 Language Selector */}
-                <div className="mt-auto mb-3 mx-3 rounded-2xl border ">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg ml-2">🌐</span>
-                      <span
-                        className={`font-medium ${
-                          theme === "dark" ? "text-gray-200" : "text-gray-800"
-                        }`}
-                      >
-                        {t("language")}
-                      </span>
-                    </div>
-
-                    <select
-                      value={language}
-                      onChange={(e) => changeLanguage(e.target.value)}
-                      className="rounded-xl border p-1.5 m-2 text-sm font-medium outline-none transition-all duration-200"
-                    >
-                      <option value="en">🇬🇧 English</option>
-                      <option value="ur">🇵🇰 اردو</option>
-                    </select>
-                  </div>
+            >
+              <div
+                className={`flex items-center justify-between gap-3 ${
+                  isRTL ? "flex-row-reverse" : ""
+                }`}
+              >
+                <div
+                  className={`flex items-center gap-2 ${
+                    isRTL ? "flex-row-reverse" : ""
+                  }`}
+                >
+                  <Globe
+                    size={20}
+                    className={
+                      theme === "dark" ? "text-primary" : "text-primary"
+                    }
+                  />
+                  <span
+                    className={`font-medium text-sm ${
+                      isRTL ? "font-urdu" : ""
+                    } ${theme === "dark" ? "text-gray-200" : "text-gray-800"}`}
+                  >
+                    {t("language")}
+                  </span>
                 </div>
-              </>
-            ) : (
-              <>
-                <Globe size={20} className="text-gray-600" />
-                <span className="text-xs mt-1">{t("lang")}</span>
-              </>
-            )}
-          </button>
+
+                <select
+                  value={language}
+                  onChange={(e) => changeLanguage(e.target.value)}
+                  className={`rounded-lg px-3 py-1.5 text-sm font-medium outline-none cursor-pointer transition-all duration-200 ${
+                    isRTL ? "text-right font-urdu" : ""
+                  } ${
+                    theme === "dark"
+                      ? "bg-gray-800 text-white border border-gray-600 hover:bg-gray-600"
+                      : "bg-white text-gray-800 border border-gray-300 hover:bg-gray-50"
+                  }`}
+                >
+                  <option value="en">🇬🇧 English</option>
+                  <option value="ur">🇵🇰 اردو</option>
+                </select>
+              </div>
+            </div>
+          ) : (
+            /* Minimized State - Only Dropdown Button */
+            <div className="w-full px-2">
+              <select
+                value={language}
+                onChange={(e) => changeLanguage(e.target.value)}
+                className={`w-full rounded-lg px-2 py-2 text-xs font-medium outline-none cursor-pointer transition-all duration-200 text-center ${
+                  theme === "dark"
+                    ? "bg-gray-700 text-white border border-gray-600 hover:bg-gray-600"
+                    : "bg-orange-50 text-gray-800 border border-orange-200 hover:bg-orange-100"
+                }`}
+                title={t("language")}
+              >
+                <option value="en">🇬🇧 EN</option>
+                <option value="ur">🇵🇰 UR</option>
+              </select>
+            </div>
+          )}
         </div>
       </div>
 

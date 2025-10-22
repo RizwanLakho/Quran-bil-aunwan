@@ -139,19 +139,19 @@ export default function QuranReadingPage() {
         theme === "dark" ? "bg-gray-900 text-white" : "bg-orange-50"
       }`}
     >
-      <div className="max-w-7xl mx-auto w-full flex flex-col  h-full space-y-4 text-left">
+      <div className="max-w-7xl mx-auto w-full flex flex-col  h-full space-y-4 ">
         {/* Motivational Card - Fixed */}
         <div
-          className="relative rounded-2xl p-6 shadow-lg overflow-hidden flex-shrink-0 items-start "
+          className="relative rounded-2xl p-6 shadow-lg overflow-hidden flex-shrink-0 bg-primary "
           style={{
             backgroundImage: "url(/bg-1.jpg)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
+            backgroundSize: "contain",
+            backgroundPosition: isRTL ? "left" : "right",
             backgroundRepeat: "no-repeat",
           }}
         >
           {/* Dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/20"></div>
+          <div className="absolute inset-0 bg-primary/80"></div>
 
           {/* Content with relative positioning to stay above overlay */}
           <div className="relative z-10">
@@ -501,13 +501,6 @@ export default function QuranReadingPage() {
                     } ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}
                     size={16}
                   />
-                  <div
-                    className={`absolute -bottom-5 text-xs whitespace-nowrap ${
-                      isRTL ? "right-0 font-urdu" : "left-0"
-                    } ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}
-                  >
-                    {t("change_in_settings")}
-                  </div>
                 </div>
 
                 {/* Play Button */}
