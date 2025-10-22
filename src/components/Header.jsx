@@ -124,7 +124,8 @@ export default function Header({ isMenuOpen, toggleSettings }) {
         {/* Top Section - No Scroll */}
         <div className="flex-shrink-0">
           {/* Overview */}
-          <button
+          <NavLink
+            to="/home/overview"
             className={`w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-orange-50 rounded-lg transition ${
               !isMenuOpen ? "flex-col justify-center px-2" : ""
             }`}
@@ -137,7 +138,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                 {t("overview")}
               </span>
             )}
-          </button>
+          </NavLink>
 
           {/* Your Topics */}
           <NavLink

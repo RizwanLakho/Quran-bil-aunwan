@@ -8,6 +8,7 @@ import QuranSettingsPanel from "../components/QuranSettingsPanel";
 import QuranTopics from "../pages/QuranTopics";
 import QuranTopicDetail from "../pages/QuranTopicDetail";
 import { ThemeContext } from "../context/ThemeContext";
+import Overview from "./OverView";
 
 export default function Home() {
   const { theme } = useContext(ThemeContext);
@@ -65,6 +66,7 @@ export default function Home() {
             <Routes>
               <Route path="/" element={<Navigate to="read-quran" replace />} />
               <Route path="read-quran" element={<QuranReadingPage />} />
+              <Route path="overview" element={<Overview />} />
               <Route path="quran-topics" element={<QuranTopics />} />
               <Route
                 path="quran-topics/:subtopic"
