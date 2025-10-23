@@ -3,28 +3,36 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   ChevronLeft,
+  ChevronRight,
   Play,
   Heart,
   Share2,
   Bookmark,
   MoreVertical,
   Volume2,
+  ChevronDown,
 } from "lucide-react";
 import { ThemeContext } from "../context/ThemeContext";
 
 export default function QuranTopicDetail() {
-  const { subtopic } = useParams(); // Get the subtopic from URL
+  const { subtopic } = useParams();
   const navigate = useNavigate();
   const { theme } = useContext(ThemeContext);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
-  const [selectedVerse, setSelectedVerse] = useState(1);
+  const isRTL = i18n.language === "ur" || i18n.language === "ar";
+
+  const [selectedVerse, setSelectedVerse] = useState(2);
+  const [activeVerse, setActiveVerse] = useState(2);
   const [likedVerses, setLikedVerses] = useState(new Set());
   const [isPlaying, setIsPlaying] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isVerseDropdownOpen, setIsVerseDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const verseDropdownRef = useRef(null);
+  const verseRefs = useRef({});
 
-  // All available subtopics - same as in Header.jsx
+  // All available subtopics
   const allSubtopics = [
     {
       id: "names-of-allah",
@@ -180,11 +188,9 @@ export default function QuranTopicDetail() {
     },
   ];
 
-  // Find current subtopic data
   const currentSubtopicData =
     allSubtopics.find((s) => s.id === subtopic) || allSubtopics[0];
 
-  // Sample verses data (you can customize this based on the subtopic)
   const verses = [
     {
       id: 1,
@@ -228,6 +234,38 @@ export default function QuranTopicDetail() {
     },
   ];
 
+  const currentVerse = verses.find((v) => v.id === selectedVerse) || verses[1];
+
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: "-40% 0px -40% 0px",
+      threshold: 0.5,
+    };
+
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const verseId = parseInt(entry.target.dataset.verseId);
+          setActiveVerse(verseId);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions,
+    );
+
+    Object.values(verseRefs.current).forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   const toggleLike = (verseId) => {
     const newLiked = new Set(likedVerses);
     if (newLiked.has(verseId)) {
@@ -247,236 +285,306 @@ export default function QuranTopicDetail() {
     setIsDropdownOpen(false);
   };
 
+  const handleVerseChange = (verseId) => {
+    setSelectedVerse(verseId);
+    setActiveVerse(verseId);
+    setIsVerseDropdownOpen(false);
+
+    if (verseRefs.current[verseId]) {
+      verseRefs.current[verseId].scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  };
+
   const handleBackClick = () => {
     navigate("/home/quran-topics");
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
       }
+      if (
+        verseDropdownRef.current &&
+        !verseDropdownRef.current.contains(event.target)
+      ) {
+        setIsVerseDropdownOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
     <div
       className={`min-h-screen ${
-        theme === "dark" ? "bg-gray-900" : "bg-gray-50"
+        theme === "dark" ? "bg-gray-900" : "bg-orange-50"
       }`}
+      dir={isRTL ? "rtl" : "ltr"}
     >
-      {/* Header */}
+      {/* Header Section */}
       <div
-        className={`shadow-sm sticky top-0 z-10 ${
+        className={`sticky top-0 z-40 ${
           theme === "dark" ? "bg-gray-800" : "bg-white"
-        }`}
+        } shadow-sm`}
       >
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+        <div className="max-w-7xl mx-auto px-3 md:px-6 py-4 md:py-6">
+          <div className="flex flex-col space-y-3 md:space-y-4">
+            {/* Top Row - Back button and Title */}
+            <div className="flex items-center gap-3 md:gap-4">
               <button
                 onClick={handleBackClick}
-                className="p-2 rounded-full border border-orange-400 text-orange-500 hover:bg-orange-50"
+                className={`p-2 rounded-lg transition-all duration-200 ${
+                  theme === "dark"
+                    ? "hover:bg-gray-700 text-gray-300 hover:text-white active:bg-gray-600"
+                    : "hover:bg-orange-50 text-gray-600 hover:text-orange-600 active:bg-orange-100"
+                } shadow-sm hover:shadow`}
               >
-                <ChevronLeft className="w-5 h-5" />
+                {isRTL ? (
+                  <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+                ) : (
+                  <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+                )}
               </button>
 
-              {/* Subtopic Dropdown */}
-              <div className="relative" ref={dropdownRef}>
-                <button
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
-                    theme === "dark" ? "hover:bg-gray-700" : "hover:bg-gray-50"
+              <div className="flex-1 min-w-0">
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className={`flex items-center gap-2 group w-full md:w-auto ${
+                      theme === "dark"
+                        ? "text-white hover:text-orange-400"
+                        : "text-gray-800 hover:text-orange-500"
+                    } transition-colors ${isRTL ? "flex-row-reverse" : ""}`}
+                  >
+                    {isRTL ? (
+                      <span
+                        className="text-xl md:text-2xl font-bold flex-shrink-0"
+                        style={{ fontFamily: "indopak, sans-serif" }}
+                      >
+                        {currentSubtopicData.arabicName}
+                      </span>
+                    ) : (
+                      <h1 className="text-xl md:text-2xl font-bold truncate">
+                        {currentSubtopicData.titleEn}
+                      </h1>
+                    )}
+                    <ChevronDown
+                      className={`w-4 h-4 md:w-5 md:h-5 flex-shrink-0 transition-transform ${
+                        isDropdownOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+
+                  {isDropdownOpen && (
+                    <div
+                      className={`absolute top-full mt-2 w-full md:w-96 rounded-lg shadow-lg border py-2 max-h-96 overflow-y-auto z-50 ${
+                        theme === "dark"
+                          ? "bg-gray-800 border-gray-700"
+                          : "bg-white border-gray-200"
+                      } ${isRTL ? "right-0" : "left-0"}`}
+                    >
+                      {allSubtopics.map((sub) => (
+                        <button
+                          key={sub.id}
+                          onClick={() => handleSubtopicChange(sub.id)}
+                          className={`w-full px-4 py-3 text-${isRTL ? "right" : "left"} transition-colors ${
+                            subtopic === sub.id
+                              ? `bg-orange-50 ${isRTL ? "border-r-4" : "border-l-4"} border-orange-500`
+                              : theme === "dark"
+                                ? "hover:bg-gray-700"
+                                : "hover:bg-orange-50"
+                          }`}
+                        >
+                          <div
+                            className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""}`}
+                          >
+                            <div className="flex-1 min-w-0">
+                              <div
+                                className={`flex items-center gap-2 mb-1 ${isRTL ? "flex-row-reverse justify-end" : ""}`}
+                              >
+                                {isRTL ? (
+                                  <span
+                                    className={`text-base flex-shrink-0 ${
+                                      theme === "dark"
+                                        ? "text-white"
+                                        : "text-gray-800"
+                                    } font-medium`}
+                                    style={{
+                                      fontFamily: "indopak, sans-serif",
+                                    }}
+                                  >
+                                    {sub.arabicName}
+                                  </span>
+                                ) : (
+                                  <span
+                                    className={`font-medium truncate ${
+                                      theme === "dark"
+                                        ? "text-white"
+                                        : "text-gray-800"
+                                    }`}
+                                  >
+                                    {sub.titleEn}
+                                  </span>
+                                )}
+                              </div>
+                              <div
+                                className={`text-xs ${
+                                  theme === "dark"
+                                    ? "text-gray-500"
+                                    : "text-gray-500"
+                                }`}
+                              >
+                                <span>{sub.chapter}</span>
+                                <span className="mx-1">•</span>
+                                <span>{sub.totalAyats} Ayats</span>
+                                <span className="mx-1">•</span>
+                                <span>{sub.ahadith} Ahadith</span>
+                              </div>
+                            </div>
+                            {subtopic === sub.id && (
+                              <svg
+                                className={`w-5 h-5 text-orange-500 flex-shrink-0 ${isRTL ? "mr-2" : "ml-2"}`}
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            )}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div
+                  className={`text-xs md:text-sm mt-1 ${
+                    theme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}
                 >
-                  <div className="flex items-center gap-2">
-                    <h1
-                      className={`text-xl font-medium ${
-                        theme === "dark" ? "text-white" : "text-gray-800"
-                      }`}
-                    >
-                      {currentSubtopicData.titleEn}
-                    </h1>
-                    <span
-                      className={`text-lg ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-400"
-                      }`}
-                      style={{ fontFamily: "indopak, sans-serif" }}
-                    >
-                      {currentSubtopicData.arabicName}
-                    </span>
-                  </div>
-                  <svg
-                    className={`w-4 h-4 text-orange-500 transition-transform ${
-                      isDropdownOpen ? "rotate-180" : ""
+                  <span>{currentSubtopicData.chapter}</span>
+                  <span className="mx-1 md:mx-2">|</span>
+                  <span>{currentSubtopicData.totalAyats} Ayats</span>
+                  <span className="mx-1 md:mx-2">|</span>
+                  <span>{currentSubtopicData.ahadith} Ahadith</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons Row */}
+            <div
+              className={`flex items-center gap-2 md:gap-3 flex-wrap ${isRTL ? "flex-row-reverse" : ""}`}
+            >
+              <button
+                onClick={handlePlayPause}
+                className="px-4 md:px-6 py-2 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-full flex items-center gap-2 hover:from-orange-500 hover:to-orange-600 transition-all shadow-md hover:shadow-lg active:scale-95 text-sm md:text-base"
+              >
+                <Play className="w-4 h-4" fill="white" />
+                <span>Play Now</span>
+              </button>
+
+              <div className="relative" ref={verseDropdownRef}>
+                <button
+                  onClick={() => setIsVerseDropdownOpen(!isVerseDropdownOpen)}
+                  className={`px-3 md:px-4 py-2 border rounded-full text-orange-500 flex items-center gap-2 text-sm md:text-base transition-all shadow-sm hover:shadow ${
+                    theme === "dark"
+                      ? "border-gray-600 hover:bg-gray-700 bg-gray-800"
+                      : "border-orange-200 hover:bg-orange-50 bg-white"
+                  }`}
+                >
+                  <span>Verse {selectedVerse}</span>
+                  <ChevronDown
+                    className={`w-4 h-4 transition-transform ${
+                      isVerseDropdownOpen ? "rotate-180" : ""
                     }`}
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                  </svg>
+                  />
                 </button>
 
-                {/* Dropdown Menu */}
-                {isDropdownOpen && (
+                {isVerseDropdownOpen && (
                   <div
-                    className={`absolute top-full left-0 mt-2 w-96 rounded-lg shadow-lg border py-2 max-h-96 overflow-y-auto z-50 ${
+                    className={`absolute top-full mt-2 w-48 rounded-lg shadow-lg border py-2 max-h-60 overflow-y-auto z-50 ${
                       theme === "dark"
                         ? "bg-gray-800 border-gray-700"
                         : "bg-white border-gray-200"
-                    }`}
+                    } ${isRTL ? "right-0" : "left-0"}`}
                   >
-                    {allSubtopics.map((sub) => (
+                    {verses.map((verse) => (
                       <button
-                        key={sub.id}
-                        onClick={() => handleSubtopicChange(sub.id)}
-                        className={`w-full px-4 py-3 text-left transition-colors ${
-                          subtopic === sub.id
-                            ? "bg-orange-50 border-l-4 border-orange-500"
+                        key={verse.id}
+                        onClick={() => handleVerseChange(verse.id)}
+                        className={`w-full px-4 py-2 text-${isRTL ? "right" : "left"} transition-colors ${
+                          selectedVerse === verse.id
+                            ? "bg-orange-50 text-orange-600 font-medium"
                             : theme === "dark"
-                              ? "hover:bg-gray-700"
-                              : "hover:bg-orange-50"
+                              ? "text-gray-300 hover:bg-gray-700"
+                              : "text-gray-700 hover:bg-gray-50"
                         }`}
                       >
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span
-                                className={`font-medium ${
-                                  theme === "dark"
-                                    ? "text-white"
-                                    : "text-gray-800"
-                                }`}
-                              >
-                                {sub.titleEn}
-                              </span>
-                              <span
-                                className={`text-sm ${
-                                  theme === "dark"
-                                    ? "text-gray-400"
-                                    : "text-gray-400"
-                                }`}
-                                style={{ fontFamily: "indopak, sans-serif" }}
-                              >
-                                {sub.arabicName}
-                              </span>
-                            </div>
-                            <div
-                              className={`text-xs ${
-                                theme === "dark"
-                                  ? "text-gray-500"
-                                  : "text-gray-500"
-                              }`}
-                            >
-                              <span>{sub.chapter}</span>
-                              <span className="mx-1">•</span>
-                              <span>{sub.totalAyats} Ayats</span>
-                              <span className="mx-1">•</span>
-                              <span>{sub.ahadith} Ahadith</span>
-                            </div>
-                          </div>
-                          {subtopic === sub.id && (
-                            <svg
-                              className="w-5 h-5 text-orange-500 flex-shrink-0"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          )}
+                        <div
+                          className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""}`}
+                        >
+                          <span>Verse {verse.id}</span>
+                          <span className="text-xs text-gray-500">
+                            {verse.number}
+                          </span>
                         </div>
                       </button>
                     ))}
                   </div>
                 )}
               </div>
-
-              <div
-                className={`text-sm ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                <span>{currentSubtopicData.chapter}</span>
-                <span className="mx-2">|</span>
-                <span>{currentSubtopicData.totalAyats} Ayats</span>
-                <span className="mx-2">|</span>
-                <span>{currentSubtopicData.ahadith} Ahadith</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <button
-                onClick={handlePlayPause}
-                className="px-6 py-2 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-full flex items-center gap-2 hover:from-orange-500 hover:to-orange-600 transition-all"
-              >
-                <Play className="w-4 h-4" fill="white" />
-                <span>Play Now</span>
-              </button>
-
-              <button
-                className={`px-4 py-2 border rounded-full text-orange-500 flex items-center gap-2 ${
-                  theme === "dark"
-                    ? "border-gray-600 hover:bg-gray-700"
-                    : "border-gray-300 hover:bg-gray-50"
-                }`}
-              >
-                <span>Verse 2</span>
-                <svg
-                  className="w-4 h-4"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                </svg>
-              </button>
             </div>
           </div>
         </div>
       </div>
 
       {/* Verses */}
-      <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
+      <div className="max-w-4xl mx-auto px-3 md:px-4 py-4 md:py-6 space-y-3 md:space-y-4">
         {verses.map((verse) => (
           <div
             key={verse.id}
-            className={`rounded-lg shadow-sm border hover:shadow-md transition-shadow ${
-              verse.id === 2
-                ? "border-orange-300"
+            ref={(el) => (verseRefs.current[verse.id] = el)}
+            data-verse-id={verse.id}
+            className={`rounded-xl shadow-sm border hover:shadow-lg transition-all duration-200 ${
+              verse.id === selectedVerse
+                ? "border-orange-400 ring-2 ring-orange-200"
                 : theme === "dark"
                   ? "border-gray-700"
                   : "border-gray-200"
             } ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}
           >
-            {/* Audio Label for specific verses */}
-            {verse.audioLabel && (
-              <div className="bg-gradient-to-r from-orange-400 to-orange-500 text-white px-4 py-2 rounded-t-lg flex items-center justify-end gap-2">
-                <span className="text-sm">{verse.audioLabel}</span>
-                <Volume2 className="w-4 h-4" />
+            {verse.id === activeVerse && (
+              <div
+                className={`bg-gradient-to-r from-orange-400 to-orange-500 text-white px-3 md:px-4 py-2 rounded-t-xl flex items-center gap-2 ${isRTL ? "flex-row-reverse justify-start" : "justify-end"}`}
+              >
+                <span className="text-xs md:text-sm font-medium">
+                  {verse.audioLabel || "Currently Reading"}
+                </span>
+                <Volume2 className="w-3 h-3 md:w-4 md:h-4" />
               </div>
             )}
 
-            <div className="p-6">
-              {/* Verse Number */}
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-orange-500 font-medium">
+            <div className="p-4 md:p-6">
+              <div
+                className={`flex items-center gap-2 mb-3 md:mb-4 ${isRTL ? "flex-row-reverse" : ""}`}
+              >
+                <span className="text-orange-500 font-semibold text-sm md:text-base bg-orange-50 px-2 py-1 rounded">
                   {verse.number}
                 </span>
               </div>
 
-              {/* Arabic Text */}
-              <div className="text-right mb-4">
+              <div className="text-right mb-3 md:mb-4">
                 <p
-                  className={`text-2xl leading-loose ${
+                  className={`text-xl md:text-2xl leading-loose ${
                     theme === "dark" ? "text-white" : "text-gray-800"
                   }`}
                   style={{ fontFamily: "indopak, sans-serif" }}
@@ -485,86 +593,104 @@ export default function QuranTopicDetail() {
                 </p>
               </div>
 
-              {/* English Translation */}
-              <div className="mb-4">
+              <div
+                className={`mb-3 md:mb-4 ${isRTL ? "text-right" : "text-left"}`}
+              >
                 <p
-                  className={
+                  className={`text-sm md:text-base leading-relaxed ${
                     theme === "dark" ? "text-gray-300" : "text-gray-700"
-                  }
+                  }`}
                 >
                   {verse.english}
                 </p>
               </div>
 
-              {/* Action Buttons */}
               <div
-                className={`flex items-center gap-4 pt-2 border-t ${
+                className={`flex items-center gap-2 md:gap-4 pt-3 border-t ${
                   theme === "dark" ? "border-gray-700" : "border-gray-100"
-                }`}
+                } ${isRTL ? "flex-row-reverse" : ""}`}
               >
                 <button
-                  className={`p-2 rounded-lg transition-colors ${
-                    theme === "dark" ? "hover:bg-gray-700" : "hover:bg-gray-100"
+                  className={`p-2 rounded-lg transition-all duration-200 ${
+                    theme === "dark"
+                      ? "hover:bg-gray-700 active:bg-gray-600"
+                      : "hover:bg-orange-50 active:bg-orange-100"
                   }`}
                   onClick={() => setIsPlaying(!isPlaying)}
                 >
                   <Play
-                    className={`w-5 h-5 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
-                    }`}
+                    className={`w-4 h-4 md:w-5 md:h-5 ${
+                      theme === "dark"
+                        ? "text-gray-400 hover:text-orange-400"
+                        : "text-gray-500 hover:text-orange-500"
+                    } transition-colors`}
                   />
                 </button>
 
                 <button
-                  className={`p-2 rounded-lg transition-colors ${
-                    theme === "dark" ? "hover:bg-gray-700" : "hover:bg-gray-100"
+                  className={`p-2 rounded-lg transition-all duration-200 ${
+                    theme === "dark"
+                      ? "hover:bg-gray-700 active:bg-gray-600"
+                      : "hover:bg-orange-50 active:bg-orange-100"
                   }`}
                   onClick={() => toggleLike(verse.id)}
                 >
                   <Heart
-                    className={`w-5 h-5 ${
+                    className={`w-4 h-4 md:w-5 md:h-5 transition-all ${
                       likedVerses.has(verse.id)
-                        ? "text-red-500 fill-red-500"
+                        ? "text-red-500 fill-red-500 scale-110"
                         : theme === "dark"
-                          ? "text-gray-400"
-                          : "text-gray-500"
+                          ? "text-gray-400 hover:text-red-400"
+                          : "text-gray-500 hover:text-red-500"
                     }`}
                   />
                 </button>
 
                 <button
-                  className={`p-2 rounded-lg transition-colors ${
-                    theme === "dark" ? "hover:bg-gray-700" : "hover:bg-gray-100"
+                  className={`p-2 rounded-lg transition-all duration-200 ${
+                    theme === "dark"
+                      ? "hover:bg-gray-700 active:bg-gray-600"
+                      : "hover:bg-orange-50 active:bg-orange-100"
                   }`}
                 >
                   <Share2
-                    className={`w-5 h-5 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
-                    }`}
+                    className={`w-4 h-4 md:w-5 md:h-5 ${
+                      theme === "dark"
+                        ? "text-gray-400 hover:text-orange-400"
+                        : "text-gray-500 hover:text-orange-500"
+                    } transition-colors`}
                   />
                 </button>
 
                 <button
-                  className={`p-2 rounded-lg transition-colors ${
-                    theme === "dark" ? "hover:bg-gray-700" : "hover:bg-gray-100"
+                  className={`p-2 rounded-lg transition-all duration-200 ${
+                    theme === "dark"
+                      ? "hover:bg-gray-700 active:bg-gray-600"
+                      : "hover:bg-orange-50 active:bg-orange-100"
                   }`}
                 >
                   <Bookmark
-                    className={`w-5 h-5 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
-                    }`}
+                    className={`w-4 h-4 md:w-5 md:h-5 ${
+                      theme === "dark"
+                        ? "text-gray-400 hover:text-orange-400"
+                        : "text-gray-500 hover:text-orange-500"
+                    } transition-colors`}
                   />
                 </button>
 
                 <button
-                  className={`p-2 rounded-lg transition-colors ${
-                    theme === "dark" ? "hover:bg-gray-700" : "hover:bg-gray-100"
+                  className={`p-2 rounded-lg transition-all duration-200 ${
+                    theme === "dark"
+                      ? "hover:bg-gray-700 active:bg-gray-600"
+                      : "hover:bg-orange-50 active:bg-orange-100"
                   }`}
                 >
                   <MoreVertical
-                    className={`w-5 h-5 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
-                    }`}
+                    className={`w-4 h-4 md:w-5 md:h-5 ${
+                      theme === "dark"
+                        ? "text-gray-400 hover:text-orange-400"
+                        : "text-gray-500 hover:text-orange-500"
+                    } transition-colors`}
                   />
                 </button>
               </div>

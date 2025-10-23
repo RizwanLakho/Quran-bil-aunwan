@@ -135,14 +135,14 @@ export default function QuranReadingPage() {
 
   return (
     <div
-      className={`h-full flex flex-col p-4 transition-colors duration-300 ${
+      className={`h-full flex flex-col p-2 md:p-4 transition-colors duration-300 ${
         theme === "dark" ? "bg-gray-900 text-white" : "bg-orange-50"
       }`}
     >
-      <div className="max-w-7xl mx-auto w-full flex flex-col  h-full space-y-4 ">
-        {/* Motivational Card - Fixed */}
+      <div className="max-w-7xl mx-auto w-full flex flex-col h-full space-y-2 md:space-y-4">
+        {/* Motivational Card - Hidden on mobile, visible on desktop */}
         <div
-          className="relative rounded-2xl p-6 shadow-lg overflow-hidden flex-shrink-0 bg-primary "
+          className="hidden md:block relative rounded-2xl p-6 shadow-lg overflow-hidden flex-shrink-0 bg-primary"
           style={{
             backgroundImage: "url(/bg-1.jpg)",
             backgroundSize: "contain",
@@ -200,30 +200,26 @@ export default function QuranReadingPage() {
           </div>
         </div>
 
-        {/* Reading Card - Flexible with internal scroll */}
+        {/* Reading Card - Full height on mobile, flexible on desktop */}
         <div
-          className={`rounded-2xl shadow-lg transition-colors duration-300 flex flex-col flex-1 overflow-hidden ${
+          className={`rounded-xl md:rounded-2xl shadow-lg transition-colors duration-300 flex flex-col flex-1 overflow-hidden ${
             theme === "dark" ? "bg-gray-800" : "bg-white"
           }`}
         >
           {/* Dropdowns - Fixed Header */}
           <div
-            className={`flex items-center justify-between px-6 py-4 flex-wrap gap-3 flex-shrink-0 ${
-              isRTL ? "flex-row-reverse" : ""
-            }`}
+            className={`flex items-center justify-between px-3 md:px-6 py-3 md:py-4 flex-wrap gap-2 md:gap-3 flex-shrink-0 border-b ${
+              theme === "dark" ? "border-gray-700" : "border-gray-100"
+            } ${isRTL ? "flex-row-reverse" : ""}`}
           >
             {/* Surah Selector with Headless UI */}
-            <Listbox
-              value={selectedSurah}
-              onChange={(value) => {
-                setSelectedSurah(value);
-                setSelectedAyah("1");
-              }}
-            >
-              <div className="relative">
+            <Listbox value={selectedSurah} onChange={setSelectedSurah}>
+              <div className="relative flex-1 min-w-[140px] md:min-w-0 md:flex-none">
                 <Listbox.Button
-                  className={`relative border-2 rounded-xl px-4 py-2.5 font-medium focus:outline-none focus:border-primary cursor-pointer transition-colors ${
-                    isRTL ? "pr-4 pl-10 text-right" : "pr-10 pl-4"
+                  className={`relative w-full md:w-auto border-2 rounded-lg md:rounded-xl px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base font-medium focus:outline-none focus:border-primary cursor-pointer transition-colors ${
+                    isRTL
+                      ? "pr-3 md:pr-4 pl-8 md:pl-10 text-right"
+                      : "pr-8 md:pr-10 pl-3 md:pl-4"
                   } ${
                     theme === "dark"
                       ? "bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
@@ -236,20 +232,20 @@ export default function QuranReadingPage() {
                   </span>
                   <span
                     className={`absolute inset-y-0 flex items-center pointer-events-none ${
-                      isRTL ? "left-0 pl-3" : "right-0 pr-3"
+                      isRTL ? "left-0 pl-2 md:pl-3" : "right-0 pr-2 md:pr-3"
                     }`}
                   >
                     <ChevronDown
                       className={
                         theme === "dark" ? "text-gray-400" : "text-gray-500"
                       }
-                      size={18}
+                      size={16}
                     />
                   </span>
                 </Listbox.Button>
 
                 <Listbox.Options
-                  className={`absolute mt-1 max-h-60 w-full overflow-auto rounded-xl shadow-lg z-50 scrollbar-hide border-2 ${
+                  className={`absolute mt-1 max-h-60 w-full overflow-auto rounded-lg md:rounded-xl shadow-lg z-50 scrollbar-hide border-2 ${
                     theme === "dark"
                       ? "bg-gray-700 border-gray-600"
                       : "bg-white border-gray-200"
@@ -260,7 +256,7 @@ export default function QuranReadingPage() {
                       key={surah.number}
                       value={surah.number}
                       className={({ active, selected }) =>
-                        `relative cursor-pointer select-none py-2.5 px-4 transition-colors ${
+                        `relative cursor-pointer select-none py-2 md:py-2.5 px-3 md:px-4 transition-colors text-sm md:text-base ${
                           active || selected
                             ? "bg-primary text-white"
                             : theme === "dark"
@@ -290,15 +286,12 @@ export default function QuranReadingPage() {
               </div>
             </Listbox>
 
-            {/* Surah Title */}
-            <div className="text-center">
-              <h3 className="text-primary text-2xl font-bold font-arabic">
-                {currentSurah.nameArabic}
-              </h3>
+            {/* Surah Title - Hidden on mobile */}
+            <div className="hidden md:block flex-1 text-center">
               <p
-                className={`text-sm ${isRTL ? "font-urdu" : ""} ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-500"
-                }`}
+                className={`text-2xl font-bold ${
+                  theme === "dark" ? "text-primary" : "text-primary"
+                } ${isRTL ? "font-urdu" : ""}`}
               >
                 {isRTL ? currentSurah.nameUrdu : currentSurah.nameEnglish}
               </p>
@@ -306,10 +299,12 @@ export default function QuranReadingPage() {
 
             {/* Ayah Selector with Headless UI */}
             <Listbox value={selectedAyah} onChange={setSelectedAyah}>
-              <div className="relative">
+              <div className="relative flex-1 min-w-[100px] md:min-w-0 md:flex-none">
                 <Listbox.Button
-                  className={`relative border-2 rounded-xl px-4 py-2.5 font-medium focus:outline-none focus:border-primary cursor-pointer transition-colors ${
-                    isRTL ? "pr-4 pl-10 text-right" : "pr-10 pl-4"
+                  className={`relative w-full md:w-auto border-2 rounded-lg md:rounded-xl px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base font-medium focus:outline-none focus:border-primary cursor-pointer transition-colors ${
+                    isRTL
+                      ? "pr-3 md:pr-4 pl-8 md:pl-10 text-right"
+                      : "pr-8 md:pr-10 pl-3 md:pl-4"
                   } ${
                     theme === "dark"
                       ? "bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
@@ -321,20 +316,20 @@ export default function QuranReadingPage() {
                   </span>
                   <span
                     className={`absolute inset-y-0 flex items-center pointer-events-none ${
-                      isRTL ? "left-0 pl-3" : "right-0 pr-3"
+                      isRTL ? "left-0 pl-2 md:pl-3" : "right-0 pr-2 md:pr-3"
                     }`}
                   >
                     <ChevronDown
                       className={
                         theme === "dark" ? "text-gray-400" : "text-gray-500"
                       }
-                      size={18}
+                      size={16}
                     />
                   </span>
                 </Listbox.Button>
 
                 <Listbox.Options
-                  className={`absolute mt-1 max-h-60 w-full overflow-auto rounded-xl shadow-lg z-50 scrollbar-hide border-2 ${
+                  className={`absolute mt-1 max-h-60 w-full overflow-auto rounded-lg md:rounded-xl shadow-lg z-50 scrollbar-hide border-2 ${
                     theme === "dark"
                       ? "bg-gray-700 border-gray-600"
                       : "bg-white border-gray-200"
@@ -345,7 +340,7 @@ export default function QuranReadingPage() {
                       key={ayah.value}
                       value={ayah.value}
                       className={({ active, selected }) =>
-                        `relative cursor-pointer select-none py-2.5 px-4 transition-colors ${
+                        `relative cursor-pointer select-none py-2 md:py-2.5 px-3 md:px-4 transition-colors text-sm md:text-base ${
                           active || selected
                             ? "bg-primary text-white"
                             : theme === "dark"
@@ -375,27 +370,30 @@ export default function QuranReadingPage() {
             </Listbox>
           </div>
 
-          {/* Scrollable Content Area */}
-          <div className="flex-1 overflow-y-auto px-6 pb-4">
+          {/* Scrollable Content Area - Optimized for mobile */}
+          <div className="flex-1 overflow-y-auto px-3 md:px-6 py-3 md:pb-4">
             {/* Bismillah */}
-            <div className="text-center mb-6">
+            <div className="text-center mb-4 md:mb-6">
               <p
                 className={`${getFontClass()} ${
                   theme === "dark" ? "text-primary" : "text-primary"
                 }`}
-                style={{ fontSize: `${arabicSize}px` }}
+                style={{ fontSize: `${Math.max(20, arabicSize - 4)}px` }}
               >
                 بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
               </p>
             </div>
 
-            {/* Arabic Text */}
-            <div className="text-right leading-loose mb-6 space-y-4">
+            {/* Arabic Text - Better mobile sizing */}
+            <div className="text-right leading-loose mb-4 md:mb-6 space-y-3 md:space-y-4">
               <p
                 className={`${getFontClass()} ${
                   theme === "dark" ? "text-gray-200" : "text-gray-800"
                 }`}
-                style={{ fontSize: `${arabicSize}px` }}
+                style={{
+                  fontSize: `${Math.max(18, arabicSize - 2)}px`,
+                  lineHeight: "1.8",
+                }}
               >
                 الم ۝ ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى
                 لِّلْمُتَّقِينَ ۝ الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ وَيُقِيمُونَ
@@ -408,7 +406,10 @@ export default function QuranReadingPage() {
                 className={`${getFontClass()} ${
                   theme === "dark" ? "text-gray-200" : "text-gray-800"
                 }`}
-                style={{ fontSize: `${arabicSize}px`, lineHeight: "2" }}
+                style={{
+                  fontSize: `${Math.max(18, arabicSize - 2)}px`,
+                  lineHeight: "1.8",
+                }}
               >
                 إِنَّ الَّذِينَ كَفَرُوا سَوَاءٌ عَلَيْهِمْ أَأَنذَرْتَهُمْ أَمْ
                 لَمْ تُنذِرْهُمْ لَا يُؤْمِنُونَ ۝ خَتَمَ اللَّهُ عَلَىٰ
@@ -421,7 +422,10 @@ export default function QuranReadingPage() {
                 className={`${getFontClass()} ${
                   theme === "dark" ? "text-gray-200" : "text-gray-800"
                 }`}
-                style={{ fontSize: `${arabicSize}px`, lineHeight: "2" }}
+                style={{
+                  fontSize: `${Math.max(18, arabicSize - 2)}px`,
+                  lineHeight: "1.8",
+                }}
               >
                 يُخَادِعُونَ اللَّهَ وَالَّذِينَ آمَنُوا وَمَا يَخْدَعُونَ
                 إِلَّا أَنفُسَهُمْ وَمَا يَشْعُرُونَ ۝ فِي قُلُوبِهِم مَّرَضٌ
@@ -430,14 +434,14 @@ export default function QuranReadingPage() {
               </p>
             </div>
 
-            {/* Translation Section */}
+            {/* Translation Section - Better mobile sizing */}
             <div
-              className={`mb-6 p-4 rounded-xl ${
+              className={`mb-4 md:mb-6 p-3 md:p-4 rounded-lg md:rounded-xl ${
                 theme === "dark" ? "bg-gray-700/50" : "bg-gray-50"
               }`}
             >
               <h4
-                className={`font-bold mb-2 ${isRTL ? "font-urdu text-right" : ""} ${
+                className={`font-bold mb-2 text-sm md:text-base ${isRTL ? "font-urdu text-right" : ""} ${
                   theme === "dark" ? "text-primary" : "text-primary"
                 }`}
               >
@@ -447,46 +451,48 @@ export default function QuranReadingPage() {
                 className={`leading-relaxed ${isRTL ? "text-right" : ""} ${
                   theme === "dark" ? "text-gray-300" : "text-gray-700"
                 }`}
-                style={{ fontSize: `${translatorSize}px` }}
+                style={{ fontSize: `${Math.max(14, translatorSize - 2)}px` }}
               >
                 {getTranslation()}
               </p>
             </div>
           </div>
 
-          {/* Fixed Footer with Controls */}
+          {/* Fixed Footer with Controls - Mobile optimized */}
           <div
-            className={`flex-shrink-0 border-t px-6 py-4 ${
+            className={`flex-shrink-0 border-t px-3 md:px-6 py-3 md:py-4 ${
               theme === "dark" ? "border-gray-700" : "border-gray-200"
             }`}
           >
             {/* Bottom Controls */}
             <div
-              className={`flex items-center justify-between flex-wrap gap-3 ${
+              className={`flex items-center justify-between flex-wrap gap-2 md:gap-3 ${
                 isRTL ? "flex-row-reverse" : ""
               }`}
             >
               {/* Continue Reading Button */}
               <button
-                className={`flex items-center gap-2 bg-primary hover:bg-orange-500 text-white font-medium px-6 py-3 rounded-xl transition-colors shadow-md ${
+                className={`flex items-center gap-2 bg-primary hover:bg-orange-500 text-white font-medium px-4 md:px-6 py-2 md:py-3 text-sm md:text-base rounded-lg md:rounded-xl transition-colors shadow-md ${
                   isRTL ? "flex-row-reverse font-urdu" : ""
                 }`}
               >
-                <BookOpen size={20} />
+                <BookOpen size={18} className="md:w-5 md:h-5" />
                 <span>{t("continue_reading")}</span>
               </button>
 
               {/* Audio Controls */}
               <div
-                className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}
+                className={`flex items-center gap-2 md:gap-3 ${isRTL ? "flex-row-reverse" : ""}`}
               >
-                {/* Reciter Selector */}
-                <div className="relative">
+                {/* Reciter Selector - Hidden on smallest mobile */}
+                <div className="hidden sm:block relative">
                   <select
                     value={reciter}
                     disabled
-                    className={`appearance-none border-2 rounded-xl px-4 py-2.5 font-medium text-sm focus:outline-none cursor-not-allowed transition-colors ${
-                      isRTL ? "pr-4 pl-10 text-right" : "pr-10 pl-4"
+                    className={`appearance-none border-2 rounded-lg md:rounded-xl px-3 md:px-4 py-2 md:py-2.5 font-medium text-xs md:text-sm focus:outline-none cursor-not-allowed transition-colors ${
+                      isRTL
+                        ? "pr-3 md:pr-4 pl-7 md:pl-10 text-right"
+                        : "pr-7 md:pr-10 pl-3 md:pl-4"
                     } ${
                       theme === "dark"
                         ? "bg-gray-700 border-gray-600 text-white opacity-75"
@@ -497,15 +503,15 @@ export default function QuranReadingPage() {
                   </select>
                   <ChevronDown
                     className={`absolute top-1/2 -translate-y-1/2 pointer-events-none ${
-                      isRTL ? "left-3" : "right-3"
+                      isRTL ? "left-2 md:left-3" : "right-2 md:right-3"
                     } ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}
-                    size={16}
+                    size={14}
                   />
                 </div>
 
                 {/* Play Button */}
-                <button className="bg-primary hover:bg-orange-500 text-white p-3 rounded-full transition-colors shadow-md">
-                  <Play size={20} fill="white" />
+                <button className="bg-primary hover:bg-orange-500 text-white p-2.5 md:p-3 rounded-full transition-colors shadow-md">
+                  <Play size={18} className="md:w-5 md:h-5" fill="white" />
                 </button>
               </div>
             </div>

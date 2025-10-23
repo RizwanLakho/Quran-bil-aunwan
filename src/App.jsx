@@ -28,6 +28,7 @@ export default function App() {
 
   return (
     <div>
+      {/* Desktop/Tablet View - Hidden on mobile */}
       <div className="block">
         <Routes>
           {/* If not logged in, show login/signup */}
@@ -46,7 +47,9 @@ export default function App() {
           )}
         </Routes>
       </div>
-      <div className=" md:hidden min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 p-6 flex items-center justify-center">
+
+      {/* Mobile View - Download Prompt */}
+      <div className="hidden min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 p-6  items-center justify-center">
         <div className="max-w-md w-full">
           {/* Main Card */}
           <div

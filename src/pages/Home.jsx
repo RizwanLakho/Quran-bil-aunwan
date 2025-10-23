@@ -26,10 +26,18 @@ export default function Home() {
     document.documentElement.lang = i18n.language;
   }, [isRTL, i18n.language]);
 
+  // Close menu on mobile after navigation
+  useEffect(() => {
+    if (window.innerWidth < 768) {
+      setIsMenuOpen(false);
+    }
+  }, [location.pathname]);
+
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
   const toggleSettings = () => setShowSettings((prev) => !prev);
 
-  const NAVBAR_HEIGHT = 84; // pixels
+  const NAVBAR_HEIGHT = 84; // pixels for desktop
+  const NAVBAR_HEIGHT_MOBILE = 120; // pixels for mobile (includes search bar)
   const isReadQuran = location.pathname.includes("read-quran");
 
   return (
@@ -40,18 +48,28 @@ export default function Home() {
       dir={isRTL ? "rtl" : "ltr"}
     >
       {/* Navbar on Top */}
-      <div style={{ height: `${NAVBAR_HEIGHT}px` }}>
+      <div
+        className="flex-shrink-0"
+        style={{
+          height:
+            window.innerWidth < 768
+              ? `${NAVBAR_HEIGHT_MOBILE}px`
+              : `${NAVBAR_HEIGHT}px`,
+        }}
+      >
         <Navbar isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
       </div>
 
       {/* Main Section: Sidebar + Content + Settings */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar - Position changes based on language */}
+        {/* Sidebar - Hidden on mobile unless menu is open */}
         <Header
           isMenuOpen={isMenuOpen}
           toggleSettings={toggleSettings}
           style={{
-            height: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
+            height: `calc(100vh - ${
+              window.innerWidth < 768 ? NAVBAR_HEIGHT_MOBILE : NAVBAR_HEIGHT
+            }px)`,
           }}
         />
 
@@ -75,24 +93,62 @@ export default function Home() {
             </Routes>
           </div>
 
-          {/* Settings Panel - Always on the opposite side of header */}
+          {/* Settings Panel - Desktop: Side panel, Mobile: Modal */}
           {showSettings && (
-            <aside
-              className={`w-96 flex-shrink-0 flex flex-col transition-colors duration-300 ${
-                isRTL ? "border-r" : "border-l"
-              } ${
-                theme === "dark"
-                  ? "border-gray-700 bg-gray-900"
-                  : "border-orange-200 bg-white"
-              }`}
-            >
-              <div className="flex-1 overflow-y-auto p-4">
-                <QuranSettingsPanel />
+            <>
+              {/* Desktop Settings Panel */}
+              <aside
+                className={`hidden md:flex w-96 flex-shrink-0 flex-col transition-colors duration-300 ${
+                  isRTL ? "border-r" : "border-l"
+                } ${
+                  theme === "dark"
+                    ? "border-gray-700 bg-gray-900"
+                    : "border-orange-200 bg-white"
+                }`}
+              >
+                <div className="flex-1 overflow-y-auto p-4">
+                  <QuranSettingsPanel />
+                </div>
+              </aside>
+
+              {/* Mobile Settings Modal */}
+              <div className="md:hidden fixed inset-0 z-50 flex items-end">
+                {/* Backdrop */}
+                <div
+                  className="absolute inset-0 bg-black bg-opacity-50"
+                  onClick={toggleSettings}
+                ></div>
+
+                {/* Modal Content */}
+                <div
+                  className={`relative w-full max-h-[85vh] overflow-y-auto rounded-t-3xl ${
+                    theme === "dark" ? "bg-gray-900" : "bg-white"
+                  } animate-slide-up`}
+                >
+                  <div className="p-4">
+                    <QuranSettingsPanel />
+                  </div>
+                </div>
               </div>
-            </aside>
+            </>
           )}
         </main>
       </div>
+
+      {/* Add animation for mobile modal */}
+      <style jsx>{`
+        @keyframes slide-up {
+          from {
+            transform: translateY(100%);
+          }
+          to {
+            transform: translateY(0);
+          }
+        }
+        .animate-slide-up {
+          animation: slide-up 0.3s ease-out;
+        }
+      `}</style>
     </div>
   );
 }
