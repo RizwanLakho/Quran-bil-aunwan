@@ -333,7 +333,7 @@ export default function QuranTopicDetail() {
         } shadow-sm`}
       >
         <div className="max-w-7xl mx-auto px-3 md:px-6 py-4 md:py-6">
-          <div className="flex flex-col space-y-3 md:space-y-4">
+          <div className=" flex justify-between space-y-3 md:space-y-4 ">
             {/* Top Row - Back button and Title */}
             <div className="flex items-center gap-3 md:gap-4">
               <button
