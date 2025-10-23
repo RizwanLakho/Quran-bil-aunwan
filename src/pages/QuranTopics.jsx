@@ -1,21 +1,152 @@
-import { React, useContext } from "react";
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
-import { FontContext } from "../context/FontContext";
-import { TranslationContext } from "../context/TranslationContext";
+import { useTranslation } from "react-i18next";
 
 export default function QuranTopics() {
   const { theme } = useContext(ThemeContext);
+  const { t } = useTranslation();
+  const navigate = useNavigate();
 
+  // All subtopics with their data
   const topicCards = [
     {
-      title: "ALLAH",
-      description: "Short Description......",
-      ayaat: "34 Aayaat",
-      ahadith: "20 Ahadith",
+      id: "names-of-allah",
+      title: t("names_of_allah"),
+      titleEn: "Names of Allah",
+      arabicName: "أسماء الله",
+      description: "The beautiful names and attributes of Allah",
+      chapter: "Tawheed",
+      totalAyats: 34,
+      ahadith: 20,
+      progress: 45,
     },
-    // Additional cards will be empty placeholders
-    ...Array(11).fill({ empty: true }),
+    {
+      id: "Attributes",
+      title: t("attributes"),
+      titleEn: "Attributes",
+      arabicName: "صفات الله",
+      description: "Divine attributes and characteristics",
+      chapter: "Aqeedah",
+      totalAyats: 28,
+      ahadith: 15,
+      progress: 60,
+    },
+    {
+      id: "Worship",
+      title: t("worship"),
+      titleEn: "Worship",
+      arabicName: "العبادة",
+      description: "Understanding worship and devotion",
+      chapter: "Ibadat",
+      totalAyats: 42,
+      ahadith: 25,
+      progress: 30,
+    },
+    {
+      id: "prophets",
+      title: t("prophets"),
+      titleEn: "Prophets",
+      arabicName: "الأنبياء",
+      description: "Stories and lessons from the prophets",
+      chapter: "Nabuwat",
+      totalAyats: 56,
+      ahadith: 30,
+      progress: 75,
+    },
+    {
+      id: "prophet-muhammad",
+      title: t("prophet_muhammad"),
+      titleEn: "Prophet Muhammad",
+      arabicName: "النبي محمد",
+      description: "Life and teachings of Prophet Muhammad (PBUH)",
+      chapter: "Sirah",
+      totalAyats: 48,
+      ahadith: 40,
+      progress: 50,
+    },
+    {
+      id: "revelation",
+      title: t("revelation"),
+      titleEn: "Revelation",
+      arabicName: "الوحي",
+      description: "Divine revelation and guidance",
+      chapter: "Wahy",
+      totalAyats: 32,
+      ahadith: 18,
+      progress: 40,
+    },
+    {
+      id: "miracles",
+      title: t("miracles"),
+      titleEn: "Miracles",
+      arabicName: "المعجزات",
+      description: "Miracles in the Quran",
+      chapter: "Mu'jizat",
+      totalAyats: 38,
+      ahadith: 22,
+      progress: 65,
+    },
+    {
+      id: "imams",
+      title: t("imams"),
+      titleEn: "Imams",
+      arabicName: "الأئمة",
+      description: "Leadership and guidance in Islam",
+      chapter: "Imamat",
+      totalAyats: 44,
+      ahadith: 28,
+      progress: 55,
+    },
+    {
+      id: "guidance",
+      title: t("guidance"),
+      titleEn: "Guidance",
+      arabicName: "الهداية",
+      description: "Divine guidance and wisdom",
+      chapter: "Hidayah",
+      totalAyats: 36,
+      ahadith: 20,
+      progress: 70,
+    },
+    {
+      id: "resurrection",
+      title: t("resurrection"),
+      titleEn: "Resurrection",
+      arabicName: "البعث",
+      description: "Day of resurrection and afterlife",
+      chapter: "Qiyamah",
+      totalAyats: 40,
+      ahadith: 24,
+      progress: 35,
+    },
+    {
+      id: "heaven",
+      title: t("heaven_jannah"),
+      titleEn: "Heaven (Jannah)",
+      arabicName: "الجنة",
+      description: "Paradise and eternal bliss",
+      chapter: "Jannah",
+      totalAyats: 30,
+      ahadith: 16,
+      progress: 80,
+    },
+    {
+      id: "prayer",
+      title: t("prayer_salah"),
+      titleEn: "Prayer (Salah)",
+      arabicName: "الصلاة",
+      description: "The importance and practice of prayer",
+      chapter: "Salah",
+      totalAyats: 52,
+      ahadith: 35,
+      progress: 90,
+    },
   ];
+
+  const handleCardClick = (topicId) => {
+    navigate(`/home/quran-topics/${topicId}`);
+  };
 
   return (
     <div
@@ -23,32 +154,165 @@ export default function QuranTopics() {
         theme === "dark" ? "bg-gray-900 text-white" : "bg-orange-50"
       }`}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl">
-        {topicCards.map((card, index) => (
-          <div
-            key={index}
-            className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 p-6 h-48 flex flex-col justify-between cursor-pointer"
+      <div className="max-w-7xl mx-auto">
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1
+            className={`text-3xl font-bold mb-2 ${
+              theme === "dark" ? "text-white" : "text-gray-800"
+            }`}
           >
-            {!card.empty ? (
-              <>
-                <div className="flex-1">
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                    {card.title}
-                  </h3>
-                  <p className="text-gray-500 text-sm">{card.description}</p>
-                  <p className="text-gray-400 text-xs mt-1">.....</p>
+            {t("quranic_topics")}
+          </h1>
+          <p
+            className={`text-sm ${
+              theme === "dark" ? "text-gray-400" : "text-gray-600"
+            }`}
+          >
+            Explore Quranic topics and deepen your understanding
+          </p>
+        </div>
+
+        {/* Topics Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {topicCards.map((card) => (
+            <div
+              key={card.id}
+              onClick={() => handleCardClick(card.id)}
+              className={`rounded-2xl shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden cursor-pointer transform hover:-translate-y-1 ${
+                theme === "dark" ? "bg-gray-800" : "bg-white"
+              }`}
+            >
+              {/* Card Content */}
+              <div className="p-6 pb-4">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex-1">
+                    <h3
+                      className={`text-xl font-semibold mb-1 ${
+                        theme === "dark" ? "text-white" : "text-gray-800"
+                      }`}
+                    >
+                      {card.titleEn}
+                    </h3>
+                    <p
+                      className={`text-lg mb-2 ${
+                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      }`}
+                      style={{ fontFamily: "indopak, sans-serif" }}
+                    >
+                      {card.arabicName}
+                    </p>
+                    <p
+                      className={`text-sm ${
+                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      }`}
+                    >
+                      {card.description}
+                    </p>
+                  </div>
+
+                  {/* Circular Progress Indicator */}
+                  <div className="flex-shrink-0 relative w-16 h-16">
+                    <svg className="transform -rotate-90 w-16 h-16">
+                      {/* Background Circle */}
+                      <circle
+                        cx="32"
+                        cy="32"
+                        r="28"
+                        stroke={theme === "dark" ? "#374151" : "#FED7AA"}
+                        strokeWidth="6"
+                        fill="none"
+                      />
+                      {/* Progress Circle */}
+                      <circle
+                        cx="32"
+                        cy="32"
+                        r="28"
+                        stroke="#F97316"
+                        strokeWidth="6"
+                        fill="none"
+                        strokeDasharray={`${2 * Math.PI * 28}`}
+                        strokeDashoffset={`${
+                          2 * Math.PI * 28 * (1 - card.progress / 100)
+                        }`}
+                        strokeLinecap="round"
+                        className="transition-all duration-500"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span
+                        className={`text-sm font-semibold ${
+                          theme === "dark" ? "text-white" : "text-gray-700"
+                        }`}
+                      >
+                        {card.progress}%
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3 text-sm text-gray-600">
-                  <span>{card.ayaat}</span>
-                  <span className="text-gray-300">|</span>
-                  <span>{card.ahadith}</span>
+
+                {/* Stats */}
+                <div
+                  className={`flex items-center gap-3 text-sm mb-3 ${
+                    theme === "dark" ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  <span className="flex items-center gap-1">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                      />
+                    </svg>
+                    {card.totalAyats} Ayats
+                  </span>
+                  <span
+                    className={
+                      theme === "dark" ? "text-gray-600" : "text-gray-300"
+                    }
+                  >
+                    |
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                    {card.ahadith} Ahadith
+                  </span>
                 </div>
-              </>
-            ) : (
-              <div className="w-full h-full"></div>
-            )}
-          </div>
-        ))}
+              </div>
+
+              {/* Linear Progress Bar at Bottom */}
+              <div
+                className={`h-2 ${
+                  theme === "dark" ? "bg-gray-700" : "bg-orange-100"
+                }`}
+              >
+                <div
+                  className="h-full bg-gradient-to-r from-orange-400 to-orange-600 transition-all duration-500"
+                  style={{ width: `${card.progress}%` }}
+                ></div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
