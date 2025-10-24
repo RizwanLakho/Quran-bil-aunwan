@@ -681,7 +681,7 @@ const ProgressBar = ({ currentStep, steps }) => {
 
   return (
     <div
-      className={`rounded-lg shadow-sm p-4 md:p-8 mb-4 md:mb-6 ${
+      className={` rounded-lg shadow-sm p-4 md:p-8 mb-4 md:mb-6 ${
         theme === "dark" ? "bg-gray-800" : "bg-white"
       }`}
     >
@@ -832,13 +832,13 @@ export default function TopicFormWizard() {
         theme === "dark" ? "bg-gray-900" : "bg-orange-50"
       }`}
     >
-      <div className="max-w-6xl mx-auto">
+      <div className=" max-w-6xl mx-auto">
         {/* Progress Bar */}
         <ProgressBar currentStep={currentStep} steps={steps} />
 
         {/* Dynamic Component Content */}
         <div
-          className={`rounded-lg shadow-sm border-2 border-orange-500 p-4 md:p-8 ${
+          className={` rounded-lg shadow-sm border-2 border-orange-500 p-4 md:p-8 ${
             theme === "dark" ? "bg-gray-800" : "bg-white"
           }`}
         >

@@ -9,7 +9,8 @@ import { TranslationContext } from "../context/TranslationContext";
 export default function QuranReadingPage() {
   const { quranFont, arabicSize, translatorSize } = useContext(FontContext);
   const { theme } = useContext(ThemeContext);
-  const { translator, reciter } = useContext(TranslationContext);
+  const { translator, reciter, showTranslation } =
+    useContext(TranslationContext);
   const { t, i18n } = useTranslation();
 
   const isRTL = i18n.language === "ur";
@@ -209,26 +210,25 @@ export default function QuranReadingPage() {
           {/* Dropdowns - Fixed Header */}
           <div
             className={`flex items-center justify-between px-3 md:px-6 py-3 md:py-4 flex-wrap gap-2 md:gap-3 flex-shrink-0 border-b ${
-              theme === "dark" ? "border-gray-700" : "border-gray-100"
-            } ${isRTL ? "flex-row-reverse" : ""}`}
+              theme === "dark" ? "border-gray-700" : "border-gray-200"
+            }`}
           >
-            {/* Surah Selector with Headless UI */}
+            {/* Surah Dropdown */}
             <Listbox value={selectedSurah} onChange={setSelectedSurah}>
-              <div className="relative flex-1 min-w-[140px] md:min-w-0 md:flex-none">
+              <div className="relative w-full sm:w-auto sm:min-w-[200px] md:min-w-[250px]">
                 <Listbox.Button
-                  className={`relative w-full md:w-auto border-2 rounded-lg md:rounded-xl px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base font-medium focus:outline-none focus:border-primary cursor-pointer transition-colors ${
+                  className={`relative w-full cursor-pointer rounded-lg md:rounded-xl border-2 py-2 md:py-2.5 text-left shadow-sm focus:outline-none transition-colors text-sm md:text-base ${
                     isRTL
-                      ? "pr-3 md:pr-4 pl-8 md:pl-10 text-right"
-                      : "pr-8 md:pr-10 pl-3 md:pl-4"
+                      ? "pr-3 md:pr-4 pl-7 md:pl-10"
+                      : "pl-3 md:pl-4 pr-7 md:pr-10"
                   } ${
                     theme === "dark"
-                      ? "bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
-                      : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50"
+                      ? "bg-gray-700 border-gray-600 text-white focus:border-primary"
+                      : "bg-white border-gray-200 text-gray-900 focus:border-primary"
                   }`}
                 >
-                  <span className="block truncate">
-                    {currentSurah.number}.{" "}
-                    {isRTL ? currentSurah.nameUrdu : currentSurah.nameEnglish}
+                  <span className="block truncate font-medium">
+                    {currentSurah.number}. {currentSurah.nameEnglish}
                   </span>
                   <span
                     className={`absolute inset-y-0 flex items-center pointer-events-none ${
@@ -272,8 +272,7 @@ export default function QuranReadingPage() {
                           <span
                             className={`block truncate ${selected ? "font-semibold" : "font-normal"}`}
                           >
-                            {surah.number}.{" "}
-                            {isRTL ? surah.nameUrdu : surah.nameEnglish}
+                            {surah.number}. {surah.nameEnglish}
                           </span>
                           {selected && (
                             <Check size={16} className="text-white" />
@@ -286,29 +285,18 @@ export default function QuranReadingPage() {
               </div>
             </Listbox>
 
-            {/* Surah Title - Hidden on mobile */}
-            <div className="hidden md:block flex-1 text-center">
-              <p
-                className={`text-2xl font-bold ${
-                  theme === "dark" ? "text-primary" : "text-primary"
-                } ${isRTL ? "font-urdu" : ""}`}
-              >
-                {isRTL ? currentSurah.nameUrdu : currentSurah.nameEnglish}
-              </p>
-            </div>
-
-            {/* Ayah Selector with Headless UI */}
+            {/* Ayah Dropdown */}
             <Listbox value={selectedAyah} onChange={setSelectedAyah}>
-              <div className="relative flex-1 min-w-[100px] md:min-w-0 md:flex-none">
+              <div className="relative w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px]">
                 <Listbox.Button
-                  className={`relative w-full md:w-auto border-2 rounded-lg md:rounded-xl px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base font-medium focus:outline-none focus:border-primary cursor-pointer transition-colors ${
+                  className={`relative w-full cursor-pointer rounded-lg md:rounded-xl border-2 py-2 md:py-2.5 text-left shadow-sm focus:outline-none transition-colors text-sm md:text-base ${
                     isRTL
-                      ? "pr-3 md:pr-4 pl-8 md:pl-10 text-right"
-                      : "pr-8 md:pr-10 pl-3 md:pl-4"
+                      ? "pr-3 md:pr-4 pl-7 md:pl-10"
+                      : "pl-3 md:pl-4 pr-7 md:pr-10"
                   } ${
                     theme === "dark"
-                      ? "bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
-                      : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50"
+                      ? "bg-gray-700 border-gray-600 text-white focus:border-primary"
+                      : "bg-white border-gray-200 text-gray-900 focus:border-primary"
                   }`}
                 >
                   <span className="block truncate">
@@ -434,28 +422,30 @@ export default function QuranReadingPage() {
               </p>
             </div>
 
-            {/* Translation Section - Better mobile sizing */}
-            <div
-              className={`mb-4 md:mb-6 p-3 md:p-4 rounded-lg md:rounded-xl ${
-                theme === "dark" ? "bg-gray-700/50" : "bg-gray-50"
-              }`}
-            >
-              <h4
-                className={`font-bold mb-2 text-sm md:text-base ${isRTL ? "font-urdu text-right" : ""} ${
-                  theme === "dark" ? "text-primary" : "text-primary"
+            {/* Translation Section - Only show if showTranslation is true */}
+            {showTranslation && (
+              <div
+                className={`mb-4 md:mb-6 p-3 md:p-4 rounded-lg md:rounded-xl ${
+                  theme === "dark" ? "bg-gray-700/50" : "bg-gray-50"
                 }`}
               >
-                {t("translation_by")} {translator}
-              </h4>
-              <p
-                className={`leading-relaxed ${isRTL ? "text-right" : ""} ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-700"
-                }`}
-                style={{ fontSize: `${Math.max(14, translatorSize - 2)}px` }}
-              >
-                {getTranslation()}
-              </p>
-            </div>
+                <h4
+                  className={`font-bold mb-2 text-sm md:text-base ${isRTL ? "font-urdu text-right" : ""} ${
+                    theme === "dark" ? "text-primary" : "text-primary"
+                  }`}
+                >
+                  {t("translation_by")} {translator}
+                </h4>
+                <p
+                  className={`leading-relaxed ${isRTL ? "text-right" : ""} ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  }`}
+                  style={{ fontSize: `${Math.max(14, translatorSize - 2)}px` }}
+                >
+                  {getTranslation()}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Fixed Footer with Controls - Mobile optimized */}

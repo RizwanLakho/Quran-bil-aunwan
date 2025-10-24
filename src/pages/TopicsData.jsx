@@ -118,42 +118,6 @@ export default function TopicsData() {
           : "bg-[#DA885633] text-gray-800"
       }`}
     >
-      {/* Sticky Header */}
-      <header
-        className={`sticky top-0 z-20 border-b shadow-sm ${
-          theme === "dark"
-            ? "bg-gray-800 border-gray-700"
-            : "bg-white border-gray-200"
-        }`}
-      >
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-          <NavLink
-            to="/*"
-            className={`text-xl md:text-2xl font-semibold ${
-              theme === "dark" ? "text-orange-400" : "text-primary"
-            }`}
-          >
-            {t("app_title")}
-          </NavLink>
-          <div className="relative w-64">
-            <input
-              type="text"
-              placeholder={t("search_anything")}
-              className={`w-full pl-4 pr-10 py-2 rounded-lg border focus:outline-none transition ${
-                theme === "dark"
-                  ? "bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400 focus:border-orange-400"
-                  : "bg-white border-gray-300 text-gray-800 focus:border-primary"
-              }`}
-            />
-            <Search
-              className={`absolute right-3 top-2.5 w-5 h-5 ${
-                theme === "dark" ? "text-gray-400" : "text-gray-500"
-              }`}
-            />
-          </div>
-        </div>
-      </header>
-
       <main className="max-w-7xl mx-auto p-6 space-y-6">
         <div
           className={`shadow rounded-lg transition-colors duration-300 ${
@@ -179,7 +143,7 @@ export default function TopicsData() {
               </p>
             </div>
             <NavLink
-              to="add-topic"
+              to="/home/add-topic"
               className="mt-3 sm:mt-0 flex items-center gap-2 bg-primary text-white px-5 py-2 rounded-md hover:bg-orange-400 transition-all shadow-sm"
             >
               <PlusCircle size={18} />

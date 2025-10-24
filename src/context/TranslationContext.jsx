@@ -4,8 +4,8 @@ export const TranslationContext = createContext();
 
 export const TranslationProvider = ({ children }) => {
   const [translator, setTranslator] = useState("Dr. Mustafa Khattab");
-  const [reciter, setReciter] = useState("Mishari Rashid Al - Afasy");
-  const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
+  const [reciter, setReciter] = useState("Mishari Rashid Al-Afasy");
+  const [showTranslation, setShowTranslation] = useState(true);
 
   return (
     <TranslationContext.Provider
@@ -14,8 +14,8 @@ export const TranslationProvider = ({ children }) => {
         setTranslator,
         reciter,
         setReciter,
-        playbackSpeed,
-        setPlaybackSpeed,
+        showTranslation,
+        setShowTranslation,
       }}
     >
       {children}

@@ -30,7 +30,6 @@ export default function Header({ isMenuOpen, toggleSettings }) {
     qiyamat: false,
     islamicLaw: false,
   });
-  const [showSubfolderMenu, setShowSubfolderMenu] = useState(false);
 
   const isRTL = i18n.language === "ur";
 
@@ -114,56 +113,43 @@ export default function Header({ isMenuOpen, toggleSettings }) {
       <div
         className={`hidden md:flex h-full flex-col transition-all duration-300 ${
           isRTL ? "border-l" : "border-r"
-        } border-orange-100 ${
-          theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-800"
+        } ${
+          theme === "dark"
+            ? "bg-gray-800 text-white border-gray-700"
+            : "bg-white text-gray-800 border-orange-100"
         }`}
         style={{
-          width: isMenuOpen ? "18rem" : "5rem",
-          minWidth: isMenuOpen ? "18rem" : "5rem",
+          width: isMenuOpen ? "16rem" : "4.5rem",
+          minWidth: isMenuOpen ? "16rem" : "4.5rem",
         }}
       >
         {/* Menu Content */}
-        <div className="flex-1 flex flex-col overflow-hidden p-2">
+        <div className="flex-1 flex flex-col overflow-hidden py-2 px-1.5">
           {/* Top Section - No Scroll */}
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 space-y-0.5">
             {/* Overview */}
             <NavLink
               to="/home/overview"
-              className={`w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-orange-50 rounded-lg transition ${
-                !isMenuOpen ? "flex-col justify-center px-2" : ""
-              }`}
+              className={({ isActive }) =>
+                `w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
+                  isActive
+                    ? "bg-orange-500 text-white shadow-sm"
+                    : theme === "dark"
+                      ? "text-gray-300 hover:bg-gray-700"
+                      : "text-gray-700 hover:bg-orange-50"
+                } ${!isMenuOpen ? "flex-col justify-center px-1.5" : ""}`
+              }
               title={!isMenuOpen ? t("overview") : ""}
             >
-              <LayoutGrid size={20} />
+              <LayoutGrid size={18} />
               {isMenuOpen && (
-                <span className="font-medium">{t("overview")}</span>
+                <span className="font-medium text-sm">{t("overview")}</span>
               )}
               {!isMenuOpen && (
-                <span className={`text-xs mt-1 ${isRTL ? "font-urdu" : ""}`}>
+                <span
+                  className={`text-[10px] mt-0.5 ${isRTL ? "font-urdu" : ""}`}
+                >
                   {t("overview")}
-                </span>
-              )}
-            </NavLink>
-
-            {/* Your Topics */}
-            <NavLink
-              to="/topics"
-              className={({ isActive }) =>
-                `w-full flex items-center gap-3 px-4 py-3 rounded-lg transition mb-2 ${
-                  isActive
-                    ? "bg-primary text-white shadow-md"
-                    : "text-gray-700 hover:bg-orange-50"
-                } ${!isMenuOpen ? "flex-col justify-center px-2" : ""}`
-              }
-              title={!isMenuOpen ? t("your_topics") : ""}
-            >
-              <BookOpen size={20} />
-              {isMenuOpen && (
-                <span className="font-medium">{t("your_topics")}</span>
-              )}
-              {!isMenuOpen && (
-                <span className={`text-xs mt-1 ${isRTL ? "font-urdu" : ""}`}>
-                  {t("topics")}
                 </span>
               )}
             </NavLink>
@@ -172,20 +158,24 @@ export default function Header({ isMenuOpen, toggleSettings }) {
             <NavLink
               to="/home/read-quran"
               className={({ isActive }) =>
-                `w-full flex items-center gap-3 px-4 py-3 rounded-lg transition mb-2 ${
+                `w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
                   isActive
-                    ? "bg-primary text-white shadow-md"
-                    : "text-gray-700 hover:bg-orange-50"
-                } ${!isMenuOpen ? "flex-col justify-center px-2" : ""}`
+                    ? "bg-orange-500 text-white shadow-sm"
+                    : theme === "dark"
+                      ? "text-gray-300 hover:bg-gray-700"
+                      : "text-gray-700 hover:bg-orange-50"
+                } ${!isMenuOpen ? "flex-col justify-center px-1.5" : ""}`
               }
               title={!isMenuOpen ? t("read_quran") : ""}
             >
-              <BookOpen size={20} />
+              <BookOpen size={18} />
               {isMenuOpen && (
-                <span className="font-medium">{t("read_quran")}</span>
+                <span className="font-medium text-sm">{t("read_quran")}</span>
               )}
               {!isMenuOpen && (
-                <span className={`text-xs mt-1 ${isRTL ? "font-urdu" : ""}`}>
+                <span
+                  className={`text-[10px] mt-0.5 ${isRTL ? "font-urdu" : ""}`}
+                >
                   {t("quran")}
                 </span>
               )}
@@ -194,59 +184,68 @@ export default function Header({ isMenuOpen, toggleSettings }) {
 
           {/* Quranic Topics Section - With Independent Scroll */}
           {isMenuOpen ? (
-            <div className="flex-shrink-0 mb-2">
+            <div className="flex-1 flex flex-col overflow-hidden mt-1">
               <NavLink
                 to="/home/quran-topics"
                 className={({ isActive }) =>
-                  `w-full flex items-center gap-3 px-4 py-3 rounded-lg transition mb-2 ${
+                  `flex-shrink-0 w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm mb-1 ${
                     isActive
-                      ? "bg-primary text-white shadow-md"
-                      : "text-gray-700 hover:bg-orange-50"
+                      ? "bg-orange-500 text-white shadow-sm"
+                      : theme === "dark"
+                        ? "text-gray-300 hover:bg-gray-700"
+                        : "text-gray-700 hover:bg-orange-50"
                   }`
                 }
               >
-                <FolderOpen size={20} />
-                <span className="font-medium">{t("quranic_topics")}</span>
+                <FolderOpen size={18} />
+                <span className="font-medium text-sm">
+                  {t("quranic_topics")}
+                </span>
               </NavLink>
 
               {expandedTopics.quranicTopics && (
-                <div
-                  className={`mt-2 space-y-1 overflow-y-auto ${
-                    isRTL ? "ml-0 mr-4 pl-2" : "ml-4 pr-2"
-                  }`}
-                  style={{ maxHeight: "220px" }}
-                >
-                  {/* Map through all topic folders */}
+                <div className="flex-1 overflow-y-auto pr-1 space-y-0.5">
                   {topicFolders.map((folder) => (
                     <div key={folder.id}>
                       <button
                         onClick={() => toggleTopic(folder.id)}
-                        className="w-full flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-orange-50 rounded-lg transition"
+                        className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg transition text-sm ${
+                          theme === "dark"
+                            ? "text-gray-300 hover:bg-gray-700"
+                            : "text-gray-700 hover:bg-orange-50"
+                        }`}
                       >
-                        <div className="flex items-center gap-3">
-                          <Folder size={18} className="text-orange-400" />
-                          <span className="text-sm font-medium">
+                        <div className="flex items-center gap-2">
+                          <Folder size={16} className="text-orange-400" />
+                          <span className="text-xs font-medium">
                             {folder.title}
                           </span>
                         </div>
                         <ChevronDown
-                          size={16}
+                          size={14}
                           className={`transition-transform ${
                             expandedTopics[folder.id] ? "rotate-180" : ""
                           }`}
                         />
                       </button>
 
-                      {/* Subtopics */}
                       {expandedTopics[folder.id] && (
-                        <div className="space-y-1 mt-1">
+                        <div className="space-y-0.5 mt-0.5 ml-2">
                           {folder.subtopics.map((subtopic) => (
                             <NavLink
                               key={subtopic.path}
                               to={subtopic.path}
-                              className="w-full flex items-center gap-2 px-8 py-2 text-gray-600 hover:bg-orange-50 rounded-lg text-sm transition"
+                              className={({ isActive }) =>
+                                `w-full flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition ${
+                                  isActive
+                                    ? "bg-orange-100 text-orange-700"
+                                    : theme === "dark"
+                                      ? "text-gray-400 hover:bg-gray-700"
+                                      : "text-gray-600 hover:bg-orange-50"
+                                }`
+                              }
                             >
-                              <Circle size={6} className="text-orange-300" />
+                              <Circle size={5} className="text-orange-300" />
                               <span>{subtopic.title}</span>
                             </NavLink>
                           ))}
@@ -258,180 +257,180 @@ export default function Header({ isMenuOpen, toggleSettings }) {
               )}
             </div>
           ) : (
-            <div
-              className="relative flex-shrink-0 mb-2"
-              onMouseEnter={() => setShowSubfolderMenu(true)}
-              onMouseLeave={() => setShowSubfolderMenu(false)}
-            >
-              <NavLink
-                to="/home/quran-topics"
-                className={({ isActive }) =>
-                  `w-full flex flex-col items-center justify-center gap-1 px-2 py-3 rounded-lg transition mb-2 ${
-                    isActive
-                      ? "bg-primary text-white shadow-md"
+            <NavLink
+              to="/home/quran-topics"
+              className={({ isActive }) =>
+                `flex-shrink-0 w-full flex flex-col items-center justify-center gap-1 px-1.5 py-2 rounded-lg transition text-sm mt-1 ${
+                  isActive
+                    ? "bg-orange-500 text-white shadow-sm"
+                    : theme === "dark"
+                      ? "text-gray-300 hover:bg-gray-700"
                       : "text-gray-700 hover:bg-orange-50"
-                  }`
-                }
-                title={t("quranic_topics")}
+                }`
+              }
+              title={t("quranic_topics")}
+            >
+              <FolderOpen size={18} />
+              <span
+                className={`text-[10px] text-center ${isRTL ? "font-urdu" : ""}`}
               >
-                <FolderOpen size={20} />
-                <span className={`text-xs mt-1 ${isRTL ? "font-urdu" : ""}`}>
-                  {t("topics")}
-                </span>
-              </NavLink>
-
-              {/* Hover Submenu */}
-              {showSubfolderMenu && (
-                <div
-                  className={`absolute top-0 w-64 rounded-lg shadow-xl border z-50 max-h-96 overflow-y-auto ${
-                    isRTL ? "right-full mr-2" : "left-full ml-2"
-                  } ${
-                    theme === "dark"
-                      ? "bg-gray-800 border-gray-700"
-                      : "bg-white border-orange-100"
-                  }`}
-                  style={{
-                    animation: "fadeIn 0.2s ease-in-out",
-                  }}
-                >
-                  <div className="p-2">
-                    {/* Submenu Header */}
-                    <div className="px-3 py-2 font-semibold text-gray-700 border-b border-gray-200 mb-2">
-                      {t("quranic_topics")}
-                    </div>
-
-                    {/* All Subfolders */}
-                    {topicFolders.map((folder) => (
-                      <div key={folder.id} className="mb-3">
-                        <div className="px-3 py-2 text-sm font-medium text-gray-600 flex items-center gap-2">
-                          <Folder size={16} className="text-orange-400" />
-                          <span>{folder.title}</span>
-                        </div>
-
-                        <div className="space-y-1">
-                          {folder.subtopics.map((subtopic) => (
-                            <NavLink
-                              key={subtopic.path}
-                              to={subtopic.path}
-                              className="w-full flex items-center gap-2 px-6 py-2 text-gray-600 hover:bg-orange-50 rounded-lg text-sm transition"
-                            >
-                              <Circle size={6} className="text-orange-300" />
-                              <span>{subtopic.title}</span>
-                            </NavLink>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+                {t("topics")}
+              </span>
+            </NavLink>
           )}
 
-          {/* Bottom Section - No Scroll */}
-          <div className="flex-shrink-0 mt-auto">
-            <div className="my-4 border-t border-gray-200"></div>
+          {/* Divider */}
+          <div
+            className={`my-2 border-t ${theme === "dark" ? "border-gray-700" : "border-gray-200"}`}
+          ></div>
 
-            {/* History */}
+          {/* Bottom Section - Fixed Items */}
+          <div className="flex-shrink-0 space-y-0.5">
             <button
-              className={`w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-orange-50 rounded-lg transition mb-2 ${
-                !isMenuOpen ? "flex-col justify-center px-2" : ""
+              className={`w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
+                !isMenuOpen ? "flex-col justify-center px-1.5" : ""
+              } ${
+                theme === "dark"
+                  ? "text-gray-300 hover:bg-gray-700"
+                  : "text-gray-700 hover:bg-orange-50"
               }`}
               title={!isMenuOpen ? t("history") : ""}
             >
-              <Clock size={20} className="text-primary" />
+              <Clock size={18} className="text-orange-500" />
               {isMenuOpen && (
-                <span className="font-medium">{t("history")}</span>
+                <span className="font-medium text-sm">{t("history")}</span>
               )}
               {!isMenuOpen && (
-                <span className={`text-xs mt-1 ${isRTL ? "font-urdu" : ""}`}>
+                <span
+                  className={`text-[10px] mt-0.5 ${isRTL ? "font-urdu" : ""}`}
+                >
                   {t("history")}
                 </span>
               )}
             </button>
 
-            {/* Liked */}
+            <NavLink
+              to="/topics"
+              className={({ isActive }) =>
+                `w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
+                  isActive
+                    ? "bg-orange-500 text-white shadow-sm"
+                    : theme === "dark"
+                      ? "text-gray-300 hover:bg-gray-700"
+                      : "text-gray-700 hover:bg-orange-50"
+                } ${!isMenuOpen ? "flex-col justify-center px-1.5" : ""}`
+              }
+              title={!isMenuOpen ? t("your_topics") : ""}
+            >
+              <BookOpen size={18} className="text-orange-500" />
+              {isMenuOpen && (
+                <span className="font-medium text-sm">{t("your_topics")}</span>
+              )}
+              {!isMenuOpen && (
+                <span
+                  className={`text-[10px] mt-0.5 text-center ${isRTL ? "font-urdu" : ""}`}
+                >
+                  {t("topics")}
+                </span>
+              )}
+            </NavLink>
+
             <button
-              className={`w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-orange-50 rounded-lg transition mb-2 ${
-                !isMenuOpen ? "flex-col justify-center px-2" : ""
+              className={`w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
+                !isMenuOpen ? "flex-col justify-center px-1.5" : ""
+              } ${
+                theme === "dark"
+                  ? "text-gray-300 hover:bg-gray-700"
+                  : "text-gray-700 hover:bg-orange-50"
               }`}
               title={!isMenuOpen ? t("liked") : ""}
             >
-              <Heart size={20} className="text-primary" />
-              {isMenuOpen && <span className="font-medium">{t("liked")}</span>}
+              <Heart size={18} className="text-orange-500" />
+              {isMenuOpen && (
+                <span className="font-medium text-sm">{t("liked")}</span>
+              )}
               {!isMenuOpen && (
-                <span className={`text-xs mt-1 ${isRTL ? "font-urdu" : ""}`}>
+                <span
+                  className={`text-[10px] mt-0.5 ${isRTL ? "font-urdu" : ""}`}
+                >
                   {t("liked")}
                 </span>
               )}
             </button>
 
-            {/* Favorites */}
             <button
-              className={`w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-orange-50 rounded-lg transition mb-2 ${
-                !isMenuOpen ? "flex-col justify-center px-2" : ""
+              className={`w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
+                !isMenuOpen ? "flex-col justify-center px-1.5" : ""
+              } ${
+                theme === "dark"
+                  ? "text-gray-300 hover:bg-gray-700"
+                  : "text-gray-700 hover:bg-orange-50"
               }`}
               title={!isMenuOpen ? t("favorites") : ""}
             >
-              <Bookmark size={20} className="text-primary" />
+              <Bookmark size={18} className="text-orange-500" />
               {isMenuOpen && (
-                <span className="font-medium">{t("favorites")}</span>
+                <span className="font-medium text-sm">{t("favorites")}</span>
               )}
               {!isMenuOpen && (
-                <span className={`text-xs mt-1 ${isRTL ? "font-urdu" : ""}`}>
+                <span
+                  className={`text-[10px] mt-0.5 ${isRTL ? "font-urdu" : ""}`}
+                >
                   {t("favorites")}
                 </span>
               )}
             </button>
 
-            <div className="my-4 border-t border-gray-200"></div>
+            <div
+              className={`my-2 border-t ${theme === "dark" ? "border-gray-700" : "border-gray-200"}`}
+            ></div>
 
-            {/* Settings */}
             <button
               onClick={toggleSettings}
-              className={`w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-orange-50 rounded-lg transition mb-2 ${
-                !isMenuOpen ? "flex-col justify-center px-2" : ""
+              className={`w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
+                !isMenuOpen ? "flex-col justify-center px-1.5" : ""
+              } ${
+                theme === "dark"
+                  ? "text-gray-300 hover:bg-gray-700"
+                  : "text-gray-700 hover:bg-orange-50"
               }`}
               title={!isMenuOpen ? t("settings") : ""}
             >
-              <Settings size={20} className="text-primary" />
+              <Settings size={18} className="text-orange-500" />
               {isMenuOpen && (
-                <span className="font-medium">{t("settings")}</span>
+                <span className="font-medium text-sm">{t("settings")}</span>
               )}
               {!isMenuOpen && (
-                <span className={`text-xs mt-1 ${isRTL ? "font-urdu" : ""}`}>
+                <span
+                  className={`text-[10px] mt-0.5 ${isRTL ? "font-urdu" : ""}`}
+                >
                   {t("settings")}
                 </span>
               )}
             </button>
 
             {/* Language Selector */}
-            {isMenuOpen ? (
+            {isMenuOpen && (
               <div
-                className={`w-full rounded-xl border p-3 transition-colors ${
+                className={`w-full rounded-lg border p-2 transition-colors ${
                   theme === "dark"
                     ? "bg-gray-700 border-gray-600"
                     : "bg-orange-50 border-orange-200"
                 }`}
               >
                 <div
-                  className={`flex items-center justify-between gap-3 ${
+                  className={`flex items-center justify-between gap-2 ${
                     isRTL ? "flex-row-reverse" : ""
                   }`}
                 >
                   <div
-                    className={`flex items-center gap-2 ${
+                    className={`flex items-center gap-1.5 ${
                       isRTL ? "flex-row-reverse" : ""
                     }`}
                   >
-                    <Globe
-                      size={20}
-                      className={
-                        theme === "dark" ? "text-primary" : "text-primary"
-                      }
-                    />
+                    <Globe size={16} className="text-orange-500" />
                     <span
-                      className={`font-medium text-sm ${
+                      className={`font-medium text-xs ${
                         isRTL ? "font-urdu" : ""
                       } ${theme === "dark" ? "text-gray-200" : "text-gray-800"}`}
                     >
@@ -442,52 +441,22 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                   <select
                     value={language}
                     onChange={(e) => changeLanguage(e.target.value)}
-                    className={`rounded-lg px-3 py-1.5 text-sm font-medium outline-none cursor-pointer transition-all duration-200 ${
+                    className={`rounded-md px-2 py-1 text-xs font-medium outline-none cursor-pointer ${
                       isRTL ? "text-right font-urdu" : ""
                     } ${
                       theme === "dark"
-                        ? "bg-gray-800 text-white border border-gray-600 hover:bg-gray-600"
-                        : "bg-white text-gray-800 border border-gray-300 hover:bg-gray-50"
+                        ? "bg-gray-800 text-white border border-gray-600"
+                        : "bg-white text-gray-800 border border-gray-300"
                     }`}
                   >
-                    <option value="en">🇬🇧 English</option>
+                    <option value="en">🇬🇧 EN</option>
                     <option value="ur">🇵🇰 اردو</option>
                   </select>
                 </div>
               </div>
-            ) : (
-              <div className="w-full px-2">
-                <select
-                  value={language}
-                  onChange={(e) => changeLanguage(e.target.value)}
-                  className={`w-full rounded-lg px-2 py-2 text-xs font-medium outline-none cursor-pointer transition-all duration-200 text-center ${
-                    theme === "dark"
-                      ? "bg-gray-700 text-white border border-gray-600 hover:bg-gray-600"
-                      : "bg-orange-50 text-gray-800 border border-orange-200 hover:bg-orange-100"
-                  }`}
-                  title={t("language")}
-                >
-                  <option value="en">🇬🇧 EN</option>
-                  <option value="ur">🇵🇰 UR</option>
-                </select>
-              </div>
             )}
           </div>
         </div>
-
-        {/* Add CSS animation */}
-        <style jsx>{`
-          @keyframes fadeIn {
-            from {
-              opacity: 0;
-              transform: translateX(${isRTL ? "10px" : "-10px"});
-            }
-            to {
-              opacity: 1;
-              transform: translateX(0);
-            }
-          }
-        `}</style>
       </div>
 
       {/* Mobile Drawer - Visible only on mobile when menu is open */}
@@ -503,96 +472,99 @@ export default function Header({ isMenuOpen, toggleSettings }) {
 
           {/* Drawer */}
           <div
-            className={`absolute top-0 ${isRTL ? "right-0" : "left-0"} h-full w-80 max-w-[85vw] ${
+            className={`absolute top-0 ${isRTL ? "right-0" : "left-0"} h-full w-72 max-w-[85vw] ${
               theme === "dark"
                 ? "bg-gray-800 text-white"
                 : "bg-white text-gray-800"
             } shadow-2xl overflow-y-auto`}
           >
-            {/* Drawer Content - Same structure as desktop but always expanded */}
-            <div className="flex flex-col h-full p-4">
+            {/* Drawer Content */}
+            <div className="flex flex-col h-full p-3">
               {/* Close button */}
               <button
                 onClick={() => {
                   /* Close menu - handled by parent */
                 }}
-                className={`self-end mb-4 p-2 rounded-full hover:bg-orange-50 transition ${isRTL ? "mr-auto ml-0" : "ml-auto mr-0"}`}
+                className={`self-end mb-3 p-1.5 rounded-full hover:bg-orange-50 transition ${isRTL ? "mr-auto ml-0" : "ml-auto mr-0"}`}
               >
-                <X size={24} className="text-gray-600" />
+                <X size={20} className="text-gray-600" />
               </button>
 
-              {/* Navigation Items - Same as desktop expanded state */}
-              <div className="flex-1 overflow-y-auto">
+              {/* Navigation Items */}
+              <div className="flex-1 overflow-y-auto space-y-0.5">
                 {/* Overview */}
                 <NavLink
                   to="/home/overview"
-                  className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-orange-50 rounded-lg transition mb-2"
-                >
-                  <LayoutGrid size={20} />
-                  <span className="font-medium">{t("overview")}</span>
-                </NavLink>
-
-                {/* Your Topics */}
-                <NavLink
-                  to="/topics"
                   className={({ isActive }) =>
-                    `w-full flex items-center gap-3 px-4 py-3 rounded-lg transition mb-2 ${
+                    `w-full flex items-center gap-2 px-3 py-2 rounded-lg transition text-sm ${
                       isActive
-                        ? "bg-primary text-white shadow-md"
-                        : "text-gray-700 hover:bg-orange-50"
+                        ? "bg-orange-500 text-white shadow-sm"
+                        : theme === "dark"
+                          ? "text-gray-300 hover:bg-gray-700"
+                          : "text-gray-700 hover:bg-orange-50"
                     }`
                   }
                 >
-                  <BookOpen size={20} />
-                  <span className="font-medium">{t("your_topics")}</span>
+                  <LayoutGrid size={18} />
+                  <span className="font-medium text-sm">{t("overview")}</span>
                 </NavLink>
 
                 {/* Read Quran */}
                 <NavLink
                   to="/home/read-quran"
                   className={({ isActive }) =>
-                    `w-full flex items-center gap-3 px-4 py-3 rounded-lg transition mb-2 ${
+                    `w-full flex items-center gap-2 px-3 py-2 rounded-lg transition text-sm ${
                       isActive
-                        ? "bg-primary text-white shadow-md"
-                        : "text-gray-700 hover:bg-orange-50"
+                        ? "bg-orange-500 text-white shadow-sm"
+                        : theme === "dark"
+                          ? "text-gray-300 hover:bg-gray-700"
+                          : "text-gray-700 hover:bg-orange-50"
                     }`
                   }
                 >
-                  <BookOpen size={20} />
-                  <span className="font-medium">{t("read_quran")}</span>
+                  <BookOpen size={18} />
+                  <span className="font-medium text-sm">{t("read_quran")}</span>
                 </NavLink>
 
                 {/* Quranic Topics */}
                 <NavLink
                   to="/home/quran-topics"
                   className={({ isActive }) =>
-                    `w-full flex items-center gap-3 px-4 py-3 rounded-lg transition mb-2 ${
+                    `w-full flex items-center gap-2 px-3 py-2 rounded-lg transition text-sm ${
                       isActive
-                        ? "bg-primary text-white shadow-md"
-                        : "text-gray-700 hover:bg-orange-50"
+                        ? "bg-orange-500 text-white shadow-sm"
+                        : theme === "dark"
+                          ? "text-gray-300 hover:bg-gray-700"
+                          : "text-gray-700 hover:bg-orange-50"
                     }`
                   }
                 >
-                  <FolderOpen size={20} />
-                  <span className="font-medium">{t("quranic_topics")}</span>
+                  <FolderOpen size={18} />
+                  <span className="font-medium text-sm">
+                    {t("quranic_topics")}
+                  </span>
                 </NavLink>
 
                 {/* Topic folders with subtopics */}
-                <div className="ml-4 space-y-1">
+                <div className="ml-2 space-y-0.5">
                   {topicFolders.map((folder) => (
                     <div key={folder.id}>
                       <button
                         onClick={() => toggleTopic(folder.id)}
-                        className="w-full flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-orange-50 rounded-lg transition"
+                        className={`w-full flex items-center justify-between px-3 py-1.5 rounded-lg transition text-sm ${
+                          theme === "dark"
+                            ? "text-gray-300 hover:bg-gray-700"
+                            : "text-gray-700 hover:bg-orange-50"
+                        }`}
                       >
-                        <div className="flex items-center gap-3">
-                          <Folder size={18} className="text-orange-400" />
-                          <span className="text-sm font-medium">
+                        <div className="flex items-center gap-2">
+                          <Folder size={16} className="text-orange-400" />
+                          <span className="text-xs font-medium">
                             {folder.title}
                           </span>
                         </div>
                         <ChevronDown
-                          size={16}
+                          size={14}
                           className={`transition-transform ${
                             expandedTopics[folder.id] ? "rotate-180" : ""
                           }`}
@@ -600,14 +572,22 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                       </button>
 
                       {expandedTopics[folder.id] && (
-                        <div className="space-y-1 mt-1">
+                        <div className="space-y-0.5 mt-0.5 ml-3">
                           {folder.subtopics.map((subtopic) => (
                             <NavLink
                               key={subtopic.path}
                               to={subtopic.path}
-                              className="w-full flex items-center gap-2 px-8 py-2 text-gray-600 hover:bg-orange-50 rounded-lg text-sm transition"
+                              className={({ isActive }) =>
+                                `w-full flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition ${
+                                  isActive
+                                    ? "bg-orange-100 text-orange-700"
+                                    : theme === "dark"
+                                      ? "text-gray-400 hover:bg-gray-700"
+                                      : "text-gray-600 hover:bg-orange-50"
+                                }`
+                              }
                             >
-                              <Circle size={6} className="text-orange-300" />
+                              <Circle size={5} className="text-orange-300" />
                               <span>{subtopic.title}</span>
                             </NavLink>
                           ))}
@@ -617,55 +597,99 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                   ))}
                 </div>
 
-                <div className="my-4 border-t border-gray-200"></div>
+                <div
+                  className={`my-2 border-t ${theme === "dark" ? "border-gray-700" : "border-gray-200"}`}
+                ></div>
 
                 {/* Bottom items */}
-                <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-orange-50 rounded-lg transition mb-2">
-                  <Clock size={20} className="text-primary" />
-                  <span className="font-medium">{t("history")}</span>
+                <button
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition text-sm ${
+                    theme === "dark"
+                      ? "text-gray-300 hover:bg-gray-700"
+                      : "text-gray-700 hover:bg-orange-50"
+                  }`}
+                >
+                  <Clock size={18} className="text-orange-500" />
+                  <span className="font-medium text-sm">{t("history")}</span>
                 </button>
 
-                <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-orange-50 rounded-lg transition mb-2">
-                  <Heart size={20} className="text-primary" />
-                  <span className="font-medium">{t("liked")}</span>
+                <NavLink
+                  to="/topics"
+                  className={({ isActive }) =>
+                    `w-full flex items-center gap-2 px-3 py-2 rounded-lg transition text-sm ${
+                      isActive
+                        ? "bg-orange-500 text-white shadow-sm"
+                        : theme === "dark"
+                          ? "text-gray-300 hover:bg-gray-700"
+                          : "text-gray-700 hover:bg-orange-50"
+                    }`
+                  }
+                >
+                  <BookOpen size={18} className="text-orange-500" />
+                  <span className="font-medium text-sm">
+                    {t("your_topics")}
+                  </span>
+                </NavLink>
+
+                <button
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition text-sm ${
+                    theme === "dark"
+                      ? "text-gray-300 hover:bg-gray-700"
+                      : "text-gray-700 hover:bg-orange-50"
+                  }`}
+                >
+                  <Heart size={18} className="text-orange-500" />
+                  <span className="font-medium text-sm">{t("liked")}</span>
                 </button>
 
-                <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-orange-50 rounded-lg transition mb-2">
-                  <Bookmark size={20} className="text-primary" />
-                  <span className="font-medium">{t("favorites")}</span>
+                <button
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition text-sm ${
+                    theme === "dark"
+                      ? "text-gray-300 hover:bg-gray-700"
+                      : "text-gray-700 hover:bg-orange-50"
+                  }`}
+                >
+                  <Bookmark size={18} className="text-orange-500" />
+                  <span className="font-medium text-sm">{t("favorites")}</span>
                 </button>
 
-                <div className="my-4 border-t border-gray-200"></div>
+                <div
+                  className={`my-2 border-t ${theme === "dark" ? "border-gray-700" : "border-gray-200"}`}
+                ></div>
 
                 <button
                   onClick={toggleSettings}
-                  className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-orange-50 rounded-lg transition mb-2"
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition text-sm ${
+                    theme === "dark"
+                      ? "text-gray-300 hover:bg-gray-700"
+                      : "text-gray-700 hover:bg-orange-50"
+                  }`}
                 >
-                  <Settings size={20} className="text-primary" />
-                  <span className="font-medium">{t("settings")}</span>
+                  <Settings size={18} className="text-orange-500" />
+                  <span className="font-medium text-sm">{t("settings")}</span>
                 </button>
 
                 {/* Language Selector */}
                 <div
-                  className={`w-full rounded-xl border p-3 transition-colors ${
+                  className={`w-full rounded-lg border p-2 transition-colors ${
                     theme === "dark"
                       ? "bg-gray-700 border-gray-600"
                       : "bg-orange-50 border-orange-200"
                   }`}
                 >
                   <div
-                    className={`flex items-center justify-between gap-3 ${
+                    className={`flex items-center justify-between gap-2 ${
                       isRTL ? "flex-row-reverse" : ""
                     }`}
                   >
                     <div
-                      className={`flex items-center gap-2 ${
+                      className={`flex items-center gap-1.5 ${
                         isRTL ? "flex-row-reverse" : ""
                       }`}
                     >
-                      <Globe size={20} className="text-primary" />
+                      <Globe size={16} className="text-orange-500" />
                       <span
-                        className={`font-medium text-sm ${
+                        className={`font-medium text-xs ${
                           isRTL ? "font-urdu" : ""
                         } ${theme === "dark" ? "text-gray-200" : "text-gray-800"}`}
                       >
@@ -676,7 +700,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                     <select
                       value={language}
                       onChange={(e) => changeLanguage(e.target.value)}
-                      className={`rounded-lg px-3 py-1.5 text-sm font-medium outline-none cursor-pointer ${
+                      className={`rounded-md px-2 py-1 text-xs font-medium outline-none cursor-pointer ${
                         isRTL ? "text-right font-urdu" : ""
                       } ${
                         theme === "dark"
@@ -684,7 +708,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                           : "bg-white text-gray-800 border border-gray-300"
                       }`}
                     >
-                      <option value="en">🇬🇧 English</option>
+                      <option value="en">🇬🇧 EN</option>
                       <option value="ur">🇵🇰 اردو</option>
                     </select>
                   </div>

@@ -41,7 +41,7 @@ export default function App() {
           ) : (
             <>
               <Route path="/home/*" element={<Home />} />
-              <Route path="/topics/*" element={<Topics />} />
+              {/* <Route path="/topics/*" element={<Topics />} />*/}
               <Route path="*" element={<Navigate to="/home" />} />
             </>
           )}

@@ -34,8 +34,14 @@ export default function QuranSettingsPanel() {
     setTranslatorSize,
   } = useContext(FontContext);
 
-  const { translator, setTranslator, reciter, setReciter } =
-    useContext(TranslationContext);
+  const {
+    translator,
+    setTranslator,
+    reciter,
+    setReciter,
+    showTranslation,
+    setShowTranslation,
+  } = useContext(TranslationContext);
 
   const [playbackSpeed, setPlaybackSpeed] = useState(2);
 
@@ -116,6 +122,35 @@ export default function QuranSettingsPanel() {
             <option value="en">English</option>
             <option value="ur">اردو</option>
           </select>
+        </div>
+        <div className="my-4 border-t border-gray-200"></div>
+
+        {/* Translation Toggle */}
+        <div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-primary text-lg md:text-xl">📖</span>
+              <h3 className="font-bold text-sm md:text-base">
+                {t("show_translation")}
+              </h3>
+            </div>
+            <button
+              onClick={() => setShowTranslation(!showTranslation)}
+              className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${
+                showTranslation
+                  ? "bg-primary"
+                  : theme === "dark"
+                    ? "bg-gray-700"
+                    : "bg-gray-300"
+              }`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-300 ${
+                  showTranslation ? "translate-x-6" : "translate-x-0"
+                }`}
+              />
+            </button>
+          </div>
         </div>
 
         {/* Quran Font */}
@@ -316,7 +351,7 @@ export default function QuranSettingsPanel() {
             </div>
           </div>
         </div>
-
+        <div className="my-4 border-t border-gray-200"></div>
         {/* Select Reciter */}
         <div>
           <div className="flex items-center gap-2 mb-2 md:mb-3">

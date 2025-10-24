@@ -1,4 +1,11 @@
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useNavigate,
+  NavLink,
+} from "react-router-dom";
 import { useState, useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
@@ -6,7 +13,11 @@ import Header from "../components/Header";
 import QuranReadingPage from "../components/QuranReadingPage";
 import QuranSettingsPanel from "../components/QuranSettingsPanel";
 import QuranTopics from "../pages/QuranTopics";
+import TopicsData from "./TopicsData";
+import AddTopic from "./AddTopic";
 import QuranTopicDetail from "../pages/QuranTopicDetail";
+import AboutUs from "./AboutUs";
+import ContactUs from "./ContactUs";
 import { ThemeContext } from "../context/ThemeContext";
 import Overview from "./OverView";
 
@@ -16,6 +27,7 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Check if current language is RTL
   const isRTL = i18n.language === "ur";
@@ -38,6 +50,7 @@ export default function Home() {
 
   const NAVBAR_HEIGHT = 84; // pixels for desktop
   const NAVBAR_HEIGHT_MOBILE = 120; // pixels for mobile (includes search bar)
+  const FOOTER_HEIGHT = 56; // pixels for footer
   const isReadQuran = location.pathname.includes("read-quran");
 
   return (
@@ -69,7 +82,7 @@ export default function Home() {
           style={{
             height: `calc(100vh - ${
               window.innerWidth < 768 ? NAVBAR_HEIGHT_MOBILE : NAVBAR_HEIGHT
-            }px)`,
+            }px - ${FOOTER_HEIGHT}px)`,
           }}
         />
 
@@ -82,14 +95,21 @@ export default function Home() {
             }`}
           >
             <Routes>
-              <Route path="/" element={<Navigate to="read-quran" replace />} />
+              <Route
+                path="/"
+                element={<Navigate to="quran-topics" replace />}
+              />
               <Route path="read-quran" element={<QuranReadingPage />} />
               <Route path="overview" element={<Overview />} />
               <Route path="quran-topics" element={<QuranTopics />} />
+              <Route index element={<TopicsData />} />
+              <Route path="add-topic" element={<AddTopic />} />
               <Route
                 path="quran-topics/:subtopic"
                 element={<QuranTopicDetail />}
               />
+              <Route path="about-us" element={<AboutUs />} />
+              <Route path="contact-us" element={<ContactUs />} />
             </Routes>
           </div>
 
@@ -134,6 +154,51 @@ export default function Home() {
           )}
         </main>
       </div>
+
+      {/* Footer */}
+      <footer
+        className={`flex-shrink-0 border-t ${
+          theme === "dark"
+            ? "bg-gray-800 border-gray-700"
+            : "bg-white border-orange-200"
+        }`}
+        style={{ height: `${FOOTER_HEIGHT}px` }}
+      >
+        <div className="h-full flex flex-col md:flex-row items-center justify-between px-4 md:px-6 py-2 md:py-0 gap-2 md:gap-0">
+          {/* Left side - Buttons */}
+          <div className="flex gap-3">
+            <NavLink
+              to="/home/about-us"
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                theme === "dark"
+                  ? "bg-gray-700 hover:bg-gray-600 text-gray-200"
+                  : "bg-orange-100 hover:bg-orange-200 text-orange-800"
+              }`}
+            >
+              About Us
+            </NavLink>
+            <NavLink
+              to="/home/contact-us"
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                theme === "dark"
+                  ? "bg-gray-700 hover:bg-gray-600 text-gray-200"
+                  : "bg-orange-100 hover:bg-orange-200 text-orange-800"
+              }`}
+            >
+              Contact Us
+            </NavLink>
+          </div>
+
+          {/* Right side - Copyright text */}
+          <div
+            className={`text-xs md:text-sm text-center md:text-${isRTL ? "left" : "right"} ${
+              theme === "dark" ? "text-gray-400" : "text-gray-600"
+            }`}
+          >
+            © All Rights Reserved - Quran Bil Unwan 2025
+          </div>
+        </div>
+      </footer>
 
       {/* Add animation for mobile modal */}
       <style jsx>{`

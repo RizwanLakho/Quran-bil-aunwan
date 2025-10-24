@@ -11,13 +11,22 @@ import {
   MoreVertical,
   Volume2,
   ChevronDown,
+  Facebook,
+  Instagram,
+  MessageCircle,
+  Copy,
+  Download,
 } from "lucide-react";
 import { ThemeContext } from "../context/ThemeContext";
+import { FontContext } from "../context/FontContext";
+import { TranslationContext } from "../context/TranslationContext";
 
 export default function QuranTopicDetail() {
   const { subtopic } = useParams();
   const navigate = useNavigate();
   const { theme } = useContext(ThemeContext);
+  const { quranFont, arabicSize, translatorSize } = useContext(FontContext);
+  const { showTranslation } = useContext(TranslationContext);
   const { t, i18n } = useTranslation();
 
   const isRTL = i18n.language === "ur" || i18n.language === "ar";
@@ -28,6 +37,8 @@ export default function QuranTopicDetail() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isVerseDropdownOpen, setIsVerseDropdownOpen] = useState(false);
+  const [shareMenuVerse, setShareMenuVerse] = useState(null);
+  const [moreMenuVerse, setMoreMenuVerse] = useState(null);
   const dropdownRef = useRef(null);
   const verseDropdownRef = useRef(null);
   const verseRefs = useRef({});
@@ -236,6 +247,20 @@ export default function QuranTopicDetail() {
 
   const currentVerse = verses.find((v) => v.id === selectedVerse) || verses[1];
 
+  // Get font family based on selection
+  const getFontFamily = () => {
+    switch (quranFont) {
+      case "Uthmani":
+        return "uthmani, sans-serif";
+      case "IndoPak":
+        return "indopak, sans-serif";
+      case "Tajweed":
+        return "tajweed, sans-serif";
+      default:
+        return "indopak, sans-serif";
+    }
+  };
+
   useEffect(() => {
     const observerOptions = {
       root: null,
@@ -247,7 +272,7 @@ export default function QuranTopicDetail() {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const verseId = parseInt(entry.target.dataset.verseId);
-          setActiveVerse(verseId);
+          setSelectedVerse(verseId);
         }
       });
     };
@@ -261,46 +286,8 @@ export default function QuranTopicDetail() {
       if (ref) observer.observe(ref);
     });
 
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, []);
-
-  const toggleLike = (verseId) => {
-    const newLiked = new Set(likedVerses);
-    if (newLiked.has(verseId)) {
-      newLiked.delete(verseId);
-    } else {
-      newLiked.add(verseId);
-    }
-    setLikedVerses(newLiked);
-  };
-
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
-  };
-
-  const handleSubtopicChange = (subtopicId) => {
-    navigate(`/home/quran-topics/${subtopicId}`);
-    setIsDropdownOpen(false);
-  };
-
-  const handleVerseChange = (verseId) => {
-    setSelectedVerse(verseId);
-    setActiveVerse(verseId);
-    setIsVerseDropdownOpen(false);
-
-    if (verseRefs.current[verseId]) {
-      verseRefs.current[verseId].scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-    }
-  };
-
-  const handleBackClick = () => {
-    navigate("/home/quran-topics");
-  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -319,151 +306,181 @@ export default function QuranTopicDetail() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleVerseChange = (verseId) => {
+    setSelectedVerse(verseId);
+    setIsVerseDropdownOpen(false);
+    const verseElement = verseRefs.current[verseId];
+    if (verseElement) {
+      verseElement.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
+  const toggleLike = (verseId) => {
+    setLikedVerses((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(verseId)) {
+        newSet.delete(verseId);
+      } else {
+        newSet.add(verseId);
+      }
+      return newSet;
+    });
+  };
+
+  const handlePlayPause = () => {
+    setIsPlaying(!isPlaying);
+    if (!isPlaying) {
+      setActiveVerse(selectedVerse);
+    }
+  };
+
+  const handleShare = (platform, verseId) => {
+    const verse = verses.find((v) => v.id === verseId);
+    const shareText = `${verse.arabic}\n\n${verse.english}\n\n- Quran ${verse.number}`;
+
+    switch (platform) {
+      case "facebook":
+        window.open(
+          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(shareText)}`,
+          "_blank",
+        );
+        break;
+      case "instagram":
+        alert("Instagram sharing requires their mobile app");
+        break;
+      case "whatsapp":
+        window.open(
+          `https://wa.me/?text=${encodeURIComponent(shareText)}`,
+          "_blank",
+        );
+        break;
+    }
+    setShareMenuVerse(null);
+  };
+
+  const handleMoreAction = (action, verseId) => {
+    const verse = verses.find((v) => v.id === verseId);
+
+    switch (action) {
+      case "copy":
+        navigator.clipboard.writeText(
+          `${verse.arabic}\n\n${verse.english}\n\n- Quran ${verse.number}`,
+        );
+        alert("Verse copied to clipboard");
+        break;
+      case "download":
+        alert("Download feature coming soon");
+        break;
+    }
+    setMoreMenuVerse(null);
+  };
+
   return (
     <div
-      className={`min-h-screen ${
-        theme === "dark" ? "bg-gray-900" : "bg-orange-50"
+      className={`min-h-screen transition-colors duration-300 ${
+        theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-800"
       }`}
       dir={isRTL ? "rtl" : "ltr"}
     >
-      {/* Header Section */}
       <div
-        className={`sticky top-0 z-40 ${
+        className={`sticky top-0 z-40 shadow-md transition-colors duration-300 ${
           theme === "dark" ? "bg-gray-800" : "bg-white"
-        } shadow-sm`}
+        }`}
       >
-        <div className="max-w-7xl mx-auto px-3 md:px-6 py-4 md:py-6">
-          <div className=" flex justify-between space-y-3 md:space-y-4 ">
-            {/* Top Row - Back button and Title */}
-            <div className="flex items-center gap-3 md:gap-4">
+        <div className="max-w-4xl mx-auto px-3 md:px-4 py-3 md:py-4">
+          <div className="flex flex-col gap-3 md:gap-4">
+            <div
+              className={`flex items-start gap-3 md:gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
+            >
               <button
-                onClick={handleBackClick}
-                className={`p-2 rounded-lg transition-all duration-200 ${
+                onClick={() => navigate(-1)}
+                className={`p-2 rounded-lg transition-all ${
                   theme === "dark"
-                    ? "hover:bg-gray-700 text-gray-300 hover:text-white active:bg-gray-600"
-                    : "hover:bg-orange-50 text-gray-600 hover:text-orange-600 active:bg-orange-100"
-                } shadow-sm hover:shadow`}
+                    ? "hover:bg-gray-700 text-gray-300"
+                    : "hover:bg-gray-100 text-gray-600"
+                }`}
               >
                 {isRTL ? (
-                  <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+                  <ChevronRight className="w-5 h-5" />
                 ) : (
-                  <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+                  <ChevronLeft className="w-5 h-5" />
                 )}
               </button>
 
-              <div className="flex-1 min-w-0">
-                <div className="relative" ref={dropdownRef}>
-                  <button
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className={`flex items-center gap-2 group w-full md:w-auto ${
-                      theme === "dark"
-                        ? "text-white hover:text-orange-400"
-                        : "text-gray-800 hover:text-orange-500"
-                    } transition-colors ${isRTL ? "flex-row-reverse" : ""}`}
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <h1
+                    className={`text-lg md:text-2xl font-bold ${
+                      theme === "dark" ? "text-white" : "text-gray-900"
+                    }`}
                   >
-                    {isRTL ? (
-                      <span
-                        className="text-xl md:text-2xl font-bold flex-shrink-0"
-                        style={{ fontFamily: "indopak, sans-serif" }}
-                      >
-                        {currentSubtopicData.arabicName}
-                      </span>
-                    ) : (
-                      <h1 className="text-xl md:text-2xl font-bold truncate">
-                        {currentSubtopicData.titleEn}
-                      </h1>
-                    )}
-                    <ChevronDown
-                      className={`w-4 h-4 md:w-5 md:h-5 flex-shrink-0 transition-transform ${
-                        isDropdownOpen ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
+                    {currentSubtopicData.titleEn}
+                  </h1>
 
-                  {isDropdownOpen && (
-                    <div
-                      className={`absolute top-full mt-2 w-full md:w-96 rounded-lg shadow-lg border py-2 max-h-96 overflow-y-auto z-50 ${
+                  <div className="relative" ref={dropdownRef}>
+                    <button
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      className={`p-1.5 rounded-lg transition-all ${
                         theme === "dark"
-                          ? "bg-gray-800 border-gray-700"
-                          : "bg-white border-gray-200"
-                      } ${isRTL ? "right-0" : "left-0"}`}
+                          ? "hover:bg-gray-700"
+                          : "hover:bg-gray-100"
+                      }`}
                     >
-                      {allSubtopics.map((sub) => (
-                        <button
-                          key={sub.id}
-                          onClick={() => handleSubtopicChange(sub.id)}
-                          className={`w-full px-4 py-3 text-${isRTL ? "right" : "left"} transition-colors ${
-                            subtopic === sub.id
-                              ? `bg-orange-50 ${isRTL ? "border-r-4" : "border-l-4"} border-orange-500`
-                              : theme === "dark"
-                                ? "hover:bg-gray-700"
-                                : "hover:bg-orange-50"
-                          }`}
-                        >
-                          <div
-                            className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""}`}
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform ${
+                          isDropdownOpen ? "rotate-180" : ""
+                        } ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}
+                      />
+                    </button>
+
+                    {isDropdownOpen && (
+                      <div
+                        className={`absolute top-full mt-2 w-56 md:w-64 rounded-lg shadow-lg border py-2 max-h-96 overflow-y-auto z-50 ${
+                          theme === "dark"
+                            ? "bg-gray-800 border-gray-700"
+                            : "bg-white border-gray-200"
+                        } ${isRTL ? "right-0" : "left-0"}`}
+                      >
+                        {allSubtopics.map((sub) => (
+                          <button
+                            key={sub.id}
+                            onClick={() => {
+                              navigate(`/quran/topics/${sub.id}`);
+                              setIsDropdownOpen(false);
+                            }}
+                            className={`w-full px-4 py-2.5 text-${isRTL ? "right" : "left"} transition-colors ${
+                              sub.id === subtopic
+                                ? "bg-orange-50 text-orange-600 font-medium"
+                                : theme === "dark"
+                                  ? "text-gray-300 hover:bg-gray-700"
+                                  : "text-gray-700 hover:bg-gray-50"
+                            }`}
                           >
-                            <div className="flex-1 min-w-0">
-                              <div
-                                className={`flex items-center gap-2 mb-1 ${isRTL ? "flex-row-reverse justify-end" : ""}`}
-                              >
-                                {isRTL ? (
-                                  <span
-                                    className={`text-base flex-shrink-0 ${
-                                      theme === "dark"
-                                        ? "text-white"
-                                        : "text-gray-800"
-                                    } font-medium`}
-                                    style={{
-                                      fontFamily: "indopak, sans-serif",
-                                    }}
-                                  >
-                                    {sub.arabicName}
-                                  </span>
-                                ) : (
-                                  <span
-                                    className={`font-medium truncate ${
-                                      theme === "dark"
-                                        ? "text-white"
-                                        : "text-gray-800"
-                                    }`}
-                                  >
-                                    {sub.titleEn}
-                                  </span>
-                                )}
-                              </div>
-                              <div
-                                className={`text-xs ${
-                                  theme === "dark"
-                                    ? "text-gray-500"
-                                    : "text-gray-500"
-                                }`}
-                              >
-                                <span>{sub.chapter}</span>
-                                <span className="mx-1">•</span>
-                                <span>{sub.totalAyats} Ayats</span>
-                                <span className="mx-1">•</span>
-                                <span>{sub.ahadith} Ahadith</span>
-                              </div>
+                            <div
+                              className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""}`}
+                            >
+                              <span className="text-sm md:text-base">
+                                {sub.titleEn}
+                              </span>
+                              {sub.id === subtopic && (
+                                <svg
+                                  className="w-4 h-4 text-orange-500"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              )}
                             </div>
-                            {subtopic === sub.id && (
-                              <svg
-                                className={`w-5 h-5 text-orange-500 flex-shrink-0 ${isRTL ? "mr-2" : "ml-2"}`}
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                              >
-                                <path
-                                  fillRule="evenodd"
-                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
-                            )}
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div
@@ -584,26 +601,32 @@ export default function QuranTopicDetail() {
 
               <div className="text-right mb-3 md:mb-4">
                 <p
-                  className={`text-xl md:text-2xl leading-loose ${
+                  className={`leading-loose ${
                     theme === "dark" ? "text-white" : "text-gray-800"
                   }`}
-                  style={{ fontFamily: "indopak, sans-serif" }}
+                  style={{
+                    fontFamily: getFontFamily(),
+                    fontSize: `${arabicSize}px`,
+                  }}
                 >
                   {verse.arabic}
                 </p>
               </div>
 
-              <div
-                className={`mb-3 md:mb-4 ${isRTL ? "text-right" : "text-left"}`}
-              >
-                <p
-                  className={`text-sm md:text-base leading-relaxed ${
-                    theme === "dark" ? "text-gray-300" : "text-gray-700"
-                  }`}
+              {showTranslation && (
+                <div
+                  className={`mb-3 md:mb-4 ${isRTL ? "text-right" : "text-left"}`}
                 >
-                  {verse.english}
-                </p>
-              </div>
+                  <p
+                    className={`leading-relaxed ${
+                      theme === "dark" ? "text-gray-300" : "text-gray-700"
+                    }`}
+                    style={{ fontSize: `${translatorSize}px` }}
+                  >
+                    {verse.english}
+                  </p>
+                </div>
+              )}
 
               <div
                 className={`flex items-center gap-2 md:gap-4 pt-3 border-t ${
@@ -646,21 +669,72 @@ export default function QuranTopicDetail() {
                   />
                 </button>
 
-                <button
-                  className={`p-2 rounded-lg transition-all duration-200 ${
-                    theme === "dark"
-                      ? "hover:bg-gray-700 active:bg-gray-600"
-                      : "hover:bg-orange-50 active:bg-orange-100"
-                  }`}
-                >
-                  <Share2
-                    className={`w-4 h-4 md:w-5 md:h-5 ${
+                <div className="relative">
+                  <button
+                    className={`p-2 rounded-lg transition-all duration-200 ${
                       theme === "dark"
-                        ? "text-gray-400 hover:text-orange-400"
-                        : "text-gray-500 hover:text-orange-500"
-                    } transition-colors`}
-                  />
-                </button>
+                        ? "hover:bg-gray-700 active:bg-gray-600"
+                        : "hover:bg-orange-50 active:bg-orange-100"
+                    }`}
+                    onClick={() =>
+                      setShareMenuVerse(
+                        shareMenuVerse === verse.id ? null : verse.id,
+                      )
+                    }
+                  >
+                    <Share2
+                      className={`w-4 h-4 md:w-5 md:h-5 ${
+                        theme === "dark"
+                          ? "text-gray-400 hover:text-orange-400"
+                          : "text-gray-500 hover:text-orange-500"
+                      } transition-colors`}
+                    />
+                  </button>
+
+                  {shareMenuVerse === verse.id && (
+                    <div
+                      className={`absolute bottom-full mb-2 ${isRTL ? "right-0" : "left-0"} w-48 rounded-lg shadow-lg border py-2 z-50 ${
+                        theme === "dark"
+                          ? "bg-gray-800 border-gray-700"
+                          : "bg-white border-gray-200"
+                      }`}
+                    >
+                      <button
+                        onClick={() => handleShare("facebook", verse.id)}
+                        className={`w-full px-4 py-2 flex items-center gap-3 transition-colors ${
+                          theme === "dark"
+                            ? "text-gray-300 hover:bg-gray-700"
+                            : "text-gray-700 hover:bg-gray-50"
+                        }`}
+                      >
+                        <Facebook className="w-4 h-4 text-blue-600" />
+                        <span>Facebook</span>
+                      </button>
+                      <button
+                        onClick={() => handleShare("instagram", verse.id)}
+                        className={`w-full px-4 py-2 flex items-center gap-3 transition-colors ${
+                          theme === "dark"
+                            ? "text-gray-300 hover:bg-gray-700"
+                            : "text-gray-700 hover:bg-gray-50"
+                        }`}
+                      >
+                        <Instagram className="w-4 h-4 text-pink-600" />
+                        <span>Instagram</span>
+                      </button>
+                      <button
+                        onClick={() => handleShare("whatsapp", verse.id)}
+                        className={`w-full px-4 py-2 flex items-center gap-3 transition-colors ${
+                          theme === "dark"
+                            ? "text-gray-300 hover:bg-gray-700"
+                            : "text-gray-700 hover:bg-gray-50"
+                        }`}
+                      >
+                        <MessageCircle className="w-4 h-4 text-green-600" />
+                        <span>WhatsApp</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
 
                 <button
                   className={`p-2 rounded-lg transition-all duration-200 ${
@@ -678,21 +752,61 @@ export default function QuranTopicDetail() {
                   />
                 </button>
 
-                <button
-                  className={`p-2 rounded-lg transition-all duration-200 ${
-                    theme === "dark"
-                      ? "hover:bg-gray-700 active:bg-gray-600"
-                      : "hover:bg-orange-50 active:bg-orange-100"
-                  }`}
-                >
-                  <MoreVertical
-                    className={`w-4 h-4 md:w-5 md:h-5 ${
+                <div className="relative">
+                  <button
+                    className={`p-2 rounded-lg transition-all duration-200 ${
                       theme === "dark"
-                        ? "text-gray-400 hover:text-orange-400"
-                        : "text-gray-500 hover:text-orange-500"
-                    } transition-colors`}
-                  />
-                </button>
+                        ? "hover:bg-gray-700 active:bg-gray-600"
+                        : "hover:bg-orange-50 active:bg-orange-100"
+                    }`}
+                    onClick={() =>
+                      setMoreMenuVerse(
+                        moreMenuVerse === verse.id ? null : verse.id,
+                      )
+                    }
+                  >
+                    <MoreVertical
+                      className={`w-4 h-4 md:w-5 md:h-5 ${
+                        theme === "dark"
+                          ? "text-gray-400 hover:text-orange-400"
+                          : "text-gray-500 hover:text-orange-500"
+                      } transition-colors`}
+                    />
+                  </button>
+
+                  {moreMenuVerse === verse.id && (
+                    <div
+                      className={`absolute bottom-full mb-2 ${isRTL ? "right-0" : "left-0"} w-48 rounded-lg shadow-lg border py-2 z-50 ${
+                        theme === "dark"
+                          ? "bg-gray-800 border-gray-700"
+                          : "bg-white border-gray-200"
+                      }`}
+                    >
+                      <button
+                        onClick={() => handleMoreAction("copy", verse.id)}
+                        className={`w-full px-4 py-2 flex items-center gap-3 transition-colors ${
+                          theme === "dark"
+                            ? "text-gray-300 hover:bg-gray-700"
+                            : "text-gray-700 hover:bg-gray-50"
+                        }`}
+                      >
+                        <Copy className="w-4 h-4" />
+                        <span>Copy Text</span>
+                      </button>
+                      <button
+                        onClick={() => handleMoreAction("download", verse.id)}
+                        className={`w-full px-4 py-2 flex items-center gap-3 transition-colors ${
+                          theme === "dark"
+                            ? "text-gray-300 hover:bg-gray-700"
+                            : "text-gray-700 hover:bg-gray-50"
+                        }`}
+                      >
+                        <Download className="w-4 h-4" />
+                        <span>Download</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
