@@ -45,26 +45,26 @@ export default function Navbar({ isMenuOpen, toggleMenu }) {
           : "bg-[#DA885633] text-gray-800"
       }`}
     >
-      <div className="flex items-center justify-between gap-2 md:gap-4 relative">
-        {/* Left Side: Menu Button and Title */}
-        <div className="flex items-center gap-2 md:gap-4 min-w-0">
+      <div className="flex items-center gap-2 md:gap-4 relative">
+        {/* Left Side: Menu Button and Logo */}
+        <div className="flex items-center gap-2 md:gap-4 min-w-0 flex-1 md:flex-none md:w-auto">
           <button
             onClick={toggleMenu}
             className="text-primary hover:text-orange-500 transition-colors flex-shrink-0"
           >
             <Menu size={24} className="md:w-7 md:h-7" />
           </button>
-          <div
-            className={`text-base md:text-xl font-bold text-primary truncate ${isRTL ? "font-urdu" : ""}`}
-          >
-            {t("app_title")}
-          </div>
+          <img
+            src="/logo.png"
+            alt={t("app_title")}
+            className="h-8 md:h-10 w-auto object-contain"
+          />
         </div>
 
-        {/* Search Bar - Hidden on mobile, visible on tablet+ */}
-        <div className="hidden md:flex flex-1 max-w-xl">
+        {/* Search Bar - Hidden on mobile, visible on tablet+ - PERFECTLY CENTERED */}
+        <div className="hidden md:flex flex-1 justify-center px-4">
           <div
-            className={`relative flex items-center w-full rounded-full shadow-sm ${
+            className={`relative flex items-center w-full max-w-2xl rounded-full shadow-sm ${
               theme === "dark" ? "bg-gray-700" : "bg-white"
             }`}
           >
@@ -93,7 +93,7 @@ export default function Navbar({ isMenuOpen, toggleMenu }) {
 
         {/* Right Side Icons */}
         <div
-          className="flex items-center gap-1 md:gap-3 relative"
+          className="flex items-center gap-1 md:gap-3 relative flex-1 md:flex-none md:w-auto justify-end"
           ref={dropdownRef}
         >
           {/* Bookmark Icon - Hidden on mobile */}
