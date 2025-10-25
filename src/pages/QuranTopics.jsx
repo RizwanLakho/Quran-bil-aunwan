@@ -11,18 +11,18 @@ export default function QuranTopics() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filterButtons = [
-    { id: "all", label: "All Topics", icon: "📚" },
-    { id: "worship", label: "Worship", icon: "🤲" },
-    { id: "prophets", label: "Prophets", icon: "👤" },
-    { id: "beliefs", label: "Beliefs", icon: "💫" },
-    { id: "afterlife", label: "Afterlife", icon: "🌙" },
+    { id: "all", label: t("filter_all_topics"), icon: "📚" },
+    { id: "worship", label: t("filter_worship"), icon: "🤲" },
+    { id: "prophets", label: t("filter_prophets"), icon: "👤" },
+    { id: "beliefs", label: t("filter_beliefs"), icon: "💫" },
+    { id: "afterlife", label: t("filter_afterlife"), icon: "🌙" },
   ];
 
   const topicCards = [
     {
       id: "names-of-allah",
       title: t("names_of_allah"),
-      titleEn: "Names of Allah",
+      titleEn: t("names_of_allah"),
       arabicName: "أسماء الله",
       description: "The beautiful names and attributes of Allah",
       chapter: "Tawheed",
@@ -35,7 +35,7 @@ export default function QuranTopics() {
     {
       id: "Attributes",
       title: t("attributes"),
-      titleEn: "Attributes",
+      titleEn: t("attributes"),
       arabicName: "صفات الله",
       description: "Divine attributes and characteristics",
       chapter: "Aqeedah",
@@ -48,7 +48,7 @@ export default function QuranTopics() {
     {
       id: "Worship",
       title: t("worship"),
-      titleEn: "Worship",
+      titleEn: t("worship"),
       arabicName: "العبادة",
       description: "Understanding worship and devotion",
       chapter: "Ibadat",
@@ -61,7 +61,7 @@ export default function QuranTopics() {
     {
       id: "prophets",
       title: t("prophets"),
-      titleEn: "Prophets",
+      titleEn: t("prophets"),
       arabicName: "الأنبياء",
       description: "Stories and lessons from the prophets",
       chapter: "Nabuwat",
@@ -74,7 +74,7 @@ export default function QuranTopics() {
     {
       id: "prophet-muhammad",
       title: t("prophet_muhammad"),
-      titleEn: "Prophet Muhammad",
+      titleEn: t("prophet_muhammad"),
       arabicName: "النبي محمد",
       description: "Life and teachings of Prophet Muhammad (PBUH)",
       chapter: "Sirah",
@@ -87,7 +87,7 @@ export default function QuranTopics() {
     {
       id: "revelation",
       title: t("revelation"),
-      titleEn: "Revelation",
+      titleEn: t("revelation"),
       arabicName: "الوحي",
       description: "Divine revelation and guidance",
       chapter: "Wahy",
@@ -100,7 +100,7 @@ export default function QuranTopics() {
     {
       id: "miracles",
       title: t("miracles"),
-      titleEn: "Miracles",
+      titleEn: t("miracles"),
       arabicName: "المعجزات",
       description: "Miracles in the Quran",
       chapter: "Mu'jizat",
@@ -113,7 +113,7 @@ export default function QuranTopics() {
     {
       id: "imams",
       title: t("imams"),
-      titleEn: "Imams",
+      titleEn: t("imams"),
       arabicName: "الأئمة",
       description: "Leadership and guidance in Islam",
       chapter: "Imamat",
@@ -126,7 +126,7 @@ export default function QuranTopics() {
     {
       id: "guidance",
       title: t("guidance"),
-      titleEn: "Guidance",
+      titleEn: t("guidance"),
       arabicName: "الهداية",
       description: "Divine guidance and wisdom",
       chapter: "Hidayah",
@@ -139,7 +139,7 @@ export default function QuranTopics() {
     {
       id: "resurrection",
       title: t("resurrection"),
-      titleEn: "Resurrection",
+      titleEn: t("resurrection"),
       arabicName: "البعث",
       description: "Day of resurrection and afterlife",
       chapter: "Qiyamah",
@@ -152,7 +152,7 @@ export default function QuranTopics() {
     {
       id: "heaven",
       title: t("heaven_jannah"),
-      titleEn: "Heaven (Jannah)",
+      titleEn: t("heaven_jannah"),
       arabicName: "الجنة",
       description: "Paradise and eternal bliss",
       chapter: "Jannah",
@@ -165,7 +165,7 @@ export default function QuranTopics() {
     {
       id: "prayer",
       title: t("prayer_salah"),
-      titleEn: "Prayer (Salah)",
+      titleEn: t("prayer_salah"),
       arabicName: "الصلاة",
       description: "The importance and practice of prayer",
       chapter: "Salah",
@@ -198,111 +198,99 @@ export default function QuranTopics() {
       }`}
     >
       {/* Sticky Header Section with Background */}
-      <div
-        className="relative overflow-hidden shadow-2xl"
-        style={{
-          borderRadius: "0 0 50% 50% / 0 0 20% 20%",
-          backgroundImage: "url('/Quran.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        {/* 🔹 Background Quran Image */}
-        <div className="absolute inset-0 opacity-10">
-          <img
-            src="/quran.png"
-            alt="Quran Background"
-            className="w-full h-full object-cover"
-          />
-        </div>
-
-        {/* 🔹 Decorative Pattern Background */}
-        <div className="absolute inset-0 opacity-5">
-          <svg
-            className="w-full h-full"
-            xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="none"
-          >
-            <pattern
-              id="pattern"
-              x="0"
-              y="0"
-              width="40"
-              height="40"
-              patternUnits="userSpaceOnUse"
-            >
-              <circle cx="20" cy="20" r="2" fill="white" />
-            </pattern>
-            <rect width="100%" height="100%" fill="url(#pattern)" />
-          </svg>
-        </div>
-
-        {/* 🔹 Overlay Color */}
+      <div className="sticky top-0 z-10">
         <div
-          className={`absolute inset-0 ${
-            theme === "dark" ? "bg-black/60" : "bg-orange-500/60"
+          className={`relative overflow-hidden shadow-2xl ${
+            theme === "dark"
+              ? "bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800"
+              : "bg-gradient-to-br from-orange-500 via-amber-500 to-orange-600"
           }`}
-        ></div>
+          style={{ borderRadius: "0 0 50% 50% / 0 0 20% 20%" }}
+        >
+          {/* Background Quran Image */}
+          <div className="absolute inset-0 opacity-10">
+            <img
+              src="/quran.png"
+              alt="Quran Background"
+              className="w-full h-full object-cover"
+            />
+          </div>
 
-        {/* 🔹 Main Header Content */}
-        <div className="relative z-10 px-4 py-6 md:py-8">
-          <div className="flex flex-col items-center justify-center text-center gap-3 md:gap-4">
-            {/* Logo and Title */}
-            <div className="flex items-center justify-center gap-3 md:gap-4">
-              <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 p-2 md:p-2.5 shadow-lg">
-                <img
-                  src="/icon.png"
-                  alt="Quran Icon"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-lg">
-                {t("quranic_topics")}
-              </h1>
-            </div>
+          {/* Decorative Pattern Background */}
+          <div className="absolute inset-0 opacity-5">
+            <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+              <pattern
+                id="pattern"
+                x="0"
+                y="0"
+                width="40"
+                height="40"
+                patternUnits="userSpaceOnUse"
+              >
+                <circle cx="20" cy="20" r="2" fill="white" />
+              </pattern>
+              <rect width="100%" height="100%" fill="url(#pattern)" />
+            </svg>
+          </div>
 
-            {/* Search Bar */}
-            <div className="w-full max-w-md mx-auto px-2">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search topics..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-4 py-2 md:py-2.5 pl-10 rounded-full border-2 border-primary border-opacity-30 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 text-sm md:text-base bg-white/20 text-primary placeholder-white placeholder-opacity-80 backdrop-blur-sm"
-                />
-                <svg
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-primary opacity-70"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                    clipRule="evenodd"
+          {/* Content - Centered */}
+          <div className="relative px-4 py-6 md:py-8">
+            <div className="flex flex-col items-center justify-center text-center gap-3 md:gap-4">
+              {/* Logo and Title in one line */}
+              <div className="flex items-center justify-center gap-3 md:gap-4">
+                <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-white bg-opacity-20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 p-2 md:p-2.5 shadow-lg">
+                  <img
+                    src="/icon.png"
+                    alt="Quran Icon"
+                    className="w-full h-full object-contain"
                   />
-                </svg>
+                </div>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-lg">
+                  {t("quranic_topics")}
+                </h1>
               </div>
-            </div>
 
-            {/* Filter Buttons */}
-            <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 px-4 pb-2">
-              {filterButtons.map((button) => (
-                <button
-                  key={button.id}
-                  onClick={() => setSelectedFilter(button.id)}
-                  className={`flex items-center gap-2 px-3 py-1.5 md:px-5 md:py-2.5 rounded-full font-medium text-xs md:text-sm transition-all duration-300 transform hover:scale-105 ${
-                    selectedFilter === button.id
-                      ? `bg-white bg-opacity-95 shadow-lg ${
-                          theme === "dark" ? "text-gray-800" : "text-orange-500"
-                        }`
-                      : "bg-white/25 text-black hover:bg-opacity-35 backdrop-blur-md border border-white/40"
-                  }`}
-                >
-                  <span className="text-base md:text-lg">{button.icon}</span>
-                  <span className="hidden sm:inline">{button.label}</span>
-                </button>
-              ))}
+              {/* Search Bar */}
+              <div className="w-full max-w-md mx-auto px-2">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder={t("search_topics")}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full px-4 py-2 md:py-2.5 pl-10 rounded-full border-2 border-white border-opacity-30 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 text-sm md:text-base bg-white bg-opacity-20 text-white placeholder-white placeholder-opacity-80 backdrop-blur-sm"
+                  />
+                  <svg
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-white opacity-70"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Filter Buttons - WITH TRANSLATIONS */}
+              <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 px-4 pb-2">
+                {filterButtons.map((button) => (
+                  <button
+                    key={button.id}
+                    onClick={() => setSelectedFilter(button.id)}
+                    className={`flex items-center gap-2 px-3 py-1.5 md:px-5 md:py-2.5 rounded-full font-medium text-xs md:text-sm transition-all duration-300 transform hover:scale-105 ${
+                      selectedFilter === button.id
+                        ? "bg-white bg-opacity-95 text-orange-500 shadow-lg"
+                        : "bg-white bg-opacity-25 text-primary hover:bg-opacity-35 backdrop-blur-md border border-primary border-opacity-40"
+                    }`}
+                  >
+                    <span className="text-base md:text-lg">{button.icon}</span>
+                    <span className="hidden sm:inline">{button.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -401,7 +389,7 @@ export default function QuranTopics() {
                       </div>
                     </div>
 
-                    {/* Stats */}
+                    {/* Stats - WITH TRANSLATIONS */}
                     <div
                       className={`flex items-center gap-3 text-sm mb-3 ${
                         theme === "dark" ? "text-gray-400" : "text-gray-600"
@@ -421,7 +409,7 @@ export default function QuranTopics() {
                             d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                           />
                         </svg>
-                        {card.totalAyats} Ayats
+                        {card.totalAyats} {t("ayats")}
                       </span>
                       <span
                         className={
@@ -444,7 +432,7 @@ export default function QuranTopics() {
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                           />
                         </svg>
-                        {card.ahadith} Ahadith
+                        {card.ahadith} {t("ahadith")}
                       </span>
                     </div>
                   </div>
@@ -475,13 +463,19 @@ export default function QuranTopics() {
             </div>
           ) : (
             <div className="text-center py-16">
-              <h2 className="text-2xl font-semibold mb-2">No Topics Found</h2>
+              <h2
+                className={`text-2xl font-semibold mb-2 ${
+                  theme === "dark" ? "text-white" : "text-gray-800"
+                }`}
+              >
+                {t("no_topics_found")}
+              </h2>
               <p
                 className={`${
                   theme === "dark" ? "text-gray-400" : "text-gray-600"
                 }`}
               >
-                Try adjusting your search or filter.
+                {t("try_adjusting_search")}
               </p>
             </div>
           )}
