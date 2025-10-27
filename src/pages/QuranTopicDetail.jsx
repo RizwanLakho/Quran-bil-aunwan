@@ -388,7 +388,7 @@ export default function QuranTopicDetail() {
         }`}
       >
         <div className="max-w-4xl mx-auto px-3 md:px-4 py-3 md:py-4">
-          <div className="flex flex-col gap-3 md:gap-4">
+          <div className="flex justify-between gap-3 md:gap-4">
             <div
               className={`flex items-start gap-3 md:gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
             >

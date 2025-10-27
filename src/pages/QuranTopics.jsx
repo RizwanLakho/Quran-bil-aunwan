@@ -192,9 +192,7 @@ export default function QuranTopics() {
   return (
     <div
       className={`flex flex-col h-screen transition-colors duration-300 ${
-        theme === "dark"
-          ? "bg-gray-900 text-white"
-          : "bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100"
+        theme === "dark" ? "bg-gray-900 text-white" : "bg-[#DA885633]"
       }`}
     >
       {/* Sticky Header Section with Background */}
@@ -203,7 +201,7 @@ export default function QuranTopics() {
           className={`relative overflow-hidden shadow-2xl ${
             theme === "dark"
               ? "bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800"
-              : "bg-gradient-to-br from-orange-500 via-amber-500 to-orange-600"
+              : "bg-primary"
           }`}
           style={{ borderRadius: "0 0 50% 50% / 0 0 20% 20%" }}
         >
@@ -212,7 +210,7 @@ export default function QuranTopics() {
             <img
               src="/quran.png"
               alt="Quran Background"
-              className="w-full h-full object-cover"
+              className=" absolute right-0 top-1/2 -translate-y-1/2 w-[50%] object-contain"
             />
           </div>
 
@@ -282,7 +280,7 @@ export default function QuranTopics() {
                     onClick={() => setSelectedFilter(button.id)}
                     className={`flex items-center gap-2 px-3 py-1.5 md:px-5 md:py-2.5 rounded-full font-medium text-xs md:text-sm transition-all duration-300 transform hover:scale-105 ${
                       selectedFilter === button.id
-                        ? "bg-white bg-opacity-95 text-orange-500 shadow-lg"
+                        ? "bg-white bg-opacity-95 text-primary shadow-lg"
                         : "bg-white bg-opacity-25 text-primary hover:bg-opacity-35 backdrop-blur-md border border-primary border-opacity-40"
                     }`}
                   >

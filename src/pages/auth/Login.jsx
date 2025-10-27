@@ -33,7 +33,7 @@ export default function SignIn() {
         <div className="z-10 text-center max-w-md">
           {/* Logo */}
           <div className="inline-flex items-center justify-center w-24 h-24 bg-orange-500 rounded-full shadow-2xl mb-8">
-            <BookOpen className="w-12 h-12 text-white" />
+            <img src="./icon.png" alt="Logo" className="w-35 object-contain" />
           </div>
 
           {/* Brand Name */}

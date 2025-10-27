@@ -57,7 +57,7 @@ export default function Navbar({ isMenuOpen, toggleMenu }) {
           <img
             src="/logo.png"
             alt={t("app_title")}
-            className="h-8 md:h-10 w-auto object-contain"
+            className="h-8 md:h-14 w-auto object-contain"
           />
         </div>
 

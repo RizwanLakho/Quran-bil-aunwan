@@ -133,7 +133,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
               className={({ isActive }) =>
                 `w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
                   isActive
-                    ? "bg-orange-500 text-white shadow-sm"
+                    ? "bg-primary text-white shadow-sm"
                     : theme === "dark"
                       ? "text-gray-300 hover:bg-gray-700"
                       : "text-gray-700 hover:bg-orange-50"
@@ -160,7 +160,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
               className={({ isActive }) =>
                 `w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
                   isActive
-                    ? "bg-orange-500 text-white shadow-sm"
+                    ? "bg-primary text-white shadow-sm"
                     : theme === "dark"
                       ? "text-gray-300 hover:bg-gray-700"
                       : "text-gray-700 hover:bg-orange-50"
@@ -190,7 +190,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                 className={({ isActive }) =>
                   `flex-shrink-0 w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm mb-1 ${
                     isActive
-                      ? "bg-orange-500 text-white shadow-sm"
+                      ? "bg-primary text-white shadow-sm"
                       : theme === "dark"
                         ? "text-gray-300 hover:bg-gray-700"
                         : "text-gray-700 hover:bg-orange-50"
@@ -216,7 +216,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                         }`}
                       >
                         <div className="flex items-center gap-2">
-                          <Folder size={16} className="text-orange-400" />
+                          <Folder size={16} className="text-primary" />
                           <span className="text-xs font-medium">
                             {folder.title}
                           </span>
@@ -238,7 +238,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                               className={({ isActive }) =>
                                 `w-full flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition ${
                                   isActive
-                                    ? "bg-orange-100 text-orange-700"
+                                    ? "bg-orange-100 text-primary"
                                     : theme === "dark"
                                       ? "text-gray-400 hover:bg-gray-700"
                                       : "text-gray-600 hover:bg-orange-50"
@@ -262,7 +262,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
               className={({ isActive }) =>
                 `flex-shrink-0 w-full flex flex-col items-center justify-center gap-1 px-1.5 py-2 rounded-lg transition text-sm mt-1 ${
                   isActive
-                    ? "bg-orange-500 text-white shadow-sm"
+                    ? "bg-primary text-white shadow-sm"
                     : theme === "dark"
                       ? "text-gray-300 hover:bg-gray-700"
                       : "text-gray-700 hover:bg-orange-50"
@@ -296,7 +296,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
               }`}
               title={!isMenuOpen ? t("history") : ""}
             >
-              <Clock size={18} className="text-orange-500" />
+              <Clock size={18} className="text-primary" />
               {isMenuOpen && (
                 <span className="font-medium text-sm">{t("history")}</span>
               )}
@@ -314,7 +314,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
               className={({ isActive }) =>
                 `w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
                   isActive
-                    ? "bg-orange-500 text-white shadow-sm"
+                    ? "bg-primary text-white shadow-sm"
                     : theme === "dark"
                       ? "text-gray-300 hover:bg-gray-700"
                       : "text-gray-700 hover:bg-orange-50"
@@ -322,7 +322,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
               }
               title={!isMenuOpen ? t("your_topics") : ""}
             >
-              <BookOpen size={18} className="text-orange-500" />
+              <BookOpen size={18} className="text-primary" />
               {isMenuOpen && (
                 <span className="font-medium text-sm">{t("your_topics")}</span>
               )}
@@ -345,7 +345,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
               }`}
               title={!isMenuOpen ? t("liked") : ""}
             >
-              <Heart size={18} className="text-orange-500" />
+              <Heart size={18} className="text-primary" />
               {isMenuOpen && (
                 <span className="font-medium text-sm">{t("liked")}</span>
               )}
@@ -368,7 +368,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
               }`}
               title={!isMenuOpen ? t("favorites") : ""}
             >
-              <Bookmark size={18} className="text-orange-500" />
+              <Bookmark size={18} className="text-primary" />
               {isMenuOpen && (
                 <span className="font-medium text-sm">{t("favorites")}</span>
               )}
@@ -396,7 +396,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
               }`}
               title={!isMenuOpen ? t("settings") : ""}
             >
-              <Settings size={18} className="text-orange-500" />
+              <Settings size={18} className="text-primary" />
               {isMenuOpen && (
                 <span className="font-medium text-sm">{t("settings")}</span>
               )}
@@ -428,7 +428,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                       isRTL ? "flex-row-reverse" : ""
                     }`}
                   >
-                    <Globe size={16} className="text-orange-500" />
+                    <Globe size={16} className="text-primary" />
                     <span
                       className={`font-medium text-xs ${
                         isRTL ? "font-urdu" : ""
@@ -498,7 +498,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                   className={({ isActive }) =>
                     `w-full flex items-center gap-2 px-3 py-2 rounded-lg transition text-sm ${
                       isActive
-                        ? "bg-orange-500 text-white shadow-sm"
+                        ? "bg-primary text-white shadow-sm"
                         : theme === "dark"
                           ? "text-gray-300 hover:bg-gray-700"
                           : "text-gray-700 hover:bg-orange-50"
@@ -515,7 +515,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                   className={({ isActive }) =>
                     `w-full flex items-center gap-2 px-3 py-2 rounded-lg transition text-sm ${
                       isActive
-                        ? "bg-orange-500 text-white shadow-sm"
+                        ? "bg-primary text-white shadow-sm"
                         : theme === "dark"
                           ? "text-gray-300 hover:bg-gray-700"
                           : "text-gray-700 hover:bg-orange-50"
@@ -532,7 +532,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                   className={({ isActive }) =>
                     `w-full flex items-center gap-2 px-3 py-2 rounded-lg transition text-sm ${
                       isActive
-                        ? "bg-orange-500 text-white shadow-sm"
+                        ? "bg-primary text-white shadow-sm"
                         : theme === "dark"
                           ? "text-gray-300 hover:bg-gray-700"
                           : "text-gray-700 hover:bg-orange-50"
@@ -558,7 +558,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                         }`}
                       >
                         <div className="flex items-center gap-2">
-                          <Folder size={16} className="text-orange-400" />
+                          <Folder size={16} className="text-primary" />
                           <span className="text-xs font-medium">
                             {folder.title}
                           </span>
@@ -580,7 +580,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                               className={({ isActive }) =>
                                 `w-full flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition ${
                                   isActive
-                                    ? "bg-orange-100 text-orange-700"
+                                    ? "bg-orange-100 text-primary"
                                     : theme === "dark"
                                       ? "text-gray-400 hover:bg-gray-700"
                                       : "text-gray-600 hover:bg-orange-50"
@@ -609,7 +609,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                       : "text-gray-700 hover:bg-orange-50"
                   }`}
                 >
-                  <Clock size={18} className="text-orange-500" />
+                  <Clock size={18} className="text-primary" />
                   <span className="font-medium text-sm">{t("history")}</span>
                 </button>
 
@@ -618,14 +618,14 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                   className={({ isActive }) =>
                     `w-full flex items-center gap-2 px-3 py-2 rounded-lg transition text-sm ${
                       isActive
-                        ? "bg-orange-500 text-white shadow-sm"
+                        ? "bg-primary text-white shadow-sm"
                         : theme === "dark"
                           ? "text-gray-300 hover:bg-gray-700"
                           : "text-gray-700 hover:bg-orange-50"
                     }`
                   }
                 >
-                  <BookOpen size={18} className="text-orange-500" />
+                  <BookOpen size={18} className="text-primary" />
                   <span className="font-medium text-sm">
                     {t("your_topics")}
                   </span>
@@ -638,7 +638,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                       : "text-gray-700 hover:bg-orange-50"
                   }`}
                 >
-                  <Heart size={18} className="text-orange-500" />
+                  <Heart size={18} className="text-primary" />
                   <span className="font-medium text-sm">{t("liked")}</span>
                 </button>
 
@@ -649,7 +649,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                       : "text-gray-700 hover:bg-orange-50"
                   }`}
                 >
-                  <Bookmark size={18} className="text-orange-500" />
+                  <Bookmark size={18} className="text-primary" />
                   <span className="font-medium text-sm">{t("favorites")}</span>
                 </button>
 
@@ -665,7 +665,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                       : "text-gray-700 hover:bg-orange-50"
                   }`}
                 >
-                  <Settings size={18} className="text-orange-500" />
+                  <Settings size={18} className="text-primary" />
                   <span className="font-medium text-sm">{t("settings")}</span>
                 </button>
 
@@ -687,7 +687,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                         isRTL ? "flex-row-reverse" : ""
                       }`}
                     >
-                      <Globe size={16} className="text-orange-500" />
+                      <Globe size={16} className="text-primary" />
                       <span
                         className={`font-medium text-xs ${
                           isRTL ? "font-urdu" : ""
