@@ -115,7 +115,7 @@ export default function TopicsData() {
       className={`min-h-screen transition-colors duration-300 ${
         theme === "dark"
           ? "bg-gray-900 text-gray-100"
-          : "bg-[#DA885633] text-gray-800"
+          : "bg-orange-50 text-gray-800"
       }`}
     >
       <main className="max-w-7xl mx-auto p-6 space-y-6">

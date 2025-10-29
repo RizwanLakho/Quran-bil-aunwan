@@ -94,7 +94,7 @@ export default function Home() {
             <Routes>
               <Route
                 path="/"
-                element={<Navigate to="/home/quran-topics" replace />}
+                element={<Navigate to="quran-topics" replace />}
               />
               <Route path="overview" element={<Overview />} />
               <Route path="read-quran" element={<QuranReadingPage />} />
@@ -107,10 +107,6 @@ export default function Home() {
               <Route path="add-topic" element={<AddTopic />} />
               <Route path="about-us" element={<AboutUs />} />
               <Route path="contact-us" element={<ContactUs />} />
-              <Route
-                path="*"
-                element={<Navigate to="/home/quran-topics" replace />}
-              />
             </Routes>
           </div>
 

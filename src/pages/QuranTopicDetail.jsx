@@ -378,7 +378,9 @@ export default function QuranTopicDetail() {
   return (
     <div
       className={`min-h-screen transition-colors duration-300 ${
-        theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-800"
+        theme === "dark"
+          ? "bg-gray-900 text-white"
+          : "bg-orange-50 text-gray-800"
       }`}
       dir={isRTL ? "rtl" : "ltr"}
     >
@@ -445,12 +447,12 @@ export default function QuranTopicDetail() {
                           <button
                             key={sub.id}
                             onClick={() => {
-                              navigate(`/quran/topics/${sub.id}`);
+                              navigate(`/home/quran-topics/${sub.id}`);
                               setIsDropdownOpen(false);
                             }}
                             className={`w-full px-4 py-2.5 text-${isRTL ? "right" : "left"} transition-colors ${
                               sub.id === subtopic
-                                ? "bg-orange-50 text-orange-600 font-medium"
+                                ? "bg-orange-50 text-primary font-medium"
                                 : theme === "dark"
                                   ? "text-gray-300 hover:bg-gray-700"
                                   : "text-gray-700 hover:bg-gray-50"
@@ -464,7 +466,7 @@ export default function QuranTopicDetail() {
                               </span>
                               {sub.id === subtopic && (
                                 <svg
-                                  className="w-4 h-4 text-orange-500"
+                                  className="w-4 h-4 text-primary"
                                   fill="currentColor"
                                   viewBox="0 0 20 20"
                                 >
@@ -503,7 +505,7 @@ export default function QuranTopicDetail() {
             >
               <button
                 onClick={handlePlayPause}
-                className="px-4 md:px-6 py-2 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-full flex items-center gap-2 hover:from-orange-500 hover:to-orange-600 transition-all shadow-md hover:shadow-lg active:scale-95 text-sm md:text-base"
+                className="px-4 md:px-6 py-2 bg-primary text-white rounded-full flex items-center gap-2 hover:from-orange-500 hover:to-orange-600 transition-all shadow-md hover:shadow-lg active:scale-95 text-sm md:text-base"
               >
                 <Play className="w-4 h-4" fill="white" />
                 <span>Play Now</span>
@@ -512,7 +514,7 @@ export default function QuranTopicDetail() {
               <div className="relative" ref={verseDropdownRef}>
                 <button
                   onClick={() => setIsVerseDropdownOpen(!isVerseDropdownOpen)}
-                  className={`px-3 md:px-4 py-2 border rounded-full text-orange-500 flex items-center gap-2 text-sm md:text-base transition-all shadow-sm hover:shadow ${
+                  className={`px-3 md:px-4 py-2 border rounded-full text-primary flex items-center gap-2 text-sm md:text-base transition-all shadow-sm hover:shadow ${
                     theme === "dark"
                       ? "border-gray-600 hover:bg-gray-700 bg-gray-800"
                       : "border-orange-200 hover:bg-orange-50 bg-white"
@@ -540,7 +542,7 @@ export default function QuranTopicDetail() {
                         onClick={() => handleVerseChange(verse.id)}
                         className={`w-full px-4 py-2 text-${isRTL ? "right" : "left"} transition-colors ${
                           selectedVerse === verse.id
-                            ? "bg-orange-50 text-orange-600 font-medium"
+                            ? "bg-orange-50 text-primary font-medium"
                             : theme === "dark"
                               ? "text-gray-300 hover:bg-gray-700"
                               : "text-gray-700 hover:bg-gray-50"
@@ -573,7 +575,7 @@ export default function QuranTopicDetail() {
             data-verse-id={verse.id}
             className={`rounded-xl shadow-sm border hover:shadow-lg transition-all duration-200 ${
               verse.id === selectedVerse
-                ? "border-orange-400 ring-2 ring-orange-200"
+                ? "border-primary ring-2 ring-orange-200"
                 : theme === "dark"
                   ? "border-gray-700"
                   : "border-gray-200"
@@ -581,7 +583,7 @@ export default function QuranTopicDetail() {
           >
             {verse.id === activeVerse && (
               <div
-                className={`bg-gradient-to-r from-orange-400 to-orange-500 text-white px-3 md:px-4 py-2 rounded-t-xl flex items-center gap-2 ${isRTL ? "flex-row-reverse justify-start" : "justify-end"}`}
+                className={`bg-primary text-white px-3 md:px-4 py-2 rounded-t-xl flex items-center gap-2 ${isRTL ? "flex-row-reverse justify-start" : "justify-end"}`}
               >
                 <span className="text-xs md:text-sm font-medium">
                   {verse.audioLabel || "Currently Reading"}
@@ -594,7 +596,7 @@ export default function QuranTopicDetail() {
               <div
                 className={`flex items-center gap-2 mb-3 md:mb-4 ${isRTL ? "flex-row-reverse" : ""}`}
               >
-                <span className="text-orange-500 font-semibold text-sm md:text-base bg-orange-50 px-2 py-1 rounded">
+                <span className="text-primary font-semibold text-sm md:text-base bg-orange-50 px-2 py-1 rounded">
                   {verse.number}
                 </span>
               </div>
@@ -644,8 +646,8 @@ export default function QuranTopicDetail() {
                   <Play
                     className={`w-4 h-4 md:w-5 md:h-5 ${
                       theme === "dark"
-                        ? "text-gray-400 hover:text-orange-400"
-                        : "text-gray-500 hover:text-orange-500"
+                        ? "text-gray-400 hover:text-primary"
+                        : "text-gray-500 hover:text-primary"
                     } transition-colors`}
                   />
                 </button>
@@ -685,7 +687,7 @@ export default function QuranTopicDetail() {
                     <Share2
                       className={`w-4 h-4 md:w-5 md:h-5 ${
                         theme === "dark"
-                          ? "text-gray-400 hover:text-orange-400"
+                          ? "text-gray-400 hover:text-primary"
                           : "text-gray-500 hover:text-orange-500"
                       } transition-colors`}
                     />
@@ -746,7 +748,7 @@ export default function QuranTopicDetail() {
                   <Bookmark
                     className={`w-4 h-4 md:w-5 md:h-5 ${
                       theme === "dark"
-                        ? "text-gray-400 hover:text-orange-400"
+                        ? "text-gray-400 hover:text-primary"
                         : "text-gray-500 hover:text-orange-500"
                     } transition-colors`}
                   />
@@ -768,7 +770,7 @@ export default function QuranTopicDetail() {
                     <MoreVertical
                       className={`w-4 h-4 md:w-5 md:h-5 ${
                         theme === "dark"
-                          ? "text-gray-400 hover:text-orange-400"
+                          ? "text-gray-400 hover:text-primary"
                           : "text-gray-500 hover:text-orange-500"
                       } transition-colors`}
                     />

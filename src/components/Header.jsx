@@ -310,7 +310,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
             </button>
 
             <NavLink
-              to="/topics"
+              to="/home/topics-data"
               className={({ isActive }) =>
                 `w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
                   isActive
@@ -614,7 +614,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                 </button>
 
                 <NavLink
-                  to="/topics"
+                  to="/home/topics-data"
                   className={({ isActive }) =>
                     `w-full flex items-center gap-2 px-3 py-2 rounded-lg transition text-sm ${
                       isActive

@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Home from "./pages/Home";
-import Topics from "./pages/Topics";
+
 import SignIn from "./pages/auth/Login";
 import SignUp from "./pages/auth/Signup";
 import { AuthContext } from "./context/AuthContext";

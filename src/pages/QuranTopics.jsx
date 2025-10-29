@@ -192,7 +192,7 @@ export default function QuranTopics() {
   return (
     <div
       className={`flex flex-col h-screen transition-colors duration-300 ${
-        theme === "dark" ? "bg-gray-900 text-white" : "bg-[#DA885633]"
+        theme === "dark" ? "bg-gray-900 text-white" : "bg-orange-50"
       }`}
     >
       {/* Sticky Header Section with Background */}
@@ -201,7 +201,7 @@ export default function QuranTopics() {
           className={`relative overflow-hidden shadow-2xl ${
             theme === "dark"
               ? "bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800"
-              : "bg-primary"
+              : "bg-orange-50"
           }`}
           style={{ borderRadius: "0 0 50% 50% / 0 0 20% 20%" }}
         >
@@ -236,16 +236,18 @@ export default function QuranTopics() {
             <div className="flex flex-col items-center justify-center text-center gap-3 md:gap-4">
               {/* Logo and Title in one line */}
               <div className="flex items-center justify-center gap-3 md:gap-4">
-                <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-white bg-opacity-20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 p-2 md:p-2.5 shadow-lg">
+                {/* <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-white bg-opacity-20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 p-2 md:p-2.5 shadow-lg">
                   <img
                     src="/icon.png"
                     alt="Quran Icon"
                     className="w-full h-full object-contain"
                   />
-                </div>
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-lg">
-                  {t("quranic_topics")}
-                </h1>
+                </div>*/}
+                <img
+                  src="/logo.png"
+                  alt={t("app_title")}
+                  className="h-8 md:h-24 w-auto object-contain"
+                />
               </div>
 
               {/* Search Bar */}

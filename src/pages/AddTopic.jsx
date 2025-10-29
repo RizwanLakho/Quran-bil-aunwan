@@ -32,7 +32,7 @@ const TopicInfo = ({ formData, setFormData }) => {
             value={formData.topicName}
             onChange={handleChange}
             placeholder={t("topic_name_placeholder")}
-            className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+            className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
               theme === "dark"
                 ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
                 : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
@@ -53,7 +53,7 @@ const TopicInfo = ({ formData, setFormData }) => {
             value={formData.alternativeName}
             onChange={handleChange}
             placeholder={t("alternative_name_placeholder")}
-            className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+            className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-primary{
               theme === "dark"
                 ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
                 : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
@@ -77,7 +77,7 @@ const TopicInfo = ({ formData, setFormData }) => {
             value={formData.topicDescription}
             onChange={handleChange}
             placeholder={t("topic_description_placeholder")}
-            className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+            className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
               theme === "dark"
                 ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
                 : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
@@ -98,7 +98,7 @@ const TopicInfo = ({ formData, setFormData }) => {
             value={formData.suggestedArrangement}
             onChange={handleChange}
             placeholder={t("suggested_arrangement_placeholder")}
-            className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+            className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
               theme === "dark"
                 ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
                 : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
@@ -176,7 +176,7 @@ const Aayaat = ({ ayaatList, setAyaatList }) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-3 md:mb-4">
           <select
-            className={`px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+            className={`px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
               theme === "dark"
                 ? "border-gray-600 bg-gray-700 text-white"
                 : "border-gray-300 bg-white text-gray-900"
@@ -190,7 +190,7 @@ const Aayaat = ({ ayaatList, setAyaatList }) => {
           </select>
 
           <select
-            className={`px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+            className={`px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
               theme === "dark"
                 ? "border-gray-600 bg-gray-700 text-white"
                 : "border-gray-300 bg-white text-gray-900"
@@ -205,7 +205,7 @@ const Aayaat = ({ ayaatList, setAyaatList }) => {
 
           <button
             onClick={handleAddAyat}
-            className="bg-orange-500 text-white px-4 md:px-6 py-2 text-sm md:text-base rounded-md hover:bg-orange-600 transition"
+            className="bg-primary text-white px-4 md:px-6 py-2 text-sm md:text-base rounded-md hover:bg-primary transition"
           >
             {t("load_ayat")}
           </button>
@@ -247,7 +247,7 @@ const Aayaat = ({ ayaatList, setAyaatList }) => {
             <Plus className="w-4 h-4 mr-1" />
             {t("add_another")}
           </button>
-          <button className="flex items-center text-orange-500 hover:text-orange-400 text-sm md:text-base">
+          <button className="flex items-center text-primary hover:text-orange-400 text-sm md:text-base">
             <Send className="w-4 h-4 mr-1" />
             {t("assign")}
           </button>
@@ -296,10 +296,10 @@ const Aayaat = ({ ayaatList, setAyaatList }) => {
               }`}
             >
               | {ayaatList.length} {t("selected")} |{" "}
-              <span className="text-orange-500">{t("delete_selected")}</span>
+              <span className="text-primary">{t("delete_selected")}</span>
             </span>
           </div>
-          <span className="text-xs md:text-sm text-orange-500">
+          <span className="text-xs md:text-sm text-primary">
             {t("total_ayat_assigned").replace("{count}", ayaatList.length)}
           </span>
         </div>
@@ -342,7 +342,7 @@ const Aayaat = ({ ayaatList, setAyaatList }) => {
               >
                 {t("delete")}
               </button>
-              <button className="text-orange-500 hover:text-orange-400 text-xs md:text-sm">
+              <button className="text-primary hover:text-primary text-xs md:text-sm">
                 {t("edit")}
               </button>
             </div>
@@ -411,7 +411,7 @@ const Hadith = ({ hadithList, setHadithList }) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-3 md:mb-4">
           <select
-            className={`px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+            className={`px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
               theme === "dark"
                 ? "border-gray-600 bg-gray-700 text-white"
                 : "border-gray-300 bg-white text-gray-900"
@@ -427,7 +427,7 @@ const Hadith = ({ hadithList, setHadithList }) => {
           </select>
 
           <select
-            className={`px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+            className={`px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
               theme === "dark"
                 ? "border-gray-600 bg-gray-700 text-white"
                 : "border-gray-300 bg-white text-gray-900"
@@ -444,7 +444,7 @@ const Hadith = ({ hadithList, setHadithList }) => {
 
           <button
             onClick={handleAddHadith}
-            className="bg-orange-500 text-white px-4 md:px-6 py-2 text-sm md:text-base rounded-md hover:bg-orange-600 transition"
+            className="bg-primary text-white px-4 md:px-6 py-2 text-sm md:text-base rounded-md hover:bg-primary transition"
           >
             {t("load_hadith")}
           </button>
@@ -486,7 +486,7 @@ const Hadith = ({ hadithList, setHadithList }) => {
             <Plus className="w-4 h-4 mr-1" />
             {t("add_another")}
           </button>
-          <button className="flex items-center text-orange-500 hover:text-orange-400 text-sm md:text-base">
+          <button className="flex items-center text-primary hover:text-orange-400 text-sm md:text-base">
             <Send className="w-4 h-4 mr-1" />
             {t("assign")}
           </button>
@@ -521,10 +521,10 @@ const Hadith = ({ hadithList, setHadithList }) => {
               }`}
             >
               | {hadithList.length} {t("selected")} |{" "}
-              <span className="text-orange-500">{t("delete_selected")}</span>
+              <span className="text-primary">{t("delete_selected")}</span>
             </span>
           </div>
-          <span className="text-xs md:text-sm text-orange-500">
+          <span className="text-xs md:text-sm text-primary">
             {t("total_hadith_assigned").replace("{count}", hadithList.length)}
           </span>
         </div>
@@ -566,7 +566,7 @@ const Hadith = ({ hadithList, setHadithList }) => {
               >
                 {t("delete")}
               </button>
-              <button className="text-orange-500 hover:text-orange-400 text-xs md:text-sm">
+              <button className="text-primary  hover:text-orange-400 text-xs md:text-sm">
                 {t("edit")}
               </button>
             </div>
@@ -692,9 +692,9 @@ const ProgressBar = ({ currentStep, steps }) => {
               <div
                 className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
                   currentStep > step.id
-                    ? "bg-orange-500"
+                    ? "bg-primary"
                     : currentStep === step.id
-                      ? "bg-orange-500"
+                      ? "bg-primary"
                       : theme === "dark"
                         ? "bg-gray-600"
                         : "bg-gray-300"
@@ -738,7 +738,7 @@ const ProgressBar = ({ currentStep, steps }) => {
               <div
                 className={`h-0.5 md:h-1 flex-1 mx-2 md:mx-4 transition-all duration-300 ${
                   currentStep > step.id
-                    ? "bg-orange-500"
+                    ? "bg-primary"
                     : theme === "dark"
                       ? "bg-gray-600"
                       : "bg-gray-300"
@@ -838,7 +838,7 @@ export default function TopicFormWizard() {
 
         {/* Dynamic Component Content */}
         <div
-          className={` rounded-lg shadow-sm border-2 border-orange-500 p-4 md:p-8 ${
+          className={` rounded-lg shadow-sm border-2 border-primary p-4 md:p-8 ${
             theme === "dark" ? "bg-gray-800" : "bg-white"
           }`}
         >
@@ -868,14 +868,14 @@ export default function TopicFormWizard() {
             {currentStep < 4 ? (
               <button
                 onClick={handleNext}
-                className="px-6 md:px-8 py-2 text-sm md:text-base bg-orange-500 text-white rounded-md font-medium hover:bg-orange-600 transition"
+                className="px-6 md:px-8 py-2 text-sm md:text-base bg-primary text-white rounded-md font-medium hover:bg-orange-400 transition"
               >
                 {t("next")}
               </button>
             ) : (
               <button
                 onClick={handleSave}
-                className="px-6 md:px-8 py-2 text-sm md:text-base bg-orange-500 text-white rounded-md font-medium hover:bg-orange-600 transition"
+                className="px-6 md:px-8 py-2 text-sm md:text-base bg-primary text-white rounded-md font-medium hover:bg-orange-400 transition"
               >
                 {t("save")}
               </button>
@@ -932,7 +932,7 @@ export default function TopicFormWizard() {
                 </button>
                 <button
                   onClick={handleAddNew}
-                  className="px-4 md:px-6 py-2 text-sm md:text-base bg-orange-500 text-white rounded-md hover:bg-orange-600 transition"
+                  className="px-4 md:px-6 py-2 text-sm md:text-base bg-primary text-white rounded-md hover:bg-orange-400 transition"
                 >
                   {t("add_new_topic")}
                 </button>
@@ -948,8 +948,8 @@ export default function TopicFormWizard() {
           onClick={() => window.history.back()}
           className={`inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 text-xs md:text-sm font-medium border-2 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md group ${
             theme === "dark"
-              ? "text-gray-200 bg-gray-800 border-gray-600 hover:bg-gray-700 hover:border-orange-500"
-              : "text-gray-700 bg-white border-gray-300 hover:bg-gray-50 hover:border-orange-500"
+              ? "text-gray-200 bg-gray-800 border-gray-600 hover:bg-gray-700 hover:border-primary"
+              : "text-gray-700 bg-white border-gray-300 hover:bg-gray-50 hover:border-primary"
           }`}
         >
           <svg

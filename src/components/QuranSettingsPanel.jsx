@@ -1,5 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, Fragment } from "react";
 import { useTranslation } from "react-i18next";
+import { Listbox, Transition } from "@headlessui/react";
 import {
   Settings,
   Sun,
@@ -9,10 +10,33 @@ import {
   Plus,
   Mic,
   FastForward,
+  Check,
 } from "lucide-react";
 import { ThemeContext } from "../context/ThemeContext";
 import { FontContext } from "../context/FontContext";
 import { TranslationContext } from "../context/TranslationContext";
+
+// Language options
+const languages = [
+  { value: "en", label: "English" },
+  { value: "ur", label: "اردو" },
+];
+
+// Translator options
+const translators = [
+  { value: "khattab", label: "Dr. Mustafa Khattab" },
+  { value: "sahih", label: "Sahih International" },
+  { value: "pickthall", label: "Pickthall" },
+  { value: "yusuf", label: "Yusuf Ali" },
+];
+
+// Reciter options
+const reciters = [
+  { value: "afasy", label: "Mishari Rashid Al-Afasy" },
+  { value: "sudais", label: "Abdul Rahman Al-Sudais" },
+  { value: "ghamidi", label: "Saad Al-Ghamidi" },
+  { value: "ajmi", label: "Ahmad Al-Ajmi" },
+];
 
 export default function QuranSettingsPanel() {
   const { t, i18n } = useTranslation();
@@ -44,6 +68,13 @@ export default function QuranSettingsPanel() {
   } = useContext(TranslationContext);
 
   const [playbackSpeed, setPlaybackSpeed] = useState(2);
+
+  // Get selected options
+  const selectedLanguage = languages.find((lang) => lang.value === language);
+  const selectedTranslator =
+    translators.find((t) => t.value === translator) || translators[0];
+  const selectedReciter =
+    reciters.find((r) => r.value === reciter) || reciters[0];
 
   return (
     <div
@@ -107,21 +138,79 @@ export default function QuranSettingsPanel() {
           </div>
         </div>
 
-        {/* Language Switcher */}
+        {/* Language Switcher with Headless UI */}
         <div className="flex justify-between items-center">
           <span className="text-sm md:text-base">{t("language")}</span>
-          <select
-            value={language}
-            onChange={(e) => changeLanguage(e.target.value)}
-            className={`p-2 rounded text-sm md:text-base ${
-              theme === "dark"
-                ? "bg-gray-800 text-white"
-                : "bg-gray-200 text-gray-800"
-            }`}
-          >
-            <option value="en">English</option>
-            <option value="ur">اردو</option>
-          </select>
+          <Listbox value={language} onChange={changeLanguage}>
+            <div className="relative">
+              <Listbox.Button
+                className={`relative w-32 cursor-pointer rounded-lg px-3 py-2 text-left text-sm md:text-base font-medium focus:outline-none ${
+                  theme === "dark"
+                    ? "bg-gray-800 text-white border border-gray-700"
+                    : "bg-gray-200 text-gray-800 border border-gray-300"
+                } hover:bg-orange-50 transition-colors flex items-center justify-between`}
+              >
+                <span className="block truncate">
+                  {selectedLanguage?.label}
+                </span>
+                <ChevronDown
+                  size={16}
+                  className="text-gray-400"
+                  aria-hidden="true"
+                />
+              </Listbox.Button>
+
+              <Transition
+                as={Fragment}
+                leave="transition ease-in duration-100"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <Listbox.Options
+                  className={`absolute right-0 mt-1 max-h-60 w-32 overflow-auto rounded-lg py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50 ${
+                    theme === "dark"
+                      ? "bg-gray-800 border border-gray-700"
+                      : "bg-white border border-gray-200"
+                  }`}
+                >
+                  {languages.map((lang) => (
+                    <Listbox.Option
+                      key={lang.value}
+                      value={lang.value}
+                      className={({ active }) =>
+                        `relative cursor-pointer select-none py-2 px-3 ${
+                          active
+                            ? "bg-orange-50 text-gray-900"
+                            : theme === "dark"
+                              ? "text-gray-200"
+                              : "text-gray-900"
+                        }`
+                      }
+                    >
+                      {({ selected }) => (
+                        <div className="flex items-center justify-between">
+                          <span
+                            className={`block truncate ${
+                              selected ? "font-semibold" : "font-normal"
+                            }`}
+                          >
+                            {lang.label}
+                          </span>
+                          {selected && (
+                            <Check
+                              size={14}
+                              className="text-primary"
+                              aria-hidden="true"
+                            />
+                          )}
+                        </div>
+                      )}
+                    </Listbox.Option>
+                  ))}
+                </Listbox.Options>
+              </Transition>
+            </div>
+          </Listbox>
         </div>
         <div className="my-4 border-t border-gray-200"></div>
 
@@ -207,7 +296,7 @@ export default function QuranSettingsPanel() {
           </div>
         </div>
 
-        {/* Translation By */}
+        {/* Translation By with Headless UI */}
         <div>
           <div className="flex items-center gap-2 mb-2 md:mb-3">
             <span className="text-primary text-lg md:text-xl">📋</span>
@@ -215,28 +304,78 @@ export default function QuranSettingsPanel() {
               {t("translation_by")}
             </h3>
           </div>
-          <div className="relative">
-            <select
-              value={translator}
-              onChange={(e) => setTranslator(e.target.value)}
-              className={`w-full px-3 md:px-4 py-2 md:py-3 rounded-xl text-sm md:text-base font-medium focus:outline-none appearance-none cursor-pointer ${
-                theme === "dark"
-                  ? "bg-gray-800 text-white"
-                  : "bg-gray-100 text-gray-800"
-              }`}
-            >
-              <option>Dr. Mustafa Khattab</option>
-              <option>Sahih International</option>
-              <option>Pickthall</option>
-              <option>Yusuf Ali</option>
-            </select>
-            <ChevronDown
-              className={`absolute right-3 md:right-4 top-1/2 -translate-y-1/2 pointer-events-none ${
-                theme === "dark" ? "text-gray-400" : "text-gray-500"
-              }`}
-              size={18}
-            />
-          </div>
+          <Listbox value={translator} onChange={setTranslator}>
+            <div className="relative">
+              <Listbox.Button
+                className={`w-full cursor-pointer rounded-xl px-3 md:px-4 py-2 md:py-3 text-left text-sm md:text-base font-medium focus:outline-none appearance-none ${
+                  theme === "dark"
+                    ? "bg-gray-800 text-white border border-gray-700"
+                    : "bg-gray-100 text-gray-800 border border-gray-200"
+                } hover:bg-orange-50 transition-colors flex items-center justify-between`}
+              >
+                <span className="block truncate">
+                  {selectedTranslator.label}
+                </span>
+                <ChevronDown
+                  size={18}
+                  className={
+                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                  }
+                  aria-hidden="true"
+                />
+              </Listbox.Button>
+
+              <Transition
+                as={Fragment}
+                leave="transition ease-in duration-100"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <Listbox.Options
+                  className={`absolute w-full mt-2 max-h-60 overflow-auto rounded-xl py-1 text-sm md:text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50 ${
+                    theme === "dark"
+                      ? "bg-gray-800 border border-gray-700"
+                      : "bg-white border border-gray-200"
+                  }`}
+                >
+                  {translators.map((trans) => (
+                    <Listbox.Option
+                      key={trans.value}
+                      value={trans.value}
+                      className={({ active }) =>
+                        `relative cursor-pointer select-none py-3 px-4 ${
+                          active
+                            ? "bg-orange-50 text-gray-900"
+                            : theme === "dark"
+                              ? "text-gray-200"
+                              : "text-gray-900"
+                        }`
+                      }
+                    >
+                      {({ selected }) => (
+                        <div className="flex items-center justify-between">
+                          <span
+                            className={`block truncate ${
+                              selected ? "font-semibold" : "font-normal"
+                            }`}
+                          >
+                            {trans.label}
+                          </span>
+                          {selected && (
+                            <Check
+                              size={16}
+                              className="text-primary"
+                              aria-hidden="true"
+                            />
+                          )}
+                        </div>
+                      )}
+                    </Listbox.Option>
+                  ))}
+                </Listbox.Options>
+              </Transition>
+            </div>
+          </Listbox>
         </div>
 
         {/* Font Size */}
@@ -352,7 +491,8 @@ export default function QuranSettingsPanel() {
           </div>
         </div>
         <div className="my-4 border-t border-gray-200"></div>
-        {/* Select Reciter */}
+
+        {/* Select Reciter with Headless UI */}
         <div>
           <div className="flex items-center gap-2 mb-2 md:mb-3">
             <Mic className="text-primary" size={18} />
@@ -360,28 +500,76 @@ export default function QuranSettingsPanel() {
               {t("select_reciter")}
             </h3>
           </div>
-          <div className="relative">
-            <select
-              value={reciter}
-              onChange={(e) => setReciter(e.target.value)}
-              className={`w-full px-3 md:px-4 py-2 md:py-3 rounded-xl text-sm md:text-base font-medium focus:outline-none appearance-none cursor-pointer ${
-                theme === "dark"
-                  ? "bg-gray-800 text-white"
-                  : "bg-gray-100 text-gray-800"
-              }`}
-            >
-              <option>Mishari Rashid Al-Afasy</option>
-              <option>Abdul Rahman Al-Sudais</option>
-              <option>Saad Al-Ghamidi</option>
-              <option>Ahmad Al-Ajmi</option>
-            </select>
-            <ChevronDown
-              className={`absolute right-3 md:right-4 top-1/2 -translate-y-1/2 pointer-events-none ${
-                theme === "dark" ? "text-gray-400" : "text-gray-500"
-              }`}
-              size={18}
-            />
-          </div>
+          <Listbox value={reciter} onChange={setReciter}>
+            <div className="relative">
+              <Listbox.Button
+                className={`w-full cursor-pointer rounded-xl px-3 md:px-4 py-2 md:py-3 text-left text-sm md:text-base font-medium focus:outline-none appearance-none ${
+                  theme === "dark"
+                    ? "bg-gray-800 text-white border border-gray-700"
+                    : "bg-gray-100 text-gray-800 border border-gray-200"
+                } hover:bg-orange-50 transition-colors flex items-center justify-between`}
+              >
+                <span className="block truncate">{selectedReciter.label}</span>
+                <ChevronDown
+                  size={18}
+                  className={
+                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                  }
+                  aria-hidden="true"
+                />
+              </Listbox.Button>
+
+              <Transition
+                as={Fragment}
+                leave="transition ease-in duration-100"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <Listbox.Options
+                  className={`absolute bottom-2 w-full mt-2 max-h-60 overflow-auto rounded-xl py-1 text-sm md:text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50 ${
+                    theme === "dark"
+                      ? "bg-gray-800 border border-gray-700"
+                      : "bg-white border border-gray-200"
+                  }`}
+                >
+                  {reciters.map((rec) => (
+                    <Listbox.Option
+                      key={rec.value}
+                      value={rec.value}
+                      className={({ active }) =>
+                        `relative cursor-pointer select-none py-3 px-4 ${
+                          active
+                            ? "bg-orange-50 text-gray-900"
+                            : theme === "dark"
+                              ? "text-gray-200"
+                              : "text-gray-900"
+                        }`
+                      }
+                    >
+                      {({ selected }) => (
+                        <div className="flex items-center justify-between">
+                          <span
+                            className={`block truncate ${
+                              selected ? "font-semibold" : "font-normal"
+                            }`}
+                          >
+                            {rec.label}
+                          </span>
+                          {selected && (
+                            <Check
+                              size={16}
+                              className="text-primary"
+                              aria-hidden="true"
+                            />
+                          )}
+                        </div>
+                      )}
+                    </Listbox.Option>
+                  ))}
+                </Listbox.Options>
+              </Transition>
+            </div>
+          </Listbox>
         </div>
 
         {/* Playback Speed */}
