@@ -216,15 +216,28 @@ export default function QuranReadingPage() {
             {/* Surah Dropdown */}
             <Listbox value={selectedSurah} onChange={setSelectedSurah}>
               <div className="relative w-full sm:w-auto sm:min-w-[200px] md:min-w-[250px]">
+                {/* Ornament on right side */}
+                <div
+                  className="absolute top-1/2 -right-3 md:-right-4 transform -translate-y-1/2 z-10 pointer-events-none"
+                  style={{
+                    width: "30px",
+                    height: "30px",
+                    backgroundImage: "url(/ornament.png)",
+                    backgroundSize: "contain",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                    opacity: 0.6,
+                  }}
+                ></div>
                 <Listbox.Button
-                  className={`relative w-full cursor-pointer rounded-lg md:rounded-xl border-2 py-2 md:py-2.5 text-left shadow-sm focus:outline-none transition-colors text-sm md:text-base ${
+                  className={`relative w-full cursor-pointer rounded-lg md:rounded-xl border-2 border-primary py-2 md:py-2.5 text-left shadow-sm focus:outline-none transition-colors text-sm md:text-base ${
                     isRTL
                       ? "pr-3 md:pr-4 pl-7 md:pl-10"
                       : "pl-3 md:pl-4 pr-7 md:pr-10"
                   } ${
                     theme === "dark"
-                      ? "bg-gray-700 border-gray-600 text-white focus:border-primary"
-                      : "bg-white border-gray-200 text-gray-900 focus:border-primary"
+                      ? "bg-gray-700 text-white focus:border-primary"
+                      : "bg-white text-gray-900 focus:border-primary"
                   }`}
                 >
                   <span className="block truncate font-medium">
@@ -245,10 +258,8 @@ export default function QuranReadingPage() {
                 </Listbox.Button>
 
                 <Listbox.Options
-                  className={`absolute mt-1 max-h-60 w-full overflow-auto rounded-lg md:rounded-xl shadow-lg z-50 scrollbar-hide border-2 ${
-                    theme === "dark"
-                      ? "bg-gray-700 border-gray-600"
-                      : "bg-white border-gray-200"
+                  className={`absolute mt-1 max-h-60 w-full overflow-auto rounded-lg md:rounded-xl shadow-lg z-50 scrollbar-hide border-2 border-primary ${
+                    theme === "dark" ? "bg-gray-700" : "bg-white"
                   }`}
                 >
                   {surahs.map((surah) => (
@@ -285,18 +296,63 @@ export default function QuranReadingPage() {
               </div>
             </Listbox>
 
+            {/* Surah Name with Vector Background */}
+            <div className="flex justify-center items-center flex-grow">
+              <div
+                className="relative flex items-center justify-center"
+                style={{
+                  width: "100%",
+                  maxWidth: "300px",
+                  height: "60px",
+                  backgroundImage: "url(/Vector.png)",
+                  backgroundSize: "contain",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                }}
+              >
+                <h2
+                  className={`text-xl md:text-2xl font-bold text-center ${
+                    theme === "dark" ? "text-white" : "text-gray-800"
+                  }`}
+                  style={{
+                    fontFamily:
+                      "'Amiri', 'Scheherazade New', 'Traditional Arabic', serif",
+                    textShadow:
+                      theme === "dark"
+                        ? "0 2px 4px rgba(0,0,0,0.5)"
+                        : "0 2px 4px rgba(255,255,255,0.8)",
+                  }}
+                >
+                  {currentSurah.nameArabic}
+                </h2>
+              </div>
+            </div>
+
             {/* Ayah Dropdown */}
             <Listbox value={selectedAyah} onChange={setSelectedAyah}>
               <div className="relative w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px]">
+                {/* Ornament on left side */}
+                <div
+                  className="absolute top-1/2 -left-3 md:-left-4 transform -translate-y-1/2 z-10 pointer-events-none"
+                  style={{
+                    width: "30px",
+                    height: "30px",
+                    backgroundImage: "url(/ornament.png)",
+                    backgroundSize: "contain",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                    opacity: 0.6,
+                  }}
+                ></div>
                 <Listbox.Button
-                  className={`relative w-full cursor-pointer rounded-lg md:rounded-xl border-2 py-2 md:py-2.5 text-left shadow-sm focus:outline-none transition-colors text-sm md:text-base ${
+                  className={`relative w-full cursor-pointer rounded-lg md:rounded-xl border-2 border-primary py-2 md:py-2.5 text-left shadow-sm focus:outline-none transition-colors text-sm md:text-base ${
                     isRTL
                       ? "pr-3 md:pr-4 pl-7 md:pl-10"
                       : "pl-3 md:pl-4 pr-7 md:pr-10"
                   } ${
                     theme === "dark"
-                      ? "bg-gray-700 border-gray-600 text-white focus:border-primary"
-                      : "bg-white border-gray-200 text-gray-900 focus:border-primary"
+                      ? "bg-gray-700 text-white focus:border-primary"
+                      : "bg-white text-gray-900 focus:border-primary"
                   }`}
                 >
                   <span className="block truncate">
@@ -317,10 +373,8 @@ export default function QuranReadingPage() {
                 </Listbox.Button>
 
                 <Listbox.Options
-                  className={`absolute mt-1 max-h-60 w-full overflow-auto rounded-lg md:rounded-xl shadow-lg z-50 scrollbar-hide border-2 ${
-                    theme === "dark"
-                      ? "bg-gray-700 border-gray-600"
-                      : "bg-white border-gray-200"
+                  className={`absolute mt-1 max-h-60 w-full overflow-auto rounded-lg md:rounded-xl shadow-lg z-50 scrollbar-hide border-2 border-primary ${
+                    theme === "dark" ? "bg-gray-700" : "bg-white"
                   }`}
                 >
                   {ayahOptions.map((ayah) => (

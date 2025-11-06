@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -22,6 +22,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
   const { theme } = useContext(ThemeContext);
   const { t, i18n } = useTranslation();
   const [language, setLanguage] = useState(i18n.language || "en");
+  const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
   const [expandedTopics, setExpandedTopics] = useState({
     quranicTopics: true,
     allah: false,
@@ -30,8 +31,29 @@ export default function Header({ isMenuOpen, toggleSettings }) {
     qiyamat: false,
     islamicLaw: false,
   });
+  const langDropdownRef = useRef(null);
+  const langDropdownMobileRef = useRef(null);
 
   const isRTL = i18n.language === "ur";
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const isInsideDesktop =
+        langDropdownRef.current &&
+        langDropdownRef.current.contains(event.target);
+      const isInsideMobile =
+        langDropdownMobileRef.current &&
+        langDropdownMobileRef.current.contains(event.target);
+
+      if (!isInsideDesktop && !isInsideMobile) {
+        setIsLangDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const toggleTopic = (topic) => {
     setExpandedTopics((prev) => ({
@@ -43,7 +65,13 @@ export default function Header({ isMenuOpen, toggleSettings }) {
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
     setLanguage(lng);
+    setIsLangDropdownOpen(false);
   };
+
+  const languageOptions = [
+    { value: "en", label: "🇬🇧 EN" },
+    { value: "ur", label: "🇵🇰 اردو" },
+  ];
 
   // Topic data structure with translations
   const topicFolders = [
@@ -412,7 +440,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
             {/* Language Selector */}
             {isMenuOpen && (
               <div
-                className={`w-full rounded-lg border p-2 transition-colors ${
+                className={`w-full rounded-lg border p-2 transition-colors relative ${
                   theme === "dark"
                     ? "bg-gray-700 border-gray-600"
                     : "bg-orange-50 border-orange-200"
@@ -438,20 +466,55 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                     </span>
                   </div>
 
-                  <select
-                    value={language}
-                    onChange={(e) => changeLanguage(e.target.value)}
-                    className={`rounded-md px-2 py-1 text-xs font-medium outline-none cursor-pointer ${
-                      isRTL ? "text-right font-urdu" : ""
-                    } ${
-                      theme === "dark"
-                        ? "bg-gray-800 text-white border border-gray-600"
-                        : "bg-white text-gray-800 border border-gray-300"
-                    }`}
-                  >
-                    <option value="en">🇬🇧 EN</option>
-                    <option value="ur">🇵🇰 اردو</option>
-                  </select>
+                  <div className="relative" ref={langDropdownRef}>
+                    <button
+                      onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
+                      className={`rounded-md px-2 py-1 text-xs font-medium outline-none cursor-pointer flex items-center gap-1 ${
+                        isRTL ? "text-right font-urdu" : ""
+                      } ${
+                        theme === "dark"
+                          ? "bg-gray-800 text-white border border-gray-600"
+                          : "bg-white text-gray-800 border border-gray-300"
+                      }`}
+                    >
+                      {
+                        languageOptions.find((opt) => opt.value === language)
+                          ?.label
+                      }
+                      <ChevronDown
+                        size={12}
+                        className={`transition-transform ${isLangDropdownOpen ? "rotate-180" : ""}`}
+                      />
+                    </button>
+
+                    {isLangDropdownOpen && (
+                      <div
+                        className={`absolute bottom-full mb-1 ${isRTL ? "left-0" : "right-0"} rounded-md shadow-lg border z-[9999] overflow-hidden ${
+                          theme === "dark"
+                            ? "bg-gray-800 border-gray-600"
+                            : "bg-white border-gray-300"
+                        }`}
+                      >
+                        {languageOptions.map((option) => (
+                          <button
+                            key={option.value}
+                            onClick={() => changeLanguage(option.value)}
+                            className={`w-full px-3 py-2 text-xs font-medium text-left transition-colors ${
+                              language === option.value
+                                ? theme === "dark"
+                                  ? "bg-gray-700 text-white"
+                                  : "bg-orange-100 text-gray-800"
+                                : theme === "dark"
+                                  ? "text-gray-300 hover:bg-gray-700"
+                                  : "text-gray-700 hover:bg-orange-50"
+                            }`}
+                          >
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
@@ -671,7 +734,7 @@ export default function Header({ isMenuOpen, toggleSettings }) {
 
                 {/* Language Selector */}
                 <div
-                  className={`w-full rounded-lg border p-2 transition-colors ${
+                  className={`w-full rounded-lg border p-2 transition-colors relative ${
                     theme === "dark"
                       ? "bg-gray-700 border-gray-600"
                       : "bg-orange-50 border-orange-200"
@@ -697,20 +760,57 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                       </span>
                     </div>
 
-                    <select
-                      value={language}
-                      onChange={(e) => changeLanguage(e.target.value)}
-                      className={`rounded-md px-2 py-1 text-xs font-medium outline-none cursor-pointer ${
-                        isRTL ? "text-right font-urdu" : ""
-                      } ${
-                        theme === "dark"
-                          ? "bg-gray-800 text-white border border-gray-600"
-                          : "bg-white text-gray-800 border border-gray-300"
-                      }`}
-                    >
-                      <option value="en">🇬🇧 EN</option>
-                      <option value="ur">🇵🇰 اردو</option>
-                    </select>
+                    <div className="relative" ref={langDropdownMobileRef}>
+                      <button
+                        onClick={() =>
+                          setIsLangDropdownOpen(!isLangDropdownOpen)
+                        }
+                        className={` rounded-md px-2 py-1 text-xs font-medium outline-none cursor-pointer flex items-center gap-1 ${
+                          isRTL ? "text-right font-urdu" : ""
+                        } ${
+                          theme === "dark"
+                            ? "bg-gray-800 text-white border border-gray-600"
+                            : "bg-white text-gray-800 border border-gray-300"
+                        }`}
+                      >
+                        {
+                          languageOptions.find((opt) => opt.value === language)
+                            ?.label
+                        }
+                        <ChevronDown
+                          size={12}
+                          className={`transition-transform ${isLangDropdownOpen ? "rotate-180" : ""}`}
+                        />
+                      </button>
+
+                      {isLangDropdownOpen && (
+                        <div
+                          className={`absolute bottom-full mb-1 ${isRTL ? "left-0" : "right-0"} rounded-md shadow-lg border z-[9999] overflow-hidden ${
+                            theme === "dark"
+                              ? "bg-gray-800 border-gray-600"
+                              : "bg-white border-gray-300"
+                          }`}
+                        >
+                          {languageOptions.map((option) => (
+                            <button
+                              key={option.value}
+                              onClick={() => changeLanguage(option.value)}
+                              className={`w-full px-3 py-2 text-xs font-medium text-left transition-colors ${
+                                language === option.value
+                                  ? theme === "dark"
+                                    ? "bg-gray-700 text-white"
+                                    : "bg-orange-100 text-gray-800"
+                                  : theme === "dark"
+                                    ? "text-gray-300 hover:bg-gray-700"
+                                    : "text-gray-700 hover:bg-orange-50"
+                              }`}
+                            >
+                              {option.label}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

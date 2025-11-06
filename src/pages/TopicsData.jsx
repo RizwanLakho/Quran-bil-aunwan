@@ -6,94 +6,86 @@ import { useTranslation } from "react-i18next";
 
 export default function TopicsData() {
   const { t } = useTranslation();
-  const [topics] = useState([
+  const [topics, setTopics] = useState([
     {
       id: 1,
       name: "Billing #780-Dec 2022",
-      status: "Paid",
+      status: "paid",
       date: "Dec 23, 2022",
       amount: "USD $12.00",
       plan: "Basic plan",
       users: "15 Users",
       checked: true,
-      color: "orange",
     },
     {
       id: 2,
       name: "Billing #345-Nov 2022",
-      status: "Paid",
+      status: "unpaid",
       date: "Nov 12, 2022",
       amount: "USD $22.00",
       plan: "Basic plan",
       users: "56 Users",
       checked: false,
-      color: "dark",
     },
     {
       id: 3,
       name: "Billing #213-Oct 2022",
-      status: "Paid",
+      status: "paid",
       date: "Oct 09, 2022",
       amount: "USD $80.00",
       plan: "Basic plan",
       users: "90 Users",
       checked: true,
-      color: "orange",
     },
     {
       id: 4,
       name: "Billing #324-Aug 2022",
-      status: "Paid",
+      status: "unpaid",
       date: "Aug 03, 2022",
       amount: "USD $12.00",
       plan: "Basic plan",
       users: "22 Users",
       checked: false,
-      color: "dark",
     },
     {
       id: 5,
       name: "Billing #123-July 2022",
-      status: "Paid",
+      status: "paid",
       date: "July 13, 2022",
       amount: "USD $67.00",
       plan: "Basic plan",
       users: "23 Users",
       checked: true,
-      color: "orange",
     },
     {
       id: 6,
       name: "Billing #908-June 2022",
-      status: "Paid",
+      status: "paid",
       date: "June 10, 2022",
       amount: "USD $35.00",
       plan: "Basic plan",
       users: "40 Users",
       checked: false,
-      color: "dark",
     },
     {
       id: 7,
       name: "Billing #564-May 2022",
-      status: "Paid",
+      status: "paid",
       date: "May 20, 2022",
       amount: "USD $50.00",
       plan: "Basic plan",
       users: "55 Users",
       checked: true,
-      color: "orange",
     },
     {
       id: 8,
       name: "Billing #445-April 2022",
-      status: "Paid",
+      status: "unpaid",
       date: "Apr 09, 2022",
       amount: "USD $25.00",
       plan: "Basic plan",
       users: "32 Users",
       checked: false,
-      color: "dark",
     },
   ]);
 
@@ -110,6 +102,14 @@ export default function TopicsData() {
   const handleNext = () =>
     currentPage < totalPages && setCurrentPage((p) => p + 1);
 
+  const handleCheckboxChange = (id) => {
+    setTopics((prevTopics) =>
+      prevTopics.map((topic) =>
+        topic.id === id ? { ...topic, checked: !topic.checked } : topic,
+      ),
+    );
+  };
+
   return (
     <div
       className={`min-h-screen transition-colors duration-300 ${
@@ -118,47 +118,54 @@ export default function TopicsData() {
           : "bg-orange-50 text-gray-800"
       }`}
     >
-      <main className="max-w-7xl mx-auto p-6 space-y-6">
-        <div
-          className={`shadow rounded-lg transition-colors duration-300 ${
-            theme === "dark" ? "bg-gray-800 border border-gray-700" : "bg-white"
-          }`}
-        >
-          {/* Header Section */}
-          <div
-            className={`flex flex-col sm:flex-row justify-between items-start sm:items-center px-6 py-4 border-b ${
-              theme === "dark" ? "border-gray-700" : "border-gray-200"
-            }`}
-          >
+      {/* Fixed Header */}
+      <div
+        className={`sticky top-0 z-10 shadow-md transition-colors duration-300 ${
+          theme === "dark"
+            ? "bg-gray-800 border-b border-gray-700"
+            : "bg-white border-b border-gray-200"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 py-5">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <h2
-                className={`text-lg font-semibold ${
+                className={`text-2xl font-bold ${
                   theme === "dark" ? "text-gray-100" : "text-gray-800"
                 }`}
               >
                 {t("list_of_all_topics")}
               </h2>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 mt-1">
                 {t("manage_topics_details")}
               </p>
             </div>
             <NavLink
               to="/home/add-topic"
-              className="mt-3 sm:mt-0 flex items-center gap-2 bg-primary text-white px-5 py-2 rounded-md hover:bg-orange-400 transition-all shadow-sm"
+              className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
             >
-              <PlusCircle size={18} />
-              {t("add_new")}
+              <PlusCircle size={20} />
+              <span className="font-medium">{t("add_new")}</span>
             </NavLink>
           </div>
+        </div>
+      </div>
 
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto p-6">
+        <div
+          className={`shadow-lg rounded-xl transition-colors duration-300 overflow-hidden ${
+            theme === "dark" ? "bg-gray-800 border border-gray-700" : "bg-white"
+          }`}
+        >
           {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead
-                className={`border-b ${
+                className={`${
                   theme === "dark"
-                    ? "bg-gray-700 border-gray-600 text-gray-200"
-                    : "bg-gray-50 border-gray-200 text-gray-600"
+                    ? "bg-gray-700 text-gray-200"
+                    : "bg-gray-50 text-gray-600"
                 }`}
               >
                 <tr>
@@ -173,7 +180,7 @@ export default function TopicsData() {
                   ].map((col, i) => (
                     <th
                       key={i}
-                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider whitespace-nowrap"
+                      className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider whitespace-nowrap"
                     >
                       {col}
                     </th>
@@ -202,13 +209,13 @@ export default function TopicsData() {
                         <input
                           type="checkbox"
                           checked={topic.checked}
-                          className="mr-3 w-4 h-4 accent-primary"
-                          readOnly
+                          onChange={() => handleCheckboxChange(topic.id)}
+                          className="mr-3 w-5 h-5 accent-primary cursor-pointer"
                         />
                         <div className="flex items-center">
-                          <div className="w-8 h-8 bg-primary rounded flex items-center justify-center mr-3 shadow-sm">
+                          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-3 shadow-md">
                             <svg
-                              className="w-5 h-5 text-white"
+                              className="w-6 h-6 text-white"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -223,7 +230,7 @@ export default function TopicsData() {
                           </div>
                           <div>
                             <div
-                              className={`text-sm font-medium ${
+                              className={`text-sm font-semibold ${
                                 theme === "dark"
                                   ? "text-gray-100"
                                   : "text-gray-900"
@@ -231,8 +238,16 @@ export default function TopicsData() {
                             >
                               {topic.name}
                             </div>
-                            <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-orange-100 text-primary rounded-full font-medium">
-                              {t("paid_status")}
+                            <span
+                              className={`inline-block mt-1 px-2 py-0.5 text-xs rounded-full font-medium ${
+                                topic.status === "paid"
+                                  ? "bg-orange-100 text-primary"
+                                  : "bg-red-100 text-red-600"
+                              }`}
+                            >
+                              {topic.status === "paid"
+                                ? t("paid_status")
+                                : t("unpaid_status")}
                             </span>
                           </div>
                         </div>
@@ -253,9 +268,9 @@ export default function TopicsData() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button
-                        className={`px-4 py-1.5 text-sm text-white rounded transition-all shadow-sm ${
-                          topic.color === "orange"
-                            ? "bg-primary hover:bg-orange-400"
+                        className={`px-5 py-2 text-sm font-medium text-white rounded-lg transition-all shadow-md hover:shadow-lg transform hover:scale-105 ${
+                          topic.status === "unpaid"
+                            ? "bg-primary hover:bg-orange-600"
                             : "bg-gray-700 hover:bg-gray-600"
                         }`}
                       >
@@ -264,10 +279,10 @@ export default function TopicsData() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <button
-                        className={`transition ${
+                        className={`p-2 rounded-lg transition ${
                           theme === "dark"
-                            ? "text-gray-400 hover:text-gray-200"
-                            : "text-gray-400 hover:text-gray-600"
+                            ? "text-gray-400 hover:text-gray-200 hover:bg-gray-700"
+                            : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
                         }`}
                       >
                         <MoreVertical className="w-5 h-5" />
@@ -281,7 +296,7 @@ export default function TopicsData() {
 
           {/* Pagination */}
           <div
-            className={`flex items-center justify-center gap-2 px-6 py-4 border-t ${
+            className={`flex items-center justify-center gap-2 px-6 py-5 border-t ${
               theme === "dark"
                 ? "bg-gray-800 border-gray-700"
                 : "bg-gray-50 border-gray-200"
@@ -290,10 +305,12 @@ export default function TopicsData() {
             <button
               onClick={handlePrev}
               disabled={currentPage === 1}
-              className={`px-3 py-1 text-sm rounded ${
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition ${
                 currentPage === 1
                   ? "text-gray-400 cursor-not-allowed"
-                  : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                  : theme === "dark"
+                    ? "text-gray-300 hover:bg-gray-700"
+                    : "text-gray-700 hover:bg-gray-200"
               }`}
             >
               ← {t("previous")}
@@ -303,12 +320,12 @@ export default function TopicsData() {
               <button
                 key={i}
                 onClick={() => setCurrentPage(i + 1)}
-                className={`px-3 py-1.5 text-sm rounded ${
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition ${
                   currentPage === i + 1
-                    ? "bg-primary text-white"
+                    ? "bg-primary text-white shadow-md"
                     : theme === "dark"
                       ? "text-gray-300 hover:bg-gray-700"
-                      : "text-gray-700 hover:bg-gray-100"
+                      : "text-gray-700 hover:bg-gray-200"
                 }`}
               >
                 {i + 1}
@@ -318,10 +335,12 @@ export default function TopicsData() {
             <button
               onClick={handleNext}
               disabled={currentPage === totalPages}
-              className={`px-3 py-1 text-sm rounded ${
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition ${
                 currentPage === totalPages
                   ? "text-gray-400 cursor-not-allowed"
-                  : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                  : theme === "dark"
+                    ? "text-gray-300 hover:bg-gray-700"
+                    : "text-gray-700 hover:bg-gray-200"
               }`}
             >
               {t("next")} →

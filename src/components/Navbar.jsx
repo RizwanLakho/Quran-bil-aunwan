@@ -62,9 +62,9 @@ export default function Navbar({ isMenuOpen, toggleMenu }) {
         </div>
 
         {/* Search Bar - Hidden on mobile, visible on tablet+ - PERFECTLY CENTERED */}
-        <div className="hidden md:flex flex-1 justify-center px-4">
+        <div className="hidden md:flex flex-1 justify-center ml-24">
           <div
-            className={`relative flex items-center w-full max-w-2xl rounded-full shadow-sm ${
+            className={`relative flex items-center w-[50%] max-w-2xl rounded-full shadow-sm ${
               theme === "dark" ? "bg-gray-700" : "bg-white"
             }`}
           >
