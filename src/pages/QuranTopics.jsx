@@ -1,7 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
 import { useTranslation } from "react-i18next";
+import TopicsService from "../services/TopicsService";
 
 export default function QuranTopics() {
   const { theme } = useContext(ThemeContext);
@@ -9,6 +10,70 @@ export default function QuranTopics() {
   const navigate = useNavigate();
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [apiTopics, setApiTopics] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [userProgress, setUserProgress] = useState({});
+
+  // Fetch topics and user progress from API
+  useEffect(() => {
+    const fetchTopicsAndProgress = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Fetch topics
+        const topicsResponse = await TopicsService.getAllTopics();
+
+        // Fetch user progress if user is logged in
+        let progressData = {};
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (user && user.id) {
+          try {
+            const progressResponse = await TopicsService.getUserProgress(user.id);
+            if (progressResponse && progressResponse.progress) {
+              // Convert array to object for easy lookup
+              progressData = progressResponse.progress.reduce((acc, item) => {
+                acc[item.topic_id] = item.progress;
+                return acc;
+              }, {});
+              setUserProgress(progressData);
+            }
+          } catch (progressErr) {
+            console.log("Could not fetch user progress:", progressErr);
+          }
+        }
+
+        // Transform API response to match expected format
+        if (topicsResponse && topicsResponse.data && topicsResponse.data.length > 0) {
+          // Transform API data to component format
+          const transformedTopics = topicsResponse.data.map((topic) => ({
+            id: topic.id,
+            title: topic.name,
+            titleEn: topic.name,
+            arabicName: topic.alternative_name || topic.name,
+            description: topic.description,
+            chapter: "Topics",
+            totalAyats: topic.ayahs?.length || 0,
+            ahadith: topic.hadiths?.length || 0,
+            progress: progressData[topic.id] || 0, // Use real progress from backend
+            completed: (progressData[topic.id] || 0) >= 100,
+            category: "all", // You can add category field to backend
+          }));
+          setApiTopics(transformedTopics);
+        } else {
+          console.log("No topics in database");
+        }
+      } catch (err) {
+        console.error("Error fetching topics:", err);
+        setError("Failed to load topics from server.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTopicsAndProgress();
+  }, []);
 
   const filterButtons = [
     { id: "all", label: t("filter_all_topics"), icon: "📚" },
@@ -18,170 +83,12 @@ export default function QuranTopics() {
     { id: "afterlife", label: t("filter_afterlife"), icon: "🌙" },
   ];
 
-  const topicCards = [
-    {
-      id: "names-of-allah",
-      title: t("names_of_allah"),
-      titleEn: t("names_of_allah"),
-      arabicName: "أسماء الله",
-      description: "The beautiful names and attributes of Allah",
-      chapter: "Tawheed",
-      totalAyats: 34,
-      ahadith: 20,
-      progress: 45,
-      completed: false,
-      category: "beliefs",
-    },
-    {
-      id: "Attributes",
-      title: t("attributes"),
-      titleEn: t("attributes"),
-      arabicName: "صفات الله",
-      description: "Divine attributes and characteristics",
-      chapter: "Aqeedah",
-      totalAyats: 28,
-      ahadith: 15,
-      progress: 60,
-      completed: false,
-      category: "beliefs",
-    },
-    {
-      id: "Worship",
-      title: t("worship"),
-      titleEn: t("worship"),
-      arabicName: "العبادة",
-      description: "Understanding worship and devotion",
-      chapter: "Ibadat",
-      totalAyats: 42,
-      ahadith: 25,
-      progress: 30,
-      completed: false,
-      category: "worship",
-    },
-    {
-      id: "prophets",
-      title: t("prophets"),
-      titleEn: t("prophets"),
-      arabicName: "الأنبياء",
-      description: "Stories and lessons from the prophets",
-      chapter: "Nabuwat",
-      totalAyats: 56,
-      ahadith: 30,
-      progress: 75,
-      completed: false,
-      category: "prophets",
-    },
-    {
-      id: "prophet-muhammad",
-      title: t("prophet_muhammad"),
-      titleEn: t("prophet_muhammad"),
-      arabicName: "النبي محمد",
-      description: "Life and teachings of Prophet Muhammad (PBUH)",
-      chapter: "Sirah",
-      totalAyats: 48,
-      ahadith: 40,
-      progress: 100,
-      completed: true,
-      category: "prophets",
-    },
-    {
-      id: "revelation",
-      title: t("revelation"),
-      titleEn: t("revelation"),
-      arabicName: "الوحي",
-      description: "Divine revelation and guidance",
-      chapter: "Wahy",
-      totalAyats: 32,
-      ahadith: 18,
-      progress: 40,
-      completed: false,
-      category: "beliefs",
-    },
-    {
-      id: "miracles",
-      title: t("miracles"),
-      titleEn: t("miracles"),
-      arabicName: "المعجزات",
-      description: "Miracles in the Quran",
-      chapter: "Mu'jizat",
-      totalAyats: 38,
-      ahadith: 22,
-      progress: 65,
-      completed: false,
-      category: "prophets",
-    },
-    {
-      id: "imams",
-      title: t("imams"),
-      titleEn: t("imams"),
-      arabicName: "الأئمة",
-      description: "Leadership and guidance in Islam",
-      chapter: "Imamat",
-      totalAyats: 44,
-      ahadith: 28,
-      progress: 55,
-      completed: false,
-      category: "beliefs",
-    },
-    {
-      id: "guidance",
-      title: t("guidance"),
-      titleEn: t("guidance"),
-      arabicName: "الهداية",
-      description: "Divine guidance and wisdom",
-      chapter: "Hidayah",
-      totalAyats: 36,
-      ahadith: 20,
-      progress: 70,
-      completed: false,
-      category: "beliefs",
-    },
-    {
-      id: "resurrection",
-      title: t("resurrection"),
-      titleEn: t("resurrection"),
-      arabicName: "البعث",
-      description: "Day of resurrection and afterlife",
-      chapter: "Qiyamah",
-      totalAyats: 40,
-      ahadith: 24,
-      progress: 35,
-      completed: false,
-      category: "afterlife",
-    },
-    {
-      id: "heaven",
-      title: t("heaven_jannah"),
-      titleEn: t("heaven_jannah"),
-      arabicName: "الجنة",
-      description: "Paradise and eternal bliss",
-      chapter: "Jannah",
-      totalAyats: 30,
-      ahadith: 16,
-      progress: 80,
-      completed: false,
-      category: "afterlife",
-    },
-    {
-      id: "prayer",
-      title: t("prayer_salah"),
-      titleEn: t("prayer_salah"),
-      arabicName: "الصلاة",
-      description: "The importance and practice of prayer",
-      chapter: "Salah",
-      totalAyats: 52,
-      ahadith: 35,
-      progress: 90,
-      completed: false,
-      category: "worship",
-    },
-  ];
-
   const handleCardClick = (topicId) => {
     navigate(`/home/quran-topics/${topicId}`);
   };
 
-  const filteredTopics = topicCards
+  // Only use API topics - no dummy data
+  const filteredTopics = apiTopics
     .filter(
       (card) => selectedFilter === "all" || card.category === selectedFilter,
     )

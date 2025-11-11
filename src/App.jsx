@@ -34,9 +34,9 @@ export default function App() {
           {/* If not logged in, show login/signup */}
           {!user ? (
             <>
-              <Route path="/signin" element={<SignIn />} />
+              <Route path="/login" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
-              <Route path="*" element={<Navigate to="/signin" />} />
+              <Route path="*" element={<Navigate to="/login" replace />} />
             </>
           ) : (
             <>

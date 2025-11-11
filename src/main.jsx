@@ -5,6 +5,7 @@ import "./index.css";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 import { FontProvider } from "./context/FontContext";
 import { TranslationProvider } from "./context/TranslationContext.jsx";
+import { NavigationModeProvider } from "./context/NavigationModeContext.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 
 import "./i18n";
@@ -14,11 +15,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <ThemeProvider>
       <FontProvider>
         <TranslationProvider>
-          <BrowserRouter>
-            <AuthProvider>
-              <App />
-            </AuthProvider>
-          </BrowserRouter>
+          <NavigationModeProvider>
+            <BrowserRouter>
+              <AuthProvider>
+                <App />
+              </AuthProvider>
+            </BrowserRouter>
+          </NavigationModeProvider>
         </TranslationProvider>
       </FontProvider>
     </ThemeProvider>

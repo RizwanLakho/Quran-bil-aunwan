@@ -1,7 +1,10 @@
-import React, { useState, useContext } from "react";
-import { Plus, Send } from "lucide-react";
+import React, { useState, useContext, useEffect } from "react";
+import { Plus, AlertCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
+import TopicsService from "../services/TopicsService";
+import api from "../services/api";
 
 // Topic Info Component
 const TopicInfo = ({ formData, setFormData }) => {
@@ -24,7 +27,7 @@ const TopicInfo = ({ formData, setFormData }) => {
               theme === "dark" ? "text-gray-300" : "text-gray-700"
             }`}
           >
-            {t("topic_name")}
+            {t("topic_name")} <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -32,6 +35,7 @@ const TopicInfo = ({ formData, setFormData }) => {
             value={formData.topicName}
             onChange={handleChange}
             placeholder={t("topic_name_placeholder")}
+            required
             className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
               theme === "dark"
                 ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
@@ -45,7 +49,7 @@ const TopicInfo = ({ formData, setFormData }) => {
               theme === "dark" ? "text-gray-300" : "text-gray-700"
             }`}
           >
-            {t("alternative_name")}
+            {t("alternative_name")} <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -53,6 +57,7 @@ const TopicInfo = ({ formData, setFormData }) => {
             value={formData.alternativeName}
             onChange={handleChange}
             placeholder={t("alternative_name_placeholder")}
+            required
             className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
               theme === "dark"
                 ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
@@ -71,12 +76,12 @@ const TopicInfo = ({ formData, setFormData }) => {
           >
             {t("topic_description")}
           </label>
-          <input
-            type="text"
+          <textarea
             name="topicDescription"
             value={formData.topicDescription}
             onChange={handleChange}
             placeholder={t("topic_description_placeholder")}
+            rows="3"
             className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
               theme === "dark"
                 ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
@@ -90,98 +95,118 @@ const TopicInfo = ({ formData, setFormData }) => {
               theme === "dark" ? "text-gray-300" : "text-gray-700"
             }`}
           >
-            {t("suggested_arrangement")}
+            {t("status")} <span className="text-red-500">*</span>
           </label>
-          <input
-            type="text"
-            name="suggestedArrangement"
-            value={formData.suggestedArrangement}
+          <select
+            name="status"
+            value={formData.status}
             onChange={handleChange}
-            placeholder={t("suggested_arrangement_placeholder")}
+            required
             className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
               theme === "dark"
-                ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
-                : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
+                ? "border-gray-600 bg-gray-700 text-white"
+                : "border-gray-300 bg-white text-gray-900"
             }`}
-          />
+          >
+            <option value="draft">{t("draft") || "Draft"}</option>
+            <option value="published">{t("published") || "Published"}</option>
+          </select>
         </div>
       </div>
     </div>
   );
 };
 
-// Sample Ayahs Database
-const SAMPLE_AYAHS = {
-  "Al-Fatiha": {
-    1: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
-    2: "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
-    3: "الرَّحْمَٰنِ الرَّحِيمِ",
-    4: "مَالِكِ يَوْمِ الدِّينِ",
-    5: "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
-  },
-  "Al-Baqarah": {
-    1: "الم",
-    2: "ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِّلْمُتَّقِينَ",
-    3: "الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ وَيُقِيمُونَ الصَّلَاةَ وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ",
-    255: "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ",
-  },
-  "Al-Ikhlas": {
-    1: "قُلْ هُوَ اللَّهُ أَحَدٌ",
-    2: "اللَّهُ الصَّمَدُ",
-    3: "لَمْ يَلِدْ وَلَمْ يُولَدْ",
-    4: "وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ",
-  },
-};
-
-// Aayaat Component
+// Aayaat Component with Real API Integration - Two-step selection (Surah → Ayah)
 const Aayaat = ({ ayaatList, setAyaatList }) => {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
   const [newAyat, setNewAyat] = useState({
-    surah: "",
-    ayat: "",
+    ayah_id: "",
     description: "",
-    text: "",
   });
+  const [allSurahs, setAllSurahs] = useState([]);
+  const [allAyahs, setAllAyahs] = useState([]);
+  const [selectedSurah, setSelectedSurah] = useState("");
+  const [loadingSurahs, setLoadingSurahs] = useState(false);
+  const [loadingAyahs, setLoadingAyahs] = useState(false);
   const [selectedAyats, setSelectedAyats] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
 
-  // Get available ayat numbers for selected surah
-  const getAvailableAyats = () => {
-    if (!newAyat.surah || !SAMPLE_AYAHS[newAyat.surah]) return [];
-    return Object.keys(SAMPLE_AYAHS[newAyat.surah]);
-  };
+  // Fetch all surahs on component mount
+  useEffect(() => {
+    const fetchSurahs = async () => {
+      try {
+        setLoadingSurahs(true);
+        const response = await api.get("/surahs?per_page=114");
+        if (response.data && response.data.data) {
+          setAllSurahs(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching surahs:", error);
+      } finally {
+        setLoadingSurahs(false);
+      }
+    };
 
-  // Load Ayat text when surah and ayat are selected
-  const handleLoadAyat = () => {
-    if (newAyat.surah && newAyat.ayat) {
-      const ayatText = SAMPLE_AYAHS[newAyat.surah]?.[newAyat.ayat] || "";
-      setNewAyat({ ...newAyat, text: ayatText });
-    }
-  };
+    fetchSurahs();
+  }, []);
+
+  // Fetch ayahs when a surah is selected
+  useEffect(() => {
+    const fetchAyahs = async () => {
+      if (!selectedSurah) {
+        setAllAyahs([]);
+        return;
+      }
+
+      try {
+        setLoadingAyahs(true);
+        const response = await api.get(
+          `/ayahs?filter[surah_number]=${selectedSurah}&per_page=300`
+        );
+        if (response.data && response.data.data) {
+          setAllAyahs(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching ayahs:", error);
+      } finally {
+        setLoadingAyahs(false);
+      }
+    };
+
+    fetchAyahs();
+  }, [selectedSurah]);
 
   // Add Ayat to list
   const handleAddAyat = () => {
-    if (newAyat.surah && newAyat.ayat && newAyat.text) {
-      setAyaatList([
-        ...ayaatList,
-        {
-          ...newAyat,
-          id: Date.now(),
-        },
-      ]);
-      setNewAyat({ surah: "", ayat: "", description: "", text: "" });
+    if (newAyat.ayah_id) {
+      const selectedAyah = allAyahs.find(
+        (ayah) => ayah.id === parseInt(newAyat.ayah_id)
+      );
+
+      if (selectedAyah) {
+        setAyaatList([
+          ...ayaatList,
+          {
+            ...newAyat,
+            id: Date.now(),
+            ayah_text: selectedAyah.text,
+            ayah_number: selectedAyah.ayah_number,
+            surah_number: selectedAyah.surah_number,
+          },
+        ]);
+        setNewAyat({ ayah_id: "", description: "" });
+      }
     }
   };
 
-  // Handle individual checkbox
   const handleCheckboxChange = (id) => {
     setSelectedAyats((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
   };
 
-  // Handle select all
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedAyats([]);
@@ -191,14 +216,12 @@ const Aayaat = ({ ayaatList, setAyaatList }) => {
     setSelectAll(!selectAll);
   };
 
-  // Delete selected ayats
   const handleDeleteSelected = () => {
     setAyaatList(ayaatList.filter((ayat) => !selectedAyats.includes(ayat.id)));
     setSelectedAyats([]);
     setSelectAll(false);
   };
 
-  // Delete individual ayat
   const handleDelete = (id) => {
     setAyaatList(ayaatList.filter((item) => item.id !== id));
     setSelectedAyats(selectedAyats.filter((item) => item !== id));
@@ -212,107 +235,66 @@ const Aayaat = ({ ayaatList, setAyaatList }) => {
             theme === "dark" ? "text-white" : "text-gray-900"
           }`}
         >
-          {t("topics")}
+          {t("add_ayats")}
         </h2>
         <p
           className={`text-xs md:text-sm mb-3 md:mb-4 ${
             theme === "dark" ? "text-gray-400" : "text-gray-600"
           }`}
         >
-          {t("manage_topics_description")}
+          {t("add_ayats_description") || "Select ayahs to add to this topic"}
         </p>
-        <h3
-          className={`text-base md:text-lg mb-4 md:mb-6 ${
-            theme === "dark" ? "text-gray-500" : "text-gray-700"
-          }`}
-        >
-          {t("add_ayats")}
-        </h3>
       </div>
 
-      {/* Add Ayats Section */}
-      <div>
-        <h4
-          className={`text-sm md:text-base font-semibold mb-2 ${
-            theme === "dark" ? "text-white" : "text-gray-900"
-          }`}
-        >
-          {t("add_ayats")}
-        </h4>
-        <p
-          className={`text-xs md:text-sm mb-3 md:mb-4 ${
-            theme === "dark" ? "text-gray-400" : "text-gray-600"
-          }`}
-        >
-          {t("add_ayats_description")}
-        </p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-3 md:mb-4">
-          <select
-            className={`px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
-              theme === "dark"
-                ? "border-gray-600 bg-gray-700 text-white"
-                : "border-gray-300 bg-white text-gray-900"
-            }`}
-            value={newAyat.surah}
-            onChange={(e) =>
-              setNewAyat({ ...newAyat, surah: e.target.value, ayat: "", text: "" })
-            }
-          >
-            <option value="">{t("select_surah")}</option>
-            <option value="Al-Fatiha">Al-Fatiha</option>
-            <option value="Al-Baqarah">Al-Baqarah</option>
-            <option value="Al-Ikhlas">Al-Ikhlas</option>
-          </select>
-
-          <select
-            className={`px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
-              theme === "dark"
-                ? "border-gray-600 bg-gray-700 text-white"
-                : "border-gray-300 bg-white text-gray-900"
-            }`}
-            value={newAyat.ayat}
-            onChange={(e) => setNewAyat({ ...newAyat, ayat: e.target.value })}
-            disabled={!newAyat.surah}
-          >
-            <option value="">{t("select_ayat")}</option>
-            {getAvailableAyats().map((ayatNum) => (
-              <option key={ayatNum} value={ayatNum}>
-                {t("ayat")} {ayatNum}
-              </option>
-            ))}
-          </select>
-
-          <button
-            onClick={handleLoadAyat}
-            disabled={!newAyat.surah || !newAyat.ayat}
-            className={`px-4 md:px-6 py-2 text-sm md:text-base rounded-md transition ${
-              !newAyat.surah || !newAyat.ayat
-                ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                : "bg-primary text-white hover:bg-orange-400"
-            }`}
-          >
-            {t("load_ayat")}
-          </button>
-        </div>
-
-        <input
-          type="text"
-          placeholder={t("ayat_placeholder")}
-          value={newAyat.text}
-          className={`w-full px-3 md:px-4 py-3 text-base md:text-lg border rounded-md mb-3 md:mb-4 ${
+      <div className="grid grid-cols-1 gap-3 md:gap-4 mb-3 md:mb-4">
+        {/* Step 1: Select Surah */}
+        <select
+          className={`px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
             theme === "dark"
               ? "border-gray-600 bg-gray-700 text-white"
               : "border-gray-300 bg-white text-gray-900"
           }`}
-          style={{
-            direction: "rtl",
-            fontFamily: "'Amiri', 'Scheherazade New', 'Traditional Arabic', serif",
-            lineHeight: "1.8",
-            fontSize: "1.1rem",
+          value={selectedSurah}
+          onChange={(e) => {
+            setSelectedSurah(e.target.value);
+            setNewAyat({ ayah_id: "", description: newAyat.description });
           }}
-          readOnly
-        />
+          disabled={loadingSurahs}
+        >
+          <option value="">
+            {loadingSurahs ? "Loading Surahs..." : "1. Select Surah First"}
+          </option>
+          {allSurahs.map((surah) => (
+            <option key={surah.number} value={surah.number}>
+              {surah.number}. {surah.english_name} ({surah.name}) - {surah.number_of_ayahs} Ayahs
+            </option>
+          ))}
+        </select>
+
+        {/* Step 2: Select Ayah (only enabled after surah selection) */}
+        <select
+          className={`px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
+            theme === "dark"
+              ? "border-gray-600 bg-gray-700 text-white"
+              : "border-gray-300 bg-white text-gray-900"
+          } ${!selectedSurah ? "opacity-50 cursor-not-allowed" : ""}`}
+          value={newAyat.ayah_id}
+          onChange={(e) => setNewAyat({ ...newAyat, ayah_id: e.target.value })}
+          disabled={!selectedSurah || loadingAyahs}
+        >
+          <option value="">
+            {!selectedSurah
+              ? "2. Select Ayah (Select Surah First)"
+              : loadingAyahs
+              ? "Loading Ayahs..."
+              : "2. Select Ayah"}
+          </option>
+          {allAyahs.map((ayah) => (
+            <option key={ayah.id} value={ayah.id}>
+              Ayah {ayah.ayah_number}: {ayah.text?.substring(0, 80)}...
+            </option>
+          ))}
+        </select>
 
         <input
           type="text"
@@ -321,94 +303,66 @@ const Aayaat = ({ ayaatList, setAyaatList }) => {
           onChange={(e) =>
             setNewAyat({ ...newAyat, description: e.target.value })
           }
-          className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md mb-3 md:mb-4 ${
+          className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md ${
             theme === "dark"
               ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
               : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
           }`}
         />
 
-        <div className="flex flex-col sm:flex-row justify-end items-start sm:items-center gap-2">
-          <button
-            onClick={handleAddAyat}
-            disabled={!newAyat.text}
-            className={`flex items-center text-sm md:text-base px-4 py-2 rounded-md transition ${
-              !newAyat.text
-                ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                : "bg-primary text-white hover:bg-orange-400"
-            }`}
-          >
-            <Plus className="w-4 h-4 mr-1" />
-            {t("assign")}
-          </button>
-        </div>
+        <button
+          onClick={handleAddAyat}
+          disabled={!newAyat.ayah_id}
+          className={`flex items-center justify-center text-sm md:text-base px-4 py-2 rounded-md transition ${
+            !newAyat.ayah_id
+              ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+              : "bg-primary text-white hover:bg-orange-400"
+          }`}
+        >
+          <Plus className="w-4 h-4 mr-1" />
+          {t("assign")}
+        </button>
       </div>
 
-      {/* Assigned Ayats List */}
       <div className="mt-6 md:mt-8">
         <h3
           className={`text-base md:text-lg mb-3 md:mb-4 ${
             theme === "dark" ? "text-gray-500" : "text-gray-700"
           }`}
         >
-          {t("assigned_ayats")}
+          {t("assigned_ayats")} ({ayaatList.length})
         </h3>
-        <h4
-          className={`text-sm md:text-base font-semibold mb-2 ${
-            theme === "dark" ? "text-white" : "text-gray-900"
-          }`}
-        >
-          {t("list_of_assigned_ayat")}
-        </h4>
-        <p
-          className={`text-xs md:text-sm mb-3 md:mb-4 ${
-            theme === "dark" ? "text-gray-400" : "text-gray-600"
-          }`}
-        >
-          {t("add_ayats_description")}
-        </p>
 
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 md:mb-4 gap-2">
-          <div className="flex items-center gap-2 md:gap-4 flex-wrap">
+        {ayaatList.length > 0 && (
+          <div className="flex items-center gap-4 mb-4">
             <label className="flex items-center cursor-pointer">
               <input
                 type="checkbox"
-                className="mr-2 cursor-pointer"
+                className="mr-2"
                 checked={selectAll}
                 onChange={handleSelectAll}
               />
               <span
-                className={`text-xs md:text-sm ${
+                className={`text-sm ${
                   theme === "dark" ? "text-gray-300" : "text-gray-700"
                 }`}
               >
                 {t("select_all")}
               </span>
             </label>
-            <span
-              className={`text-xs md:text-sm ${
-                theme === "dark" ? "text-gray-400" : "text-gray-600"
+            <button
+              onClick={handleDeleteSelected}
+              disabled={selectedAyats.length === 0}
+              className={`text-sm ${
+                selectedAyats.length === 0
+                  ? "text-gray-400 cursor-not-allowed"
+                  : "text-primary hover:text-orange-400"
               }`}
             >
-              | {selectedAyats.length} {t("selected")} |{" "}
-              <button
-                onClick={handleDeleteSelected}
-                disabled={selectedAyats.length === 0}
-                className={`${
-                  selectedAyats.length === 0
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "text-primary hover:text-orange-400 cursor-pointer"
-                }`}
-              >
-                {t("delete_selected")}
-              </button>
-            </span>
+              {t("delete_selected")} ({selectedAyats.length})
+            </button>
           </div>
-          <span className="text-xs md:text-sm text-primary">
-            {t("total_ayat_assigned")?.replace("{count}", ayaatList.length) ||
-              `Total: ${ayaatList.length}`}
-          </span>
-        </div>
+        )}
 
         {ayaatList.length === 0 ? (
           <p
@@ -422,37 +376,35 @@ const Aayaat = ({ ayaatList, setAyaatList }) => {
           ayaatList.map((ayat) => (
             <div
               key={ayat.id}
-              className={`flex items-center justify-between border-b py-2 md:py-3 ${
+              className={`flex items-center justify-between border-b py-3 ${
                 theme === "dark" ? "border-gray-700" : "border-gray-200"
               }`}
             >
-              <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1 pr-4">
+              <div className="flex items-center gap-3 flex-1">
                 <input
                   type="checkbox"
-                  className="flex-shrink-0 cursor-pointer"
                   checked={selectedAyats.includes(ayat.id)}
                   onChange={() => handleCheckboxChange(ayat.id)}
                 />
-                <div className="min-w-0 flex-1">
+                <div className="flex-1">
                   <p
-                    className={`text-base md:text-lg mb-1 ${
+                    className={`text-base mb-1 ${
                       theme === "dark" ? "text-white" : "text-gray-900"
                     }`}
                     style={{
                       direction: "rtl",
-                      fontFamily: "'Amiri', 'Scheherazade New', 'Traditional Arabic', serif",
-                      lineHeight: "1.8",
-                      fontSize: "1.1rem",
+                      fontFamily:
+                        "'Amiri', 'Scheherazade New', 'Traditional Arabic', serif",
                     }}
                   >
-                    {ayat.text}
+                    {ayat.ayah_text}
                   </p>
                   <p
                     className={`text-xs ${
                       theme === "dark" ? "text-gray-400" : "text-gray-600"
                     }`}
                   >
-                    {ayat.surah} - {t("ayah")} {ayat.ayat}
+                    Surah {ayat.surah_number} - Ayah {ayat.ayah_number}
                   </p>
                   {ayat.description && (
                     <p
@@ -465,21 +417,16 @@ const Aayaat = ({ ayaatList, setAyaatList }) => {
                   )}
                 </div>
               </div>
-              <div className="flex gap-2 md:gap-3 flex-shrink-0 ml-4">
-                <button
-                  onClick={() => handleDelete(ayat.id)}
-                  className={`text-xs md:text-sm whitespace-nowrap ${
-                    theme === "dark"
-                      ? "text-gray-400 hover:text-gray-200"
-                      : "text-gray-600 hover:text-gray-800"
-                  }`}
-                >
-                  {t("delete")}
-                </button>
-                <button className="text-primary hover:text-orange-400 text-xs md:text-sm whitespace-nowrap">
-                  {t("edit")}
-                </button>
-              </div>
+              <button
+                onClick={() => handleDelete(ayat.id)}
+                className={`text-sm ${
+                  theme === "dark"
+                    ? "text-gray-400 hover:text-gray-200"
+                    : "text-gray-600 hover:text-gray-800"
+                }`}
+              >
+                {t("delete")}
+              </button>
             </div>
           ))
         )}
@@ -488,54 +435,21 @@ const Aayaat = ({ ayaatList, setAyaatList }) => {
   );
 };
 
-// Sample Hadith Database
-const SAMPLE_HADITHS = {
-  "Sahih Bukhari": {
-    1: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى",
-    2: "بُنِيَ الإِسْلاَمُ عَلَى خَمْسٍ",
-    3: "الإِيمَانُ بِضْعٌ وَسَبْعُونَ شُعْبَةً",
-  },
-  "Sahih Muslim": {
-    1: "الطَّهُورُ شَطْرُ الإِيمَانِ",
-    2: "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ",
-    3: "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ",
-  },
-  "Sunan Abu Dawud": {
-    1: "إِنَّ اللَّهَ يُحِبُّ إِذَا عَمِلَ أَحَدُكُمْ عَمَلاً أَنْ يُتْقِنَهُ",
-    2: "مَا مِنْ عَبْدٍ يَصُومُ يَوْمًا فِي سَبِيلِ اللَّهِ",
-  },
-};
-
 // Hadith Component
 const Hadith = ({ hadithList, setHadithList }) => {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
   const [newHadith, setNewHadith] = useState({
-    book: "",
-    hadithNo: "",
+    text_arabic: "",
+    text_urdu: "",
+    text_english: "",
     description: "",
-    text: "",
   });
   const [selectedHadiths, setSelectedHadiths] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
 
-  // Get available hadith numbers for selected book
-  const getAvailableHadiths = () => {
-    if (!newHadith.book || !SAMPLE_HADITHS[newHadith.book]) return [];
-    return Object.keys(SAMPLE_HADITHS[newHadith.book]);
-  };
-
-  // Load Hadith text when book and hadith number are selected
-  const handleLoadHadith = () => {
-    if (newHadith.book && newHadith.hadithNo) {
-      const hadithText = SAMPLE_HADITHS[newHadith.book]?.[newHadith.hadithNo] || "";
-      setNewHadith({ ...newHadith, text: hadithText });
-    }
-  };
-
-  // Add Hadith to list
   const handleAddHadith = () => {
-    if (newHadith.book && newHadith.hadithNo && newHadith.text) {
+    if (newHadith.text_arabic) {
       setHadithList([
         ...hadithList,
         {
@@ -543,18 +457,21 @@ const Hadith = ({ hadithList, setHadithList }) => {
           id: Date.now(),
         },
       ]);
-      setNewHadith({ book: "", hadithNo: "", description: "", text: "" });
+      setNewHadith({
+        text_arabic: "",
+        text_urdu: "",
+        text_english: "",
+        description: "",
+      });
     }
   };
 
-  // Handle individual checkbox
   const handleCheckboxChange = (id) => {
     setSelectedHadiths((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
   };
 
-  // Handle select all
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedHadiths([]);
@@ -564,14 +481,14 @@ const Hadith = ({ hadithList, setHadithList }) => {
     setSelectAll(!selectAll);
   };
 
-  // Delete selected hadiths
   const handleDeleteSelected = () => {
-    setHadithList(hadithList.filter((hadith) => !selectedHadiths.includes(hadith.id)));
+    setHadithList(
+      hadithList.filter((hadith) => !selectedHadiths.includes(hadith.id))
+    );
     setSelectedHadiths([]);
     setSelectAll(false);
   };
 
-  // Delete individual hadith
   const handleDelete = (id) => {
     setHadithList(hadithList.filter((item) => item.id !== id));
     setSelectedHadiths(selectedHadiths.filter((item) => item !== id));
@@ -592,93 +509,56 @@ const Hadith = ({ hadithList, setHadithList }) => {
             theme === "dark" ? "text-gray-400" : "text-gray-600"
           }`}
         >
-          {t("manage_hadith_description")}
+          {t("manage_hadith_description") || "Add hadiths to this topic"}
         </p>
       </div>
 
-      <div>
-        <h4
-          className={`text-sm md:text-base font-semibold mb-2 ${
-            theme === "dark" ? "text-white" : "text-gray-900"
-          }`}
-        >
-          {t("add_hadith")}
-        </h4>
-        <p
-          className={`text-xs md:text-sm mb-3 md:mb-4 ${
-            theme === "dark" ? "text-gray-400" : "text-gray-600"
-          }`}
-        >
-          {t("add_hadith_description")}
-        </p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-3 md:mb-4">
-          <select
-            className={`px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
-              theme === "dark"
-                ? "border-gray-600 bg-gray-700 text-white"
-                : "border-gray-300 bg-white text-gray-900"
-            }`}
-            value={newHadith.book}
-            onChange={(e) =>
-              setNewHadith({ ...newHadith, book: e.target.value, hadithNo: "", text: "" })
-            }
-          >
-            <option value="">{t("select_book")}</option>
-            <option value="Sahih Bukhari">Sahih Bukhari</option>
-            <option value="Sahih Muslim">Sahih Muslim</option>
-            <option value="Sunan Abu Dawud">Sunan Abu Dawud</option>
-          </select>
-
-          <select
-            className={`px-3 md:px-4 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
-              theme === "dark"
-                ? "border-gray-600 bg-gray-700 text-white"
-                : "border-gray-300 bg-white text-gray-900"
-            }`}
-            value={newHadith.hadithNo}
-            onChange={(e) =>
-              setNewHadith({ ...newHadith, hadithNo: e.target.value })
-            }
-            disabled={!newHadith.book}
-          >
-            <option value="">{t("select_hadith_no")}</option>
-            {getAvailableHadiths().map((hadithNum) => (
-              <option key={hadithNum} value={hadithNum}>
-                {t("hadith")} {hadithNum}
-              </option>
-            ))}
-          </select>
-
-          <button
-            onClick={handleLoadHadith}
-            disabled={!newHadith.book || !newHadith.hadithNo}
-            className={`px-4 md:px-6 py-2 text-sm md:text-base rounded-md transition ${
-              !newHadith.book || !newHadith.hadithNo
-                ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                : "bg-primary text-white hover:bg-orange-400"
-            }`}
-          >
-            {t("load_hadith")}
-          </button>
-        </div>
-
-        <input
-          type="text"
-          placeholder={t("hadith_placeholder")}
-          value={newHadith.text}
-          className={`w-full px-3 md:px-4 py-3 text-base md:text-lg border rounded-md mb-3 md:mb-4 ${
+      <div className="grid grid-cols-1 gap-3 md:gap-4 mb-3 md:mb-4">
+        <textarea
+          placeholder={t("hadith_arabic_text") || "Hadith Text (Arabic) *"}
+          value={newHadith.text_arabic}
+          onChange={(e) =>
+            setNewHadith({ ...newHadith, text_arabic: e.target.value })
+          }
+          rows="3"
+          className={`w-full px-3 md:px-4 py-3 text-base border rounded-md ${
             theme === "dark"
               ? "border-gray-600 bg-gray-700 text-white"
               : "border-gray-300 bg-white text-gray-900"
           }`}
           style={{
             direction: "rtl",
-            fontFamily: "'Amiri', 'Scheherazade New', 'Traditional Arabic', serif",
-            lineHeight: "1.8",
-            fontSize: "1.1rem",
+            fontFamily:
+              "'Amiri', 'Scheherazade New', 'Traditional Arabic', serif",
           }}
-          readOnly
+        />
+
+        <textarea
+          placeholder={t("hadith_urdu_text") || "Hadith Text (Urdu)"}
+          value={newHadith.text_urdu}
+          onChange={(e) =>
+            setNewHadith({ ...newHadith, text_urdu: e.target.value })
+          }
+          rows="3"
+          className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md ${
+            theme === "dark"
+              ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
+              : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
+          }`}
+        />
+
+        <textarea
+          placeholder={t("hadith_english_text") || "Hadith Text (English)"}
+          value={newHadith.text_english}
+          onChange={(e) =>
+            setNewHadith({ ...newHadith, text_english: e.target.value })
+          }
+          rows="3"
+          className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md ${
+            theme === "dark"
+              ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
+              : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
+          }`}
         />
 
         <input
@@ -688,80 +568,66 @@ const Hadith = ({ hadithList, setHadithList }) => {
           onChange={(e) =>
             setNewHadith({ ...newHadith, description: e.target.value })
           }
-          className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md mb-3 md:mb-4 ${
+          className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md ${
             theme === "dark"
               ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
               : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
           }`}
         />
 
-        <div className="flex flex-col sm:flex-row justify-end items-start sm:items-center gap-2">
-          <button
-            onClick={handleAddHadith}
-            disabled={!newHadith.text}
-            className={`flex items-center text-sm md:text-base px-4 py-2 rounded-md transition ${
-              !newHadith.text
-                ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                : "bg-primary text-white hover:bg-orange-400"
-            }`}
-          >
-            <Plus className="w-4 h-4 mr-1" />
-            {t("assign")}
-          </button>
-        </div>
+        <button
+          onClick={handleAddHadith}
+          disabled={!newHadith.text_arabic}
+          className={`flex items-center justify-center text-sm md:text-base px-4 py-2 rounded-md transition ${
+            !newHadith.text_arabic
+              ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+              : "bg-primary text-white hover:bg-orange-400"
+          }`}
+        >
+          <Plus className="w-4 h-4 mr-1" />
+          {t("assign")}
+        </button>
       </div>
 
-      {/* Assigned Hadith List */}
       <div className="mt-6 md:mt-8">
         <h3
           className={`text-base md:text-lg mb-3 md:mb-4 ${
             theme === "dark" ? "text-gray-500" : "text-gray-700"
           }`}
         >
-          {t("assigned_hadith")}
+          {t("assigned_hadith")} ({hadithList.length})
         </h3>
 
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 md:mb-4 gap-2">
-          <div className="flex items-center gap-2 md:gap-4 flex-wrap">
+        {hadithList.length > 0 && (
+          <div className="flex items-center gap-4 mb-4">
             <label className="flex items-center cursor-pointer">
               <input
                 type="checkbox"
-                className="mr-2 cursor-pointer"
+                className="mr-2"
                 checked={selectAll}
                 onChange={handleSelectAll}
               />
               <span
-                className={`text-xs md:text-sm ${
+                className={`text-sm ${
                   theme === "dark" ? "text-gray-300" : "text-gray-700"
                 }`}
               >
                 {t("select_all")}
               </span>
             </label>
-            <span
-              className={`text-xs md:text-sm ${
-                theme === "dark" ? "text-gray-400" : "text-gray-600"
+            <button
+              onClick={handleDeleteSelected}
+              disabled={selectedHadiths.length === 0}
+              className={`text-sm ${
+                selectedHadiths.length === 0
+                  ? "text-gray-400 cursor-not-allowed"
+                  : "text-primary hover:text-orange-400"
               }`}
             >
-              | {selectedHadiths.length} {t("selected")} |{" "}
-              <button
-                onClick={handleDeleteSelected}
-                disabled={selectedHadiths.length === 0}
-                className={`${
-                  selectedHadiths.length === 0
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "text-primary hover:text-orange-400 cursor-pointer"
-                }`}
-              >
-                {t("delete_selected")}
-              </button>
-            </span>
+              {t("delete_selected")} ({selectedHadiths.length})
+            </button>
           </div>
-          <span className="text-xs md:text-sm text-primary">
-            {t("total_hadith_assigned")?.replace("{count}", hadithList.length) ||
-              `Total: ${hadithList.length}`}
-          </span>
-        </div>
+        )}
 
         {hadithList.length === 0 ? (
           <p
@@ -775,41 +641,42 @@ const Hadith = ({ hadithList, setHadithList }) => {
           hadithList.map((hadith) => (
             <div
               key={hadith.id}
-              className={`flex items-center justify-between border-b py-2 md:py-3 ${
+              className={`border-b py-3 ${
                 theme === "dark" ? "border-gray-700" : "border-gray-200"
               }`}
             >
-              <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1 pr-4">
+              <div className="flex items-start gap-3">
                 <input
                   type="checkbox"
-                  className="flex-shrink-0 cursor-pointer"
+                  className="mt-1"
                   checked={selectedHadiths.includes(hadith.id)}
                   onChange={() => handleCheckboxChange(hadith.id)}
                 />
-                <div className="min-w-0 flex-1">
+                <div className="flex-1">
                   <p
-                    className={`text-base md:text-lg mb-1 ${
+                    className={`text-base mb-2 ${
                       theme === "dark" ? "text-white" : "text-gray-900"
                     }`}
                     style={{
                       direction: "rtl",
-                      fontFamily: "'Amiri', 'Scheherazade New', 'Traditional Arabic', serif",
-                      lineHeight: "1.8",
-                      fontSize: "1.1rem",
+                      fontFamily:
+                        "'Amiri', 'Scheherazade New', 'Traditional Arabic', serif",
                     }}
                   >
-                    {hadith.text}
+                    {hadith.text_arabic}
                   </p>
-                  <p
-                    className={`text-xs ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-600"
-                    }`}
-                  >
-                    {hadith.book} - {t("hadith")} {hadith.hadithNo}
-                  </p>
+                  {hadith.text_english && (
+                    <p
+                      className={`text-sm mb-1 ${
+                        theme === "dark" ? "text-gray-300" : "text-gray-700"
+                      }`}
+                    >
+                      {hadith.text_english}
+                    </p>
+                  )}
                   {hadith.description && (
                     <p
-                      className={`text-xs mt-1 ${
+                      className={`text-xs ${
                         theme === "dark" ? "text-gray-500" : "text-gray-600"
                       }`}
                     >
@@ -817,20 +684,15 @@ const Hadith = ({ hadithList, setHadithList }) => {
                     </p>
                   )}
                 </div>
-              </div>
-              <div className="flex gap-2 md:gap-3 flex-shrink-0 ml-4">
                 <button
                   onClick={() => handleDelete(hadith.id)}
-                  className={`text-xs md:text-sm whitespace-nowrap ${
+                  className={`text-sm ${
                     theme === "dark"
                       ? "text-gray-400 hover:text-gray-200"
                       : "text-gray-600 hover:text-gray-800"
                   }`}
                 >
                   {t("delete")}
-                </button>
-                <button className="text-primary hover:text-orange-400 text-xs md:text-sm whitespace-nowrap">
-                  {t("edit")}
                 </button>
               </div>
             </div>
@@ -887,8 +749,8 @@ const Review = ({ formData, ayaatList, hadithList }) => {
               {formData.topicDescription || t("not_provided")}
             </p>
             <p>
-              <span className="font-medium">{t("suggested_arrangement")}:</span>{" "}
-              {formData.suggestedArrangement || t("not_provided")}
+              <span className="font-medium">{t("status")}:</span>{" "}
+              {formData.status}
             </p>
           </div>
         </div>
@@ -945,7 +807,7 @@ const ProgressBar = ({ currentStep, steps }) => {
 
   return (
     <div
-      className={` rounded-lg shadow-sm p-4 md:p-8 mb-4 md:mb-6 ${
+      className={`rounded-lg shadow-sm p-4 md:p-8 mb-4 md:mb-6 ${
         theme === "dark" ? "bg-gray-800" : "bg-white"
       }`}
     >
@@ -1021,13 +883,16 @@ const ProgressBar = ({ currentStep, steps }) => {
 export default function TopicFormWizard() {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     topicName: "",
     alternativeName: "",
     topicDescription: "",
-    suggestedArrangement: "",
+    status: "draft",
   });
   const [ayaatList, setAyaatList] = useState([]);
   const [hadithList, setHadithList] = useState([]);
@@ -1040,20 +905,109 @@ export default function TopicFormWizard() {
   ];
 
   const handleNext = () => {
+    // Validate required fields in step 1
+    if (currentStep === 1) {
+      if (!formData.topicName || !formData.alternativeName) {
+        setError("Please fill in all required fields");
+        return;
+      }
+    }
+
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
+      setError(null);
     }
   };
 
   const handleBack = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+      setError(null);
     }
   };
 
-  const handleSave = () => {
-    console.log("Save clicked!");
-    setShowSuccess(true);
+  const handleSave = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Validate
+      if (!formData.topicName || !formData.alternativeName) {
+        throw new Error("Topic name and alternative name are required");
+      }
+
+      // Prepare data for API
+      const topicData = {
+        name: formData.topicName,
+        alternative_name: formData.alternativeName,
+        description: formData.topicDescription || null,
+        status: formData.status,
+        ayahs: ayaatList.map((ayat) => ({
+          ayah_id: parseInt(ayat.ayah_id),
+          description: ayat.description || null,
+        })),
+        hadiths: hadithList.map((hadith) => ({
+          text_arabic: hadith.text_arabic,
+          text_urdu: hadith.text_urdu || null,
+          text_english: hadith.text_english || null,
+          description: hadith.description || null,
+        })),
+      };
+
+      // Call API
+      const response = await TopicsService.createTopic(topicData);
+
+      if (response.success) {
+        setShowSuccess(true);
+      } else {
+        throw new Error(response.message || "Failed to create topic");
+      }
+    } catch (err) {
+      console.error("❌ Error creating topic:", err);
+      console.error("Error details:", {
+        message: err.message,
+        code: err.code,
+        name: err.name,
+        hasResponse: !!err.response,
+        status: err.response?.status,
+        data: err.response?.data
+      });
+
+      // Handle specific error types
+      if (err.response) {
+        // Server responded with an error
+        if (err.response.status === 401) {
+          setError(
+            "❌ Authentication Error: You must be logged in. Please login first."
+          );
+        } else if (err.response.status === 403) {
+          setError(
+            `❌ Permission Denied: ${err.response.data.message || "Your account is not verified. Contact support."}`
+          );
+        } else if (err.response.status === 422) {
+          // Validation errors
+          const errors = err.response.data.errors;
+          const errorMessage = errors
+            ? Object.values(errors).flat().join(", ")
+            : "Validation failed. Please check your inputs.";
+          setError(`❌ Validation Error: ${errorMessage}`);
+        } else {
+          setError(
+            `❌ Server Error (${err.response.status}): ${err.response.data.message || "Failed to create topic"}`
+          );
+        }
+      } else if (err.request) {
+        // Request was made but no response
+        setError(
+          `❌ Network Error: Cannot connect to server at http://localhost:8000. Make sure backend is running. Error: ${err.message}`
+        );
+      } else {
+        // Something else went wrong
+        setError(`❌ Error: ${err.message}`);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleAddNew = () => {
@@ -1063,10 +1017,11 @@ export default function TopicFormWizard() {
       topicName: "",
       alternativeName: "",
       topicDescription: "",
-      suggestedArrangement: "",
+      status: "draft",
     });
     setAyaatList([]);
     setHadithList([]);
+    setError(null);
   };
 
   const renderComponent = () => {
@@ -1096,13 +1051,29 @@ export default function TopicFormWizard() {
         theme === "dark" ? "bg-gray-900" : "bg-orange-50"
       }`}
     >
-      <div className=" max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         {/* Progress Bar */}
         <ProgressBar currentStep={currentStep} steps={steps} />
 
+        {/* Error Alert */}
+        {error && (
+          <div
+            className={`rounded-lg p-4 mb-4 border-l-4 ${
+              theme === "dark"
+                ? "bg-red-900/20 border-red-500 text-red-200"
+                : "bg-red-50 border-red-500 text-red-800"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-5 h-5" />
+              <p className="text-sm">{error}</p>
+            </div>
+          </div>
+        )}
+
         {/* Dynamic Component Content */}
         <div
-          className={` rounded-lg shadow-sm border-2 border-primary p-4 md:p-8 ${
+          className={`rounded-lg shadow-sm border-2 border-primary p-4 md:p-8 ${
             theme === "dark" ? "bg-gray-800" : "bg-white"
           }`}
         >
@@ -1139,105 +1110,103 @@ export default function TopicFormWizard() {
             ) : (
               <button
                 onClick={handleSave}
-                className="px-6 md:px-8 py-2 text-sm md:text-base bg-primary text-white rounded-md font-medium hover:bg-orange-400 transition"
+                disabled={loading}
+                className={`px-6 md:px-8 py-2 text-sm md:text-base rounded-md font-medium transition ${
+                  loading
+                    ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+                    : "bg-primary text-white hover:bg-orange-400"
+                }`}
               >
-                {t("save")}
+                {loading ? t("saving") || "Saving..." : t("save")}
               </button>
             )}
           </div>
-
         </div>
 
-        {/* Success Popup Modal - Appears in current viewport without overlay */}
+        {/* Success Popup Modal */}
         {showSuccess && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-            {/* Modal Content */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
             <div
-              className={`relative rounded-lg p-6 md:p-8 max-w-md w-full shadow-2xl animate-slideIn pointer-events-auto ${
-                theme === "dark"
-                  ? "bg-gray-800 border-2 border-gray-700"
-                  : "bg-white border-2 border-gray-200"
+              className={`relative rounded-lg p-6 md:p-8 max-w-md w-full shadow-2xl ${
+                theme === "dark" ? "bg-gray-800" : "bg-white"
               }`}
             >
-                {/* Close Button */}
-                <button
-                  onClick={() => setShowSuccess(false)}
-                  className={`absolute top-3 right-3 text-2xl transition ${
-                    theme === "dark"
-                      ? "text-gray-400 hover:text-gray-200"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  ✕
-                </button>
+              <button
+                onClick={() => setShowSuccess(false)}
+                className={`absolute top-3 right-3 text-2xl ${
+                  theme === "dark"
+                    ? "text-gray-400 hover:text-gray-200"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                ✕
+              </button>
 
-                {/* Success Icon */}
-                <div className="flex justify-center mb-4">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                    <svg
-                      className="w-8 h-8 text-green-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </div>
-                </div>
-
-                {/* Success Message */}
-                <h3
-                  className={`text-lg md:text-xl font-semibold mb-2 text-center ${
-                    theme === "dark" ? "text-white" : "text-gray-900"
-                  }`}
-                >
-                  {t("topic_created_success") || "Topic Created Successfully!"}
-                </h3>
-
-                <p
-                  className={`text-sm md:text-base mb-6 text-center ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
-                  {t("topic_created_message")
-                    ?.replace("{ayaatCount}", ayaatList.length)
-                    ?.replace("{hadithCount}", hadithList.length) ||
-                    `Your topic has been created with ${ayaatList.length} ayahs and ${hadithList.length} hadiths.`}
-                </p>
-
-                {/* Buttons */}
-                <div className="flex flex-col sm:flex-row gap-3 justify-end">
-                  <button
-                    onClick={() => setShowSuccess(false)}
-                    className={`px-6 py-2 text-sm md:text-base border rounded-md transition ${
-                      theme === "dark"
-                        ? "border-gray-600 hover:bg-gray-700 text-gray-200"
-                        : "border-gray-300 hover:bg-gray-100 text-gray-700"
-                    }`}
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                  <svg
+                    className="w-8 h-8 text-green-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    {t("close") || "Close"}
-                  </button>
-                  <button
-                    onClick={handleAddNew}
-                    className="px-6 py-2 text-sm md:text-base bg-primary text-white rounded-md hover:bg-orange-400 transition"
-                  >
-                    {t("add_new_topic") || "Add New Topic"}
-                  </button>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
                 </div>
               </div>
+
+              <h3
+                className={`text-lg md:text-xl font-semibold mb-2 text-center ${
+                  theme === "dark" ? "text-white" : "text-gray-900"
+                }`}
+              >
+                {t("topic_created_success") || "Topic Created Successfully!"}
+              </h3>
+
+              <p
+                className={`text-sm md:text-base mb-6 text-center ${
+                  theme === "dark" ? "text-gray-400" : "text-gray-600"
+                }`}
+              >
+                Your topic has been created with {ayaatList.length} ayahs and{" "}
+                {hadithList.length} hadiths.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-3 justify-end">
+                <button
+                  onClick={() => {
+                    setShowSuccess(false);
+                    navigate("/home/quran-topics");
+                  }}
+                  className={`px-6 py-2 text-sm md:text-base border rounded-md transition ${
+                    theme === "dark"
+                      ? "border-gray-600 hover:bg-gray-700 text-gray-200"
+                      : "border-gray-300 hover:bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  {t("view_topics") || "View Topics"}
+                </button>
+                <button
+                  onClick={handleAddNew}
+                  className="px-6 py-2 text-sm md:text-base bg-primary text-white rounded-md hover:bg-orange-400 transition"
+                >
+                  {t("add_new_topic") || "Add New Topic"}
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Back to Topics Button */}
+      {/* Back Button */}
       <div className="flex justify-center mb-6 md:mb-8 mt-4 md:mt-6">
         <button
-          onClick={() => window.history.back()}
+          onClick={() => navigate(-1)}
           className={`inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 text-xs md:text-sm font-medium border-2 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md group ${
             theme === "dark"
               ? "text-gray-200 bg-gray-800 border-gray-600 hover:bg-gray-700 hover:border-primary"

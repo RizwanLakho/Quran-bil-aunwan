@@ -14,11 +14,13 @@ import {
   UserCircle2,
 } from "lucide-react";
 import { ThemeContext } from "../context/ThemeContext";
+import { AuthContext } from "../context/AuthContext";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 export default function Navbar({ isMenuOpen, toggleMenu }) {
   const { theme } = useContext(ThemeContext);
+  const { user, logout } = useContext(AuthContext);
   const [searchText, setSearchText] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -36,6 +38,15 @@ export default function Navbar({ isMenuOpen, toggleMenu }) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logout(); // Use logout from AuthContext - will clear user state and redirect automatically
+      setIsDropdownOpen(false); // Close dropdown after logout
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   return (
     <div
@@ -144,7 +155,8 @@ export default function Navbar({ isMenuOpen, toggleMenu }) {
                   theme === "dark" ? "text-gray-200" : "text-gray-700"
                 }`}
               >
-                {t("user_name")}
+                {/* {t("user_name")}*/}
+                {user?.name || "Guest"}
               </span>
               <ChevronDown
                 size={16}
@@ -226,6 +238,7 @@ export default function Navbar({ isMenuOpen, toggleMenu }) {
 
                 {/* Logout Button */}
                 <button
+                  onClick={handleLogout}
                   className={`flex w-full items-center gap-2 md:gap-3 px-3 md:px-4 py-2 md:py-3 text-red-500 hover:bg-red-50 transition-colors ${
                     isRTL ? "flex-row-reverse text-right" : "text-left"
                   } ${theme === "dark" ? "hover:bg-gray-700" : ""}`}

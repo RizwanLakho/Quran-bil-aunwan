@@ -7,18 +7,20 @@ import { NavLink } from "react-router-dom";
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useContext(AuthContext);
+  const [errorMessage, setErrorMessage] = useState("");
+  const { login, loading } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = login(email, password);
-    if (success) {
+    setErrorMessage("");
+
+    const result = await login(email, password);
+
+    if (result.success) {
       navigate("/home");
     } else {
-      alert(
-        "Invalid credentials! Try email: test@example.com, password: 123456",
-      );
+      setErrorMessage(result.message || "Invalid credentials. Please try again.");
     }
   };
 
@@ -126,13 +128,21 @@ export default function SignIn() {
               </div>
             </div>
 
+            {/* Error Message */}
+            {errorMessage && (
+              <div className="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-xl">
+                <p className="text-sm">{errorMessage}</p>
+              </div>
+            )}
+
             {/* Submit Button */}
             <button
               type="submit"
               onClick={handleSubmit}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl transition-all shadow-lg hover:shadow-xl"
+              disabled={loading}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Login
+              {loading ? "Logging in..." : "Login"}
             </button>
           </div>
 

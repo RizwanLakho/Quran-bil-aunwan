@@ -15,6 +15,7 @@ import {
 import { ThemeContext } from "../context/ThemeContext";
 import { FontContext } from "../context/FontContext";
 import { TranslationContext } from "../context/TranslationContext";
+import { NavigationModeContext } from "../context/NavigationModeContext";
 
 // Language options
 const languages = [
@@ -22,12 +23,10 @@ const languages = [
   { value: "ur", label: "اردو" },
 ];
 
-// Translator options
+// Translator options - matching database translators
 const translators = [
-  { value: "khattab", label: "Dr. Mustafa Khattab" },
-  { value: "sahih", label: "Sahih International" },
-  { value: "pickthall", label: "Pickthall" },
-  { value: "yusuf", label: "Yusuf Ali" },
+  { value: "english", label: "Muhammad Asad (English)" },
+  { value: "urdu", label: "Maulana Fateh Muhammad Jalandhari (Urdu)" },
 ];
 
 // Reciter options
@@ -36,6 +35,12 @@ const reciters = [
   { value: "sudais", label: "Abdul Rahman Al-Sudais" },
   { value: "ghamidi", label: "Saad Al-Ghamidi" },
   { value: "ajmi", label: "Ahmad Al-Ajmi" },
+];
+
+// Navigation Mode options
+const navigationModes = [
+  { value: "surah", label: "By Surah", icon: "📖" },
+  { value: "juz", label: "By Juz (Para)", icon: "📚" },
 ];
 
 export default function QuranSettingsPanel() {
@@ -66,6 +71,8 @@ export default function QuranSettingsPanel() {
     showTranslation,
     setShowTranslation,
   } = useContext(TranslationContext);
+
+  const { navigationMode, setNavigationMode } = useContext(NavigationModeContext);
 
   const [playbackSpeed, setPlaybackSpeed] = useState(2);
 
@@ -240,6 +247,98 @@ export default function QuranSettingsPanel() {
               />
             </button>
           </div>
+        </div>
+
+        <div className="my-4 border-t border-gray-200"></div>
+
+        {/* Navigation Mode */}
+        <div>
+          <div className="flex items-center gap-2 mb-2 md:mb-3">
+            <span className="text-primary text-lg md:text-xl">🧭</span>
+            <h3 className="font-bold text-sm md:text-base">
+              {t("navigation_mode") || "Navigation Mode"}
+            </h3>
+          </div>
+          <Listbox value={navigationMode} onChange={setNavigationMode}>
+            <div className="relative">
+              <Listbox.Button
+                className={`w-full cursor-pointer rounded-xl px-3 md:px-4 py-2 md:py-3 text-left text-sm md:text-base font-medium focus:outline-none appearance-none ${
+                  theme === "dark"
+                    ? "bg-gray-800 text-white border border-gray-700"
+                    : "bg-gray-100 text-gray-800 border border-gray-200"
+                } hover:bg-orange-50 transition-colors flex items-center justify-between`}
+              >
+                <span className="flex items-center gap-2">
+                  <span>
+                    {navigationModes.find((m) => m.value === navigationMode)?.icon}
+                  </span>
+                  <span className="block truncate">
+                    {navigationModes.find((m) => m.value === navigationMode)?.label}
+                  </span>
+                </span>
+                <ChevronDown
+                  size={18}
+                  className={
+                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                  }
+                  aria-hidden="true"
+                />
+              </Listbox.Button>
+
+              <Transition
+                as={Fragment}
+                leave="transition ease-in duration-100"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <Listbox.Options
+                  className={`absolute w-full mt-2 max-h-60 overflow-auto rounded-xl py-1 text-sm md:text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50 ${
+                    theme === "dark"
+                      ? "bg-gray-800 border border-gray-700"
+                      : "bg-white border border-gray-200"
+                  }`}
+                >
+                  {navigationModes.map((mode) => (
+                    <Listbox.Option
+                      key={mode.value}
+                      value={mode.value}
+                      className={({ active }) =>
+                        `relative cursor-pointer select-none py-3 px-4 ${
+                          active
+                            ? "bg-orange-50 text-gray-900"
+                            : theme === "dark"
+                              ? "text-gray-200"
+                              : "text-gray-900"
+                        }`
+                      }
+                    >
+                      {({ selected }) => (
+                        <div className="flex items-center justify-between">
+                          <span className="flex items-center gap-2">
+                            <span>{mode.icon}</span>
+                            <span
+                              className={`block truncate ${
+                                selected ? "font-semibold" : "font-normal"
+                              }`}
+                            >
+                              {mode.label}
+                            </span>
+                          </span>
+                          {selected && (
+                            <Check
+                              size={16}
+                              className="text-primary"
+                              aria-hidden="true"
+                            />
+                          )}
+                        </div>
+                      )}
+                    </Listbox.Option>
+                  ))}
+                </Listbox.Options>
+              </Transition>
+            </div>
+          </Listbox>
         </div>
 
         {/* Quran Font */}

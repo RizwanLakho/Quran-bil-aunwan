@@ -1,21 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Mail, Lock, User, BookOpen } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function SignUp() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const { register, loading } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage("");
+
+    // Validate password match
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      setErrorMessage("Passwords do not match!");
       return;
     }
-    // Your signup logic here
-    alert("Sign up successful!");
+
+    // Validate password length (Laravel requires min 8 characters)
+    if (password.length < 8) {
+      setErrorMessage("Password must be at least 8 characters long");
+      return;
+    }
+
+    // Call register API
+    const result = await register(name, email, password, confirmPassword);
+
+    if (result.success) {
+      // Redirect to home page after successful registration
+      navigate("/home");
+    } else {
+      // Show error message
+      setErrorMessage(result.message || "Registration failed. Please try again.");
+    }
   };
 
   return (
@@ -167,13 +189,21 @@ export default function SignUp() {
               </div>
             </div>
 
+            {/* Error Message */}
+            {errorMessage && (
+              <div className="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-xl">
+                <p className="text-sm">{errorMessage}</p>
+              </div>
+            )}
+
             {/* Submit Button */}
             <button
               type="submit"
               onClick={handleSubmit}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl transition-all shadow-lg hover:shadow-xl"
+              disabled={loading}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sign Up
+              {loading ? "Creating Account..." : "Sign Up"}
             </button>
           </div>
 
