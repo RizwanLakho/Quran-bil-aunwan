@@ -303,6 +303,7 @@ export default function QuranTopicDetail() {
       urdu: hadith.text_urdu || "",
       english: hadith.text_english || "",
       description: hadith.description,
+      references: hadith.references || [],
     })) || [];
 
   const currentVerse = verses[selectedVerse] || verses[0];
@@ -1062,8 +1063,8 @@ export default function QuranTopicDetail() {
                     : "bg-white hover:shadow-lg"
                 }`}
               >
-                {/* Hadith Number */}
-                <div className="flex items-center gap-2 mb-3">
+                {/* Hadith Number with Reference */}
+                <div className="flex items-center gap-2 mb-3 flex-wrap">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-semibold ${
                       theme === "dark"
@@ -1073,6 +1074,23 @@ export default function QuranTopicDetail() {
                   >
                     Hadith #{index + 1}
                   </span>
+                  {hadith.references && hadith.references.length > 0 && (
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        theme === "dark"
+                          ? "bg-orange-900 text-orange-200"
+                          : "bg-orange-100 text-orange-700"
+                      }`}
+                    >
+                      {hadith.references.map((ref, idx) => (
+                        <span key={idx}>
+                          {ref.book_name}
+                          {ref.reference_number && ` - ${ref.reference_number}`}
+                          {idx < hadith.references.length - 1 && ", "}
+                        </span>
+                      ))}
+                    </span>
+                  )}
                 </div>
 
                 {/* Arabic Text */}
@@ -1087,25 +1105,57 @@ export default function QuranTopicDetail() {
                   </p>
                 </div>
 
-                {/* Translation */}
-                {showTranslation && (
-                  <div
-                    className={`p-3 md:p-4 rounded-lg ${
-                      theme === "dark" ? "bg-gray-700/50" : "bg-gray-50"
-                    }`}
-                  >
+                {/* Urdu Translation */}
+                {showTranslation && hadith.urdu && (
+                  <div className="mb-3">
                     <p
-                      className={`leading-relaxed ${
-                        translator === "urdu"
-                          ? "text-right font-urdu"
-                          : "text-left"
-                      } ${
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
+                      className={`text-xs font-semibold mb-1 ${
+                        theme === "dark" ? "text-orange-400" : "text-orange-600"
                       }`}
-                      style={{ fontSize: `${translatorSize}px` }}
                     >
-                      {translator === "urdu" ? hadith.urdu : hadith.english}
+                      Urdu:
                     </p>
+                    <div
+                      className={`p-3 md:p-4 rounded-lg ${
+                        theme === "dark" ? "bg-gray-700/50" : "bg-gray-50"
+                      }`}
+                    >
+                      <p
+                        className={`leading-relaxed text-right font-urdu ${
+                          theme === "dark" ? "text-gray-300" : "text-gray-700"
+                        }`}
+                        style={{ fontSize: `${translatorSize}px` }}
+                      >
+                        {hadith.urdu}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* English Translation */}
+                {showTranslation && hadith.english && (
+                  <div className="mb-3">
+                    <p
+                      className={`text-xs font-semibold mb-1 ${
+                        theme === "dark" ? "text-orange-400" : "text-orange-600"
+                      }`}
+                    >
+                      English:
+                    </p>
+                    <div
+                      className={`p-3 md:p-4 rounded-lg ${
+                        theme === "dark" ? "bg-gray-700/50" : "bg-gray-50"
+                      }`}
+                    >
+                      <p
+                        className={`leading-relaxed text-left ${
+                          theme === "dark" ? "text-gray-300" : "text-gray-700"
+                        }`}
+                        style={{ fontSize: `${translatorSize}px` }}
+                      >
+                        {hadith.english}
+                      </p>
+                    </div>
                   </div>
                 )}
 

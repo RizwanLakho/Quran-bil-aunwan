@@ -7,6 +7,7 @@ import { FontContext } from "../context/FontContext";
 import { TranslationContext } from "../context/TranslationContext";
 import { NavigationModeContext } from "../context/NavigationModeContext";
 import QuranService from "../services/QuranService";
+import api from "../services/api";
 
 export default function QuranReadingPage() {
   const { quranFont, arabicSize, translatorSize } = useContext(FontContext);
@@ -31,6 +32,9 @@ export default function QuranReadingPage() {
   const [apiAyahs, setApiAyahs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Motivational content state
+  const [motivationalContent, setMotivationalContent] = useState(null);
 
   // Fetch surahs or juzs based on navigation mode
   useEffect(() => {
@@ -98,6 +102,53 @@ export default function QuranReadingPage() {
 
     fetchAyahs();
   }, [navigationMode, selectedSurah, selectedJuz]);
+
+  // Fetch motivational content (random topic with ayah/hadith)
+  useEffect(() => {
+    const fetchMotivationalContent = async () => {
+      try {
+        // Fetch all topics
+        const response = await api.get('/topics?per_page=100');
+        if (response && response.data) {
+          const topics = response.data.data || response.data;
+
+          if (topics && topics.length > 0) {
+            // Get a random topic
+            const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+
+            // Prefer hadith, fallback to ayah
+            if (randomTopic.hadiths && randomTopic.hadiths.length > 0) {
+              const randomHadith = randomTopic.hadiths[Math.floor(Math.random() * randomTopic.hadiths.length)];
+              const reference = randomHadith.references && randomHadith.references.length > 0
+                ? randomHadith.references[0]
+                : null;
+
+              setMotivationalContent({
+                type: 'hadith',
+                text: translator === 'urdu' ? randomHadith.text_urdu : randomHadith.text_english,
+                reference: reference ? `(${reference.book_name})` : '',
+                topic: randomTopic.name,
+              });
+            } else if (randomTopic.ayahs && randomTopic.ayahs.length > 0) {
+              const randomAyah = randomTopic.ayahs[Math.floor(Math.random() * randomTopic.ayahs.length)];
+
+              setMotivationalContent({
+                type: 'ayah',
+                text: translator === 'urdu' ? randomAyah.ayah_urdu_text : randomAyah.ayah_english_text,
+                reference: `(Surah ${randomAyah.surah_id}:${randomAyah.id})`,
+                topic: randomTopic.name,
+              });
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching motivational content:', err);
+        // Keep default hardcoded content if API fails
+      }
+    };
+
+    fetchMotivationalContent();
+  }, [translator]); // Re-fetch when language changes
 
   // Transform API surahs to match component format
   const surahs = apiSurahs.map((surah) => ({
@@ -301,18 +352,40 @@ export default function QuranReadingPage() {
               </h2>
             </div>
 
-            <p className="text-white text-base leading-relaxed mb-3 drop-shadow-md">
-              Sebaik - baik manusia diantara kamu adalah yang mempelajari
-              Al-Quran dan mengajarkannya
-            </p>
+            {motivationalContent ? (
+              <>
+                <p className="text-white text-base leading-relaxed mb-3 drop-shadow-md italic">
+                  "{motivationalContent.text}"
+                </p>
 
-            <p className="text-white text-base leading-relaxed drop-shadow-md">
-              Sebaik - baik manusia diantara kamu adalah yang mempelajari
-              Al-Quran dan mengajarkannya
-              <span className="block mt-1 text-sm opacity-90">
-                (HR Bukhori)
-              </span>
-            </p>
+                {motivationalContent.reference && (
+                  <p className="text-white text-sm opacity-90 drop-shadow-md">
+                    {motivationalContent.reference}
+                  </p>
+                )}
+
+                {motivationalContent.topic && (
+                  <p className="text-white text-xs opacity-75 mt-2">
+                    Topic: {motivationalContent.topic}
+                  </p>
+                )}
+              </>
+            ) : (
+              <>
+                <p className="text-white text-base leading-relaxed mb-3 drop-shadow-md">
+                  Sebaik - baik manusia diantara kamu adalah yang mempelajari
+                  Al-Quran dan mengajarkannya
+                </p>
+
+                <p className="text-white text-base leading-relaxed drop-shadow-md">
+                  Sebaik - baik manusia diantara kamu adalah yang mempelajari
+                  Al-Quran dan mengajarkannya
+                  <span className="block mt-1 text-sm opacity-90">
+                    (HR Bukhori)
+                  </span>
+                </p>
+              </>
+            )}
           </div>
         </div>
 
@@ -413,7 +486,7 @@ export default function QuranReadingPage() {
                   </div>
                 </Listbox>
 
-                {/* Surah Name with Vector Background */}
+                {/* Surah Name with Vector Background - Centered */}
                 <div className="flex justify-center items-center flex-grow">
                   <div
                     className="relative flex items-center justify-center"
@@ -445,94 +518,88 @@ export default function QuranReadingPage() {
                   </div>
                 </div>
 
-                {/* Ayah Dropdown */}
-                <Listbox value={selectedAyah} onChange={setSelectedAyah}>
-              <div className="relative w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px]">
-                {/* Ornament on left side */}
-                <div
-                  className="absolute top-1/2 -left-3 md:-left-4 transform -translate-y-1/2 z-10 pointer-events-none"
-                  style={{
-                    width: "30px",
-                    height: "30px",
-                    backgroundImage: "url(/ornament.png)",
-                    backgroundSize: "contain",
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                    opacity: 0.6,
-                  }}
-                ></div>
-                <Listbox.Button
-                  className={`relative w-full cursor-pointer rounded-lg md:rounded-xl border-2 border-primary py-2 md:py-2.5 text-left shadow-sm focus:outline-none transition-colors text-sm md:text-base ${
-                    isRTL
-                      ? "pr-3 md:pr-4 pl-7 md:pl-10"
-                      : "pl-3 md:pl-4 pr-7 md:pr-10"
-                  } ${
-                    theme === "dark"
-                      ? "bg-gray-700 text-white focus:border-primary"
-                      : "bg-white text-gray-900 focus:border-primary"
-                  }`}
-                >
-                  <span className="block truncate">
-                    {isRTL ? `آیت ${selectedAyah}` : `Ayah ${selectedAyah}`}
-                  </span>
-                  <span
-                    className={`absolute inset-y-0 flex items-center pointer-events-none ${
-                      isRTL ? "left-0 pl-2 md:pl-3" : "right-0 pr-2 md:pr-3"
-                    }`}
-                  >
-                    <ChevronDown
-                      className={
-                        theme === "dark" ? "text-gray-400" : "text-gray-500"
-                      }
-                      size={16}
-                    />
-                  </span>
-                </Listbox.Button>
-
-                <Listbox.Options
-                  className={`absolute mt-1 max-h-60 w-full overflow-auto rounded-lg md:rounded-xl shadow-lg z-50 scrollbar-hide border-2 border-primary ${
-                    theme === "dark" ? "bg-gray-700" : "bg-white"
-                  }`}
-                >
-                  {ayahOptions.map((ayah) => (
-                    <Listbox.Option
-                      key={ayah.value}
-                      value={ayah.value}
-                      className={({ active, selected }) =>
-                        `relative cursor-pointer select-none py-2 md:py-2.5 px-3 md:px-4 transition-colors text-sm md:text-base ${
-                          active || selected
-                            ? "bg-primary text-white"
-                            : theme === "dark"
-                              ? "text-white"
-                              : "text-gray-700"
-                        }`
-                      }
+                {/* Ayah Dropdown - Shows all ayahs but no functionality */}
+                <Listbox value={selectedAyah} onChange={() => {}}>
+                  <div className="relative w-full sm:w-auto sm:min-w-[200px] md:min-w-[250px]">
+                    <Listbox.Button
+                      className={`relative w-full cursor-pointer rounded-lg md:rounded-xl border-2 border-primary py-2 md:py-2.5 text-left shadow-sm focus:outline-none transition-colors text-sm md:text-base ${
+                        isRTL
+                          ? "pr-3 md:pr-4 pl-7 md:pl-10"
+                          : "pl-3 md:pl-4 pr-7 md:pr-10"
+                      } ${
+                        theme === "dark"
+                          ? "bg-gray-700 text-white focus:border-primary"
+                          : "bg-white text-gray-900 focus:border-primary"
+                      }`}
                     >
-                      {({ selected }) => (
-                        <div
-                          className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""}`}
+                      <span className="block truncate font-medium">
+                        All Ayahs ({apiAyahs.length})
+                      </span>
+                      <span
+                        className={`absolute inset-y-0 flex items-center pointer-events-none ${
+                          isRTL ? "left-0 pl-2 md:pl-3" : "right-0 pr-2 md:pr-3"
+                        }`}
+                      >
+                        <ChevronDown
+                          className={
+                            theme === "dark" ? "text-gray-400" : "text-gray-500"
+                          }
+                          size={16}
+                        />
+                      </span>
+                    </Listbox.Button>
+
+                    <Listbox.Options
+                      className={`absolute mt-1 max-h-60 w-full overflow-auto rounded-lg md:rounded-xl shadow-lg z-50 scrollbar-hide border-2 border-primary ${
+                        theme === "dark" ? "bg-gray-700" : "bg-white"
+                      }`}
+                    >
+                      {apiAyahs.map((ayah, index) => (
+                        <Listbox.Option
+                          key={ayah.id || index}
+                          value={index + 1}
+                          className={({ active }) =>
+                            `relative cursor-pointer select-none py-2 md:py-2.5 px-3 md:px-4 transition-colors text-sm md:text-base ${
+                              active
+                                ? "bg-primary text-white"
+                                : theme === "dark"
+                                  ? "text-white"
+                                  : "text-gray-700"
+                            }`
+                          }
                         >
-                          <span
-                            className={`block truncate ${selected ? "font-semibold" : "font-normal"}`}
+                          <div
+                            className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""}`}
                           >
-                            {ayah.label}
-                          </span>
-                          {selected && (
-                            <Check size={16} className="text-white" />
-                          )}
-                        </div>
-                      )}
-                    </Listbox.Option>
-                  ))}
-                </Listbox.Options>
-              </div>
-            </Listbox>
+                            <span className="block truncate font-normal">
+                              Ayah {ayah.number_in_surah || index + 1}
+                            </span>
+                          </div>
+                        </Listbox.Option>
+                      ))}
+                    </Listbox.Options>
+                  </div>
+                </Listbox>
               </>
             ) : (
               <>
-                {/* Juz Mode UI */}
+                {/* Juz Mode UI - Same design as Surah mode */}
+                {/* Juz Dropdown */}
                 <Listbox value={selectedJuz} onChange={setSelectedJuz}>
                   <div className="relative w-full sm:w-auto sm:min-w-[200px] md:min-w-[250px]">
+                    {/* Ornament on right side */}
+                    <div
+                      className="absolute top-1/2 -right-3 md:-right-4 transform -translate-y-1/2 z-10 pointer-events-none"
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        backgroundImage: "url(/ornament.png)",
+                        backgroundSize: "contain",
+                        backgroundPosition: "center",
+                        backgroundRepeat: "no-repeat",
+                        opacity: 0.6,
+                      }}
+                    ></div>
                     <Listbox.Button
                       className={`relative w-full cursor-pointer rounded-lg md:rounded-xl border-2 border-primary py-2 md:py-2.5 text-left shadow-sm focus:outline-none transition-colors text-sm md:text-base ${
                         isRTL
@@ -600,7 +667,7 @@ export default function QuranReadingPage() {
                   </div>
                 </Listbox>
 
-                {/* Juz Name with Vector Background */}
+                {/* Juz Name with Vector Background - Centered */}
                 <div className="flex justify-center items-center flex-grow">
                   <div
                     className="relative flex items-center justify-center"
@@ -631,6 +698,9 @@ export default function QuranReadingPage() {
                     </h2>
                   </div>
                 </div>
+
+                {/* Hidden element on right to match Surah mode spacing */}
+                <div className="w-full sm:w-auto sm:min-w-[200px] md:min-w-[250px] invisible"></div>
               </>
             )}
           </div>
@@ -659,117 +729,67 @@ export default function QuranReadingPage() {
                   Loading...
                 </p>
               </div>
-            ) : navigationMode === "surah" ? (
-              <>
-                {/* Surah Mode: Show single ayah */}
-                <div className="text-right leading-loose mb-4 md:mb-6 space-y-3 md:space-y-4">
-                  <p
-                    className={`${getFontClass()} ${
-                      theme === "dark" ? "text-gray-200" : "text-gray-800"
-                    }`}
-                    style={{
-                      fontSize: `${Math.max(18, arabicSize - 2)}px`,
-                      lineHeight: "1.8",
-                    }}
-                  >
-                    {getArabicText()}
-                  </p>
-                </div>
-
-                {/* Translation Section - Only show if showTranslation is true */}
-                {showTranslation && (
-                  <div
-                    className={`mb-4 md:mb-6 p-3 md:p-4 rounded-lg md:rounded-xl ${
-                      theme === "dark" ? "bg-gray-700/50" : "bg-gray-50"
-                    }`}
-                  >
-                    <h4
-                      className={`font-bold mb-2 text-sm md:text-base ${
-                        isTranslatorRTL()
-                          ? `${getTranslationFontClass()} text-right`
-                          : "text-left"
-                      } ${theme === "dark" ? "text-primary" : "text-primary"}`}
-                    >
-                      {getTranslatorName()}
-                    </h4>
-                    <p
-                      className={`leading-relaxed ${
-                        isTranslatorRTL()
-                          ? `${getTranslationFontClass()} text-right`
-                          : "text-left"
-                      } ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}
-                      style={{
-                        fontSize: `${Math.max(14, translatorSize - 2)}px`,
-                        direction: isTranslatorRTL() ? "rtl" : "ltr",
-                      }}
-                    >
-                      {getTranslation()}
-                    </p>
-                  </div>
-                )}
-              </>
             ) : (
               <>
-                {/* Juz Mode: Show all ayahs in sequence */}
+                {/* Book Style: Show all ayahs continuously (for both Surah and Juz) */}
                 {apiAyahs && apiAyahs.length > 0 ? (
-                  <div className="space-y-6 md:space-y-8">
-                    {apiAyahs.map((ayah, index) => (
-                      <div key={ayah.id || index} className="border-b border-gray-200 dark:border-gray-700 pb-6 last:border-b-0">
-                        {/* Ayah number badge */}
-                        <div className="flex justify-center mb-3">
-                          <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                            theme === "dark" ? "bg-primary/20 text-primary" : "bg-primary/10 text-primary"
-                          }`}>
-                            Ayah {ayah.ayah_number}
-                          </span>
-                        </div>
-
-                        {/* Arabic Text */}
-                        <div className="text-right leading-loose mb-4">
-                          <p
-                            className={`${getFontClass()} ${
-                              theme === "dark" ? "text-gray-200" : "text-gray-800"
+                  <div className="text-right leading-loose" dir="rtl">
+                    <p
+                      className={`${getFontClass()} ${
+                        theme === "dark" ? "text-gray-200" : "text-gray-800"
+                      }`}
+                      style={{
+                        fontSize: `${Math.max(18, arabicSize - 2)}px`,
+                        lineHeight: "2.5",
+                        textAlign: "right",
+                        direction: "rtl",
+                      }}
+                    >
+                      {apiAyahs.map((ayah, index) => (
+                        <span key={ayah.id || index}>
+                          {ayah.text}
+                          {/* Add ayah number in decorative symbol */}
+                          <span
+                            className={`inline-flex items-center justify-center relative mx-1 ${
+                              theme === "dark" ? "text-primary" : "text-primary"
                             }`}
                             style={{
-                              fontSize: `${Math.max(18, arabicSize - 2)}px`,
-                              lineHeight: "1.8",
+                              verticalAlign: "middle",
+                              fontFamily: "'Amiri', 'Scheherazade New', 'Traditional Arabic', serif",
+                              width: `${Math.max(20, arabicSize - 4)}px`,
+                              height: `${Math.max(20, arabicSize - 4)}px`,
                             }}
                           >
-                            {ayah.text}
-                          </p>
-                        </div>
-
-                        {/* Translation */}
-                        {showTranslation && (
-                          <div
-                            className={`p-3 md:p-4 rounded-lg md:rounded-xl ${
-                              theme === "dark" ? "bg-gray-700/50" : "bg-gray-50"
-                            }`}
-                          >
-                            <p
-                              className={`leading-relaxed ${
-                                translator === "urdu"
-                                  ? `${getTranslationFontClass()} text-right`
-                                  : "text-left"
-                              } ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}
+                            {/* Background symbol - smaller size */}
+                            <span
+                              className="absolute inset-0 flex items-center justify-center"
                               style={{
-                                fontSize: `${Math.max(14, translatorSize - 2)}px`,
-                                direction: translator === "urdu" ? "rtl" : "ltr",
+                                fontSize: `${Math.max(20, arabicSize - 4)}px`,
+                                lineHeight: "1",
                               }}
                             >
-                              {translator === "urdu" && ayah.urdu_text
-                                ? ayah.urdu_text
-                                : ayah.english_text || "Translation not available"}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                              ۝
+                            </span>
+                            {/* Number overlay - centered */}
+                            <span
+                              className="absolute inset-0 flex items-center justify-center"
+                              style={{
+                                fontSize: `${Math.max(8, arabicSize - 14)}px`,
+                                fontWeight: "700",
+                                paddingTop: "1px",
+                              }}
+                            >
+                              {ayah.number_in_surah || ayah.ayah_number}
+                            </span>
+                          </span>
+                        </span>
+                      ))}
+                    </p>
                   </div>
                 ) : (
                   <div className="text-center py-8">
                     <p className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>
-                      No ayahs found for this Juz
+                      {navigationMode === "surah" ? "No ayahs found for this Surah" : "No ayahs found for this Juz"}
                     </p>
                   </div>
                 )}

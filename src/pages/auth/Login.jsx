@@ -3,12 +3,13 @@ import { Mail, Lock, BookOpen } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
+import AuthService from "../../services/AuthService";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const { login, loading } = useContext(AuthContext);
+  const { login, loading, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -22,6 +23,12 @@ export default function SignIn() {
     } else {
       setErrorMessage(result.message || "Invalid credentials. Please try again.");
     }
+  };
+
+  const handleGuestMode = () => {
+    const guestUser = AuthService.setGuestMode();
+    setUser(guestUser);
+    navigate("/home");
   };
 
   return (
@@ -196,6 +203,21 @@ export default function SignIn() {
                 Facebook
               </span>
             </button>
+          </div>
+
+          {/* Guest Mode Button */}
+          <div className="mt-6">
+            <button
+              type="button"
+              onClick={handleGuestMode}
+              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 rounded-xl transition-all border-2 border-gray-300 hover:border-gray-400 flex items-center justify-center gap-2"
+            >
+              <BookOpen className="w-5 h-5" />
+              <span>Continue as Guest (Read Quran Only)</span>
+            </button>
+            <p className="text-xs text-center text-gray-500 mt-2">
+              Guest mode allows you to read the Quran without signing in
+            </p>
           </div>
 
           {/* Sign In Link */}

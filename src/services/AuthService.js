@@ -13,8 +13,9 @@ class AuthService {
     try {
       const response = await api.post('/register', userData);
 
-      if (response.data.token) {
-        localStorage.setItem('auth_token', response.data.token);
+      const token = response.data.access_token || response.data.token;
+      if (token) {
+        localStorage.setItem('auth_token', token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
       }
 
@@ -34,8 +35,9 @@ class AuthService {
     try {
       const response = await api.post('/login', credentials);
 
-      if (response.data.token) {
-        localStorage.setItem('auth_token', response.data.token);
+      const token = response.data.access_token || response.data.token;
+      if (token) {
+        localStorage.setItem('auth_token', token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
       }
 
@@ -92,6 +94,48 @@ class AuthService {
    */
   isAuthenticated() {
     return !!this.getToken();
+  }
+
+  /**
+   * Set guest mode (no authentication)
+   * @returns {Object} Guest user object
+   */
+  setGuestMode() {
+    const guestUser = {
+      id: 'guest',
+      name: 'Guest',
+      email: 'guest@local',
+      user_type: 'guest',
+      isGuest: true,
+    };
+    localStorage.setItem('user', JSON.stringify(guestUser));
+    localStorage.setItem('is_guest', 'true');
+    return guestUser;
+  }
+
+  /**
+   * Check if current user is guest
+   * @returns {boolean} True if guest, false otherwise
+   */
+  isGuest() {
+    return localStorage.getItem('is_guest') === 'true';
+  }
+
+  /**
+   * Check if current user is admin
+   * @returns {boolean} True if admin, false otherwise
+   */
+  isAdmin() {
+    const user = this.getCurrentUser();
+    return user && user.user_type === 'admin';
+  }
+
+  /**
+   * Clear guest mode
+   */
+  clearGuestMode() {
+    localStorage.removeItem('is_guest');
+    localStorage.removeItem('user');
   }
 }
 

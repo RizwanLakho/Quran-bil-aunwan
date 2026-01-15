@@ -17,9 +17,11 @@ import {
   X,
 } from "lucide-react";
 import { ThemeContext } from "../context/ThemeContext";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Header({ isMenuOpen, toggleSettings }) {
   const { theme } = useContext(ThemeContext);
+  const { isAdmin, user, isGuest } = useContext(AuthContext);
   const { t, i18n } = useTranslation();
   const [language, setLanguage] = useState(i18n.language || "en");
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
@@ -151,179 +153,178 @@ export default function Header({ isMenuOpen, toggleSettings }) {
           minWidth: isMenuOpen ? "16rem" : "4.5rem",
         }}
       >
-        {/* Menu Content */}
-        <div className="flex-1 flex flex-col overflow-hidden py-2 px-1.5">
-          {/* Top Section - No Scroll */}
-          <div className="flex-shrink-0 space-y-0.5">
-            {/* Overview */}
-            <NavLink
-              to="/home/overview"
-              className={({ isActive }) =>
-                `w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
-                  isActive
-                    ? "bg-primary text-white shadow-sm"
-                    : theme === "dark"
-                      ? "text-gray-300 hover:bg-gray-700"
-                      : "text-gray-700 hover:bg-orange-50"
-                } ${!isMenuOpen ? "flex-col justify-center px-1.5" : ""}`
-              }
-              title={!isMenuOpen ? t("overview") : ""}
-            >
-              <LayoutGrid size={18} />
-              {isMenuOpen && (
-                <span className="font-medium text-sm">{t("overview")}</span>
-              )}
-              {!isMenuOpen && (
-                <span
-                  className={`text-[10px] mt-0.5 ${isRTL ? "font-urdu" : ""}`}
-                >
-                  {t("overview")}
-                </span>
-              )}
-            </NavLink>
-
-            {/* Read Quran */}
-            <NavLink
-              to="/home/read-quran"
-              className={({ isActive }) =>
-                `w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
-                  isActive
-                    ? "bg-primary text-white shadow-sm"
-                    : theme === "dark"
-                      ? "text-gray-300 hover:bg-gray-700"
-                      : "text-gray-700 hover:bg-orange-50"
-                } ${!isMenuOpen ? "flex-col justify-center px-1.5" : ""}`
-              }
-              title={!isMenuOpen ? t("read_quran") : ""}
-            >
-              <BookOpen size={18} />
-              {isMenuOpen && (
-                <span className="font-medium text-sm">{t("read_quran")}</span>
-              )}
-              {!isMenuOpen && (
-                <span
-                  className={`text-[10px] mt-0.5 ${isRTL ? "font-urdu" : ""}`}
-                >
-                  {t("quran")}
-                </span>
-              )}
-            </NavLink>
-          </div>
-
-          {/* Quranic Topics Section - With Independent Scroll */}
-          {isMenuOpen ? (
-            <div className="flex-1 flex flex-col overflow-hidden mt-1">
-              <NavLink
-                to="/home/quran-topics"
-                className={({ isActive }) =>
-                  `flex-shrink-0 w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm mb-1 ${
-                    isActive
-                      ? "bg-primary text-white shadow-sm"
-                      : theme === "dark"
-                        ? "text-gray-300 hover:bg-gray-700"
-                        : "text-gray-700 hover:bg-orange-50"
-                  }`
-                }
-              >
-                <FolderOpen size={18} />
-                <span className="font-medium text-sm">
-                  {t("quranic_topics")}
-                </span>
-              </NavLink>
-
-              {expandedTopics.quranicTopics && (
-                <div className="flex-1 overflow-y-auto pr-1 space-y-0.5">
-                  {topicFolders.map((folder) => (
-                    <div key={folder.id}>
-                      <button
-                        onClick={() => toggleTopic(folder.id)}
-                        className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg transition text-sm ${
-                          theme === "dark"
-                            ? "text-gray-300 hover:bg-gray-700"
-                            : "text-gray-700 hover:bg-orange-50"
-                        }`}
-                      >
-                        <div className="flex items-center gap-2">
-                          <Folder size={16} className="text-primary" />
-                          <span className="text-xs font-medium">
-                            {folder.title}
-                          </span>
-                        </div>
-                        <ChevronDown
-                          size={14}
-                          className={`transition-transform ${
-                            expandedTopics[folder.id] ? "rotate-180" : ""
-                          }`}
-                        />
-                      </button>
-
-                      {expandedTopics[folder.id] && (
-                        <div className="space-y-0.5 mt-0.5 ml-2">
-                          {folder.subtopics.map((subtopic) => (
-                            <NavLink
-                              key={subtopic.path}
-                              to={subtopic.path}
-                              className={({ isActive }) =>
-                                `w-full flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition ${
-                                  isActive
-                                    ? "bg-orange-100 text-primary"
-                                    : theme === "dark"
-                                      ? "text-gray-400 hover:bg-gray-700"
-                                      : "text-gray-600 hover:bg-orange-50"
-                                }`
-                              }
-                            >
-                              <Circle size={5} className="text-orange-300" />
-                              <span>{subtopic.title}</span>
-                            </NavLink>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ) : (
-            <NavLink
-              to="/home/quran-topics"
-              className={({ isActive }) =>
-                `flex-shrink-0 w-full flex flex-col items-center justify-center gap-1 px-1.5 py-2 rounded-lg transition text-sm mt-1 ${
-                  isActive
-                    ? "bg-primary text-white shadow-sm"
-                    : theme === "dark"
-                      ? "text-gray-300 hover:bg-gray-700"
-                      : "text-gray-700 hover:bg-orange-50"
-                }`
-              }
-              title={t("quranic_topics")}
-            >
-              <FolderOpen size={18} />
-              <span
-                className={`text-[10px] text-center ${isRTL ? "font-urdu" : ""}`}
-              >
-                {t("topics")}
-              </span>
-            </NavLink>
-          )}
-
-          {/* Divider */}
-          <div
-            className={`my-2 border-t ${theme === "dark" ? "border-gray-700" : "border-gray-200"}`}
-          ></div>
-
-          {/* Bottom Section - Fixed Items */}
-          <div className="flex-shrink-0 space-y-0.5">
-            <button
-              className={`w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
-                !isMenuOpen ? "flex-col justify-center px-1.5" : ""
-              } ${
-                theme === "dark"
-                  ? "text-gray-300 hover:bg-gray-700"
-                  : "text-gray-700 hover:bg-orange-50"
-              }`}
-              title={!isMenuOpen ? t("history") : ""}
-            >
+                            {/* Menu Content */}
+                            <div className="flex-1 flex flex-col overflow-hidden py-2 px-1.5">
+                                                            {/* Top Section - No Scroll */}
+                                                            <div className="flex-shrink-0 space-y-0.5">
+                                          {/* Read Quran */}
+                                          <NavLink
+                                            to="/home/read-quran"
+                                            className={({ isActive }) =>
+                                              `w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
+                                                isActive
+                                                  ? "bg-primary text-white shadow-sm"
+                                                  : theme === "dark"
+                                                    ? "text-gray-300 hover:bg-gray-700"
+                                                    : "text-gray-700 hover:bg-orange-50"
+                                              } ${!isMenuOpen ? "flex-col justify-center px-1.5" : ""}`
+                                            }
+                                            title={!isMenuOpen ? t("read_quran") : ""}
+                                          >
+                                            <BookOpen size={18} />
+                                            {isMenuOpen && (
+                                              <span className="font-medium text-sm">{t("read_quran")}</span>
+                                            )}
+                                            {!isMenuOpen && (
+                                              <span
+                                                className={`text-[10px] mt-0.5 ${isRTL ? "font-urdu" : ""}`}
+                                              >
+                                                {t("quran")}
+                                              </span>
+                                            )}
+                                          </NavLink>
+                                        </div>
+                              
+                                        {/* Quranic Topics Section - With Independent Scroll */}
+                                        {isMenuOpen ? (
+                                          <div className="flex-1 flex flex-col overflow-hidden mt-1">
+                                            <NavLink
+                                              to="/home/quran-topics"
+                                              className={({ isActive }) =>
+                                                `flex-shrink-0 w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm mb-1 ${
+                                                  isActive
+                                                    ? "bg-primary text-white shadow-sm"
+                                                    : theme === "dark"
+                                                      ? "text-gray-300 hover:bg-gray-700"
+                                                      : "text-gray-700 hover:bg-orange-50"
+                                                }`
+                                              }
+                                            >
+                                              <FolderOpen size={18} />
+                                              <span className="font-medium text-sm">
+                                                {t("quranic_topics")}
+                                              </span>
+                                            </NavLink>
+                              
+                                            {expandedTopics.quranicTopics && (
+                                              <div className="flex-1 overflow-y-auto pr-1 space-y-0.5">
+                                                {topicFolders.map((folder) => (
+                                                  <div key={folder.id}>
+                                                    <button
+                                                      onClick={() => toggleTopic(folder.id)}
+                                                      className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg transition text-sm ${
+                                                        theme === "dark"
+                                                          ? "text-gray-300 hover:bg-gray-700"
+                                                          : "text-gray-700 hover:bg-orange-50"
+                                                      }`}
+                                                    >
+                                                      <div className="flex items-center gap-2">
+                                                        <Folder size={16} className="text-primary" />
+                                                        <span className="text-xs font-medium">
+                                                          {folder.title}
+                                                        </span>
+                                                      </div>
+                                                      <ChevronDown
+                                                        size={14}
+                                                        className={`transition-transform ${
+                                                          expandedTopics[folder.id] ? "rotate-180" : ""
+                                                        }`}
+                                                      />
+                                                    </button>
+                              
+                                                    {expandedTopics[folder.id] && (
+                                                      <div className="space-y-0.5 mt-0.5 ml-2">
+                                                        {folder.subtopics.map((subtopic) => (
+                                                          <NavLink
+                                                            key={subtopic.path}
+                                                            to={subtopic.path}
+                                                            className={({ isActive }) =>
+                                                              `w-full flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition ${
+                                                                isActive
+                                                                  ? "bg-orange-100 text-primary"
+                                                                  : theme === "dark"
+                                                                    ? "text-gray-400 hover:bg-gray-700"
+                                                                    : "text-gray-600 hover:bg-orange-50"
+                                                              }`
+                                                            }
+                                                          >
+                                                            <Circle size={5} className="text-orange-300" />
+                                                            <span>{subtopic.title}</span>
+                                                          </NavLink>
+                                                        ))}
+                                                      </div>
+                                                    )}
+                                                  </div>
+                                                ))}
+                                              </div>
+                                            )}
+                                          </div>
+                                        ) : (
+                                          <NavLink
+                                            to="/home/quran-topics"
+                                            className={({ isActive }) =>
+                                              `flex-shrink-0 w-full flex flex-col items-center justify-center gap-1 px-1.5 py-2 rounded-lg transition text-sm mt-1 ${
+                                                isActive
+                                                  ? "bg-primary text-white shadow-sm"
+                                                  : theme === "dark"
+                                                    ? "text-gray-300 hover:bg-gray-700"
+                                                    : "text-gray-700 hover:bg-orange-50"
+                                              }`
+                                            }
+                                            title={t("quranic_topics")}
+                                          >
+                                            <FolderOpen size={18} />
+                                            <span
+                                              className={`text-[10px] text-center ${isRTL ? "font-urdu" : ""}`}
+                                            >
+                                              {t("topics")}
+                                            </span>
+                                          </NavLink>
+                                        )}
+                              
+                                        {/* Divider */}
+                                        <div
+                                          className={`my-2 border-t ${theme === "dark" ? "border-gray-700" : "border-gray-200"}`}
+                                        ></div>
+                              
+                                        {/* Bottom Section - Fixed Items */}
+                                        <div className="flex-shrink-0 space-y-0.5">
+                                          {/* Overview */}
+                                          <NavLink
+                                            to="/home/overview"
+                                            className={({ isActive }) =>
+                                              `w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
+                                                isActive
+                                                  ? "bg-primary text-white shadow-sm"
+                                                  : theme === "dark"
+                                                    ? "text-gray-300 hover:bg-gray-700"
+                                                    : "text-gray-700 hover:bg-orange-50"
+                                              } ${!isMenuOpen ? "flex-col justify-center px-1.5" : ""}`
+                                            }
+                                            title={!isMenuOpen ? t("overview") : ""}
+                                          >
+                                            <LayoutGrid size={18} />
+                                            {isMenuOpen && (
+                                              <span className="font-medium text-sm">{t("overview")}</span>
+                                            )}
+                                            {!isMenuOpen && (
+                                              <span
+                                                className={`text-[10px] mt-0.5 ${isRTL ? "font-urdu" : ""}`}
+                                              >
+                                                {t("overview")}
+                                              </span>
+                                            )}
+                                          </NavLink>
+                                          <button
+                                            className={`w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
+                                              !isMenuOpen ? "flex-col justify-center px-1.5" : ""
+                                            } ${
+                                              theme === "dark"
+                                                ? "text-gray-300 hover:bg-gray-700"
+                                                : "text-gray-700 hover:bg-orange-50"
+                                            }`}
+                                            title={!isMenuOpen ? t("history") : ""}
+                                          >
               <Clock size={18} className="text-primary" />
               {isMenuOpen && (
                 <span className="font-medium text-sm">{t("history")}</span>
@@ -337,31 +338,34 @@ export default function Header({ isMenuOpen, toggleSettings }) {
               )}
             </button>
 
-            <NavLink
-              to="/home/topics-data"
-              className={({ isActive }) =>
-                `w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
-                  isActive
-                    ? "bg-primary text-white shadow-sm"
-                    : theme === "dark"
-                      ? "text-gray-300 hover:bg-gray-700"
-                      : "text-gray-700 hover:bg-orange-50"
-                } ${!isMenuOpen ? "flex-col justify-center px-1.5" : ""}`
-              }
-              title={!isMenuOpen ? t("your_topics") : ""}
-            >
-              <BookOpen size={18} className="text-primary" />
-              {isMenuOpen && (
-                <span className="font-medium text-sm">{t("your_topics")}</span>
-              )}
-              {!isMenuOpen && (
-                <span
-                  className={`text-[10px] mt-0.5 text-center ${isRTL ? "font-urdu" : ""}`}
-                >
-                  {t("topics")}
-                </span>
-              )}
-            </NavLink>
+            {/* Admin-only: Topics Data */}
+            {isAdmin() && (
+              <NavLink
+                to="/home/topics-data"
+                className={({ isActive }) =>
+                  `w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
+                    isActive
+                      ? "bg-primary text-white shadow-sm"
+                      : theme === "dark"
+                        ? "text-gray-300 hover:bg-gray-700"
+                        : "text-gray-700 hover:bg-orange-50"
+                  } ${!isMenuOpen ? "flex-col justify-center px-1.5" : ""}`
+                }
+                title={!isMenuOpen ? t("your_topics") : ""}
+              >
+                <BookOpen size={18} className="text-primary" />
+                {isMenuOpen && (
+                  <span className="font-medium text-sm">{t("your_topics")}</span>
+                )}
+                {!isMenuOpen && (
+                  <span
+                    className={`text-[10px] mt-0.5 text-center ${isRTL ? "font-urdu" : ""}`}
+                  >
+                    {t("topics")}
+                  </span>
+                )}
+              </NavLink>
+            )}
 
             <button
               className={`w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition text-sm ${
@@ -676,23 +680,26 @@ export default function Header({ isMenuOpen, toggleSettings }) {
                   <span className="font-medium text-sm">{t("history")}</span>
                 </button>
 
-                <NavLink
-                  to="/home/topics-data"
-                  className={({ isActive }) =>
-                    `w-full flex items-center gap-2 px-3 py-2 rounded-lg transition text-sm ${
-                      isActive
-                        ? "bg-primary text-white shadow-sm"
-                        : theme === "dark"
-                          ? "text-gray-300 hover:bg-gray-700"
-                          : "text-gray-700 hover:bg-orange-50"
-                    }`
-                  }
-                >
-                  <BookOpen size={18} className="text-primary" />
-                  <span className="font-medium text-sm">
-                    {t("your_topics")}
-                  </span>
-                </NavLink>
+                {/* Admin-only: Topics Data */}
+                {isAdmin() && (
+                  <NavLink
+                    to="/home/topics-data"
+                    className={({ isActive }) =>
+                      `w-full flex items-center gap-2 px-3 py-2 rounded-lg transition text-sm ${
+                        isActive
+                          ? "bg-primary text-white shadow-sm"
+                          : theme === "dark"
+                            ? "text-gray-300 hover:bg-gray-700"
+                            : "text-gray-700 hover:bg-orange-50"
+                      }`
+                    }
+                  >
+                    <BookOpen size={18} className="text-primary" />
+                    <span className="font-medium text-sm">
+                      {t("your_topics")}
+                    </span>
+                  </NavLink>
+                )}
 
                 <button
                   className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition text-sm ${

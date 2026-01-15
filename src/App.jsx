@@ -5,6 +5,9 @@ import Home from "./pages/Home";
 
 import SignIn from "./pages/auth/Login";
 import SignUp from "./pages/auth/Signup";
+import AboutUs from "./pages/AboutUs";
+import ContactUs from "./pages/ContactUs";
+import InformationalLayout from "./components/InformationalLayout";
 import { AuthContext } from "./context/AuthContext";
 
 export default function App() {
@@ -31,20 +34,33 @@ export default function App() {
       {/* Desktop/Tablet View - Hidden on mobile */}
       <div className="block">
         <Routes>
-          {/* If not logged in, show login/signup */}
-          {!user ? (
-            <>
-              <Route path="/login" element={<SignIn />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="*" element={<Navigate to="/login" replace />} />
-            </>
-          ) : (
-            <>
-              <Route path="/home/*" element={<Home />} />
-              {/* <Route path="/topics/*" element={<Topics />} />*/}
-              <Route path="*" element={<Navigate to="/home" />} />
-            </>
-          )}
+          {/* Login and Signup routes - always accessible */}
+          <Route path="/login" element={user ? <Navigate to="/home" replace /> : <SignIn />} />
+          <Route path="/signup" element={user ? <Navigate to="/home" replace /> : <SignUp />} />
+
+          {/* Informational Pages - Standalone pages accessible to everyone */}
+          <Route
+            path="/about-us"
+            element={
+              <InformationalLayout>
+                <AboutUs />
+              </InformationalLayout>
+            }
+          />
+          <Route
+            path="/contact-us"
+            element={
+              <InformationalLayout>
+                <ContactUs />
+              </InformationalLayout>
+            }
+          />
+
+          {/* Home routes - accessible to both authenticated and guest users */}
+          <Route path="/home/*" element={<Home />} />
+
+          {/* Default route */}
+          <Route path="*" element={user ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />} />
         </Routes>
       </div>
 

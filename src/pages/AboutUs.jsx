@@ -9,7 +9,7 @@ export default function AboutUs() {
 
   return (
     <div
-      className={`min-h-full p-6 md:p-10 ${
+      className={`p-6 md:p-10 ${
         theme === "dark" ? "bg-gray-900" : "bg-orange-50"
       }`}
       dir={isRTL ? "rtl" : "ltr"}

@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 // Base URL for the Laravel backend
-const API_BASE_URL = 'http://localhost:8000/api';
+// Production backend with HTTPS
+const API_BASE_URL = 'https://quranapp.axiteq.com/api';
 
 // Create axios instance with default configuration
 const api = axios.create({
@@ -10,7 +11,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
-  timeout: 10000, // 10 seconds timeout
+  timeout: 30000, // 30 seconds timeout for Docker on Windows
 });
 
 // Request interceptor to add authentication token

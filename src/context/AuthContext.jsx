@@ -64,7 +64,12 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     try {
       setLoading(true);
-      await AuthService.logout();
+      // Check if guest user
+      if (AuthService.isGuest()) {
+        AuthService.clearGuestMode();
+      } else {
+        await AuthService.logout();
+      }
       setUser(null);
     } catch (err) {
       console.error("Logout error:", err);
@@ -75,7 +80,25 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const value = { user, login, register, logout, loading, error };
+  const isGuest = () => {
+    return user?.isGuest === true || AuthService.isGuest();
+  };
+
+  const isAdmin = () => {
+    return user?.user_type === 'admin';
+  };
+
+  const value = {
+    user,
+    setUser,
+    login,
+    register,
+    logout,
+    loading,
+    error,
+    isGuest,
+    isAdmin
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

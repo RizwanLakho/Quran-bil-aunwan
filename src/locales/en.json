@@ -16,14 +16,14 @@
   "view_history": "View History",
   "logout": "Logout",
   "overview": "Overview",
-  "your_topics": "Your Topics",
+  "your_topics": "My Topics",
   "read_quran": "Read Quran",
   "quranic_topics": "Quranic Topics",
   "topics": "Topics",
   "quran": "Quran",
-  "history": "History",
-  "liked": "Liked",
-  "favorites": "Favorites",
+  "history": "Recent",
+  "liked": "Liked Verses",
+  "favorites": "My Favorites",
 
   "filter_all_topics": "All Topics",
   "filter_worship": "Worship",
@@ -183,5 +183,11 @@
 
   "about_us": "About Us",
   "contact_us": "Contact Us",
-  "copyright_text": "© All Rights Reserved - Quran Bil Unwan 2025"
+  "copyright_text": "© All Rights Reserved - Quran Bil Unwan 2025",
+
+  "show_translation": "Show Translation",
+  "navigation_mode": "Navigation Mode",
+  "by_surah": "By Surah",
+  "by_juz_para": "By Juz (Para)",
+  "guest": "Guest"
 }

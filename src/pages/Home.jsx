@@ -16,16 +16,17 @@ import QuranTopics from "../pages/QuranTopics";
 import TopicsData from "./TopicsData";
 import AddTopic from "./AddTopic";
 import QuranTopicDetail from "../pages/QuranTopicDetail";
-import AboutUs from "./AboutUs";
-import ContactUs from "./ContactUs";
 import { ThemeContext } from "../context/ThemeContext";
+import { AuthContext } from "../context/AuthContext";
 import Overview from "./OverView";
+import { AdminRoute, GuestRestrictedRoute } from "../components/RouteGuards";
 
 // ✅ Social Icons
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
 
 export default function Home() {
   const { theme } = useContext(ThemeContext);
+  const { isGuest } = useContext(AuthContext);
   const { i18n, t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
@@ -94,19 +95,55 @@ export default function Home() {
             <Routes>
               <Route
                 path="/"
-                element={<Navigate to="quran-topics" replace />}
+                element={<Navigate to={isGuest() ? "read-quran" : "quran-topics"} replace />}
               />
-              <Route path="overview" element={<Overview />} />
+              {/* Read Quran - Accessible to everyone including guests */}
               <Route path="read-quran" element={<QuranReadingPage />} />
-              <Route path="quran-topics" element={<QuranTopics />} />
+
+              {/* Protected routes - Show page with modal overlay for guests */}
+              <Route
+                path="overview"
+                element={
+                  <GuestRestrictedRoute message="Please sign in to view the Overview page and unlock all features">
+                    <Overview />
+                  </GuestRestrictedRoute>
+                }
+              />
+              <Route
+                path="quran-topics"
+                element={
+                  <GuestRestrictedRoute message="Please sign in to explore Quran Topics and dive deeper into the knowledge">
+                    <QuranTopics />
+                  </GuestRestrictedRoute>
+                }
+              />
               <Route
                 path="quran-topics/:subtopic"
-                element={<QuranTopicDetail />}
+                element={
+                  <GuestRestrictedRoute message="Please sign in to view detailed topic information and access all content">
+                    <QuranTopicDetail />
+                  </GuestRestrictedRoute>
+                }
               />
-              <Route path="topics-data" element={<TopicsData />} />
-              <Route path="add-topic" element={<AddTopic />} />
-              <Route path="about-us" element={<AboutUs />} />
-              <Route path="contact-us" element={<ContactUs />} />
+
+              {/* Admin-only routes */}
+              <Route
+                path="topics-data"
+                element={
+                  <AdminRoute>
+                    <TopicsData />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="add-topic"
+                element={
+                  <AdminRoute>
+                    <AddTopic />
+                  </AdminRoute>
+                }
+              />
+
             </Routes>
           </div>
 
@@ -161,7 +198,7 @@ export default function Home() {
           {/* Left side - Buttons */}
           <div className="flex gap-3">
             <NavLink
-              to="/home/about-us"
+              to="/about-us"
               className={({ isActive }) =>
                 `px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   isActive
@@ -177,7 +214,7 @@ export default function Home() {
               {t("about_us")}
             </NavLink>
             <NavLink
-              to="/home/contact-us"
+              to="/contact-us"
               className={({ isActive }) =>
                 `px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   isActive

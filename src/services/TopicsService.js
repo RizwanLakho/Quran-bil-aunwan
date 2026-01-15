@@ -78,6 +78,17 @@ class TopicsService {
     } catch (error) {
       console.error('❌ Error creating topic:', error);
       console.error('Topic data that failed:', topicData);
+
+      // Handle 405 Method Not Allowed error (production backend issue)
+      if (error.response?.status === 405) {
+        throw new Error(
+          '⚠️ Topic creation is currently unavailable on production backend.\n\n' +
+          'The backend server does not support the POST /api/topics route yet. ' +
+          'Please contact the backend administrator to enable this feature.\n\n' +
+          'Technical Details: 405 Method Not Allowed - POST method is not supported for this route.'
+        );
+      }
+
       throw error;
     }
   }

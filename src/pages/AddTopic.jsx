@@ -185,7 +185,12 @@ const Aayaat = ({ ayaatList, setAyaatList }) => {
         (ayah) => ayah.id === parseInt(newAyat.ayah_id)
       );
 
-      if (selectedAyah) {
+      // Find the selected surah info
+      const selectedSurahInfo = allSurahs.find(
+        (surah) => surah.number === parseInt(selectedSurah)
+      );
+
+      if (selectedAyah && selectedSurahInfo) {
         setAyaatList([
           ...ayaatList,
           {
@@ -194,6 +199,8 @@ const Aayaat = ({ ayaatList, setAyaatList }) => {
             ayah_text: selectedAyah.text,
             ayah_number: selectedAyah.ayah_number,
             surah_number: selectedAyah.surah_number,
+            surah_name_english: selectedSurahInfo.english_name,
+            surah_name_arabic: selectedSurahInfo.name,
           },
         ]);
         setNewAyat({ ayah_id: "", description: "" });
@@ -404,7 +411,15 @@ const Aayaat = ({ ayaatList, setAyaatList }) => {
                       theme === "dark" ? "text-gray-400" : "text-gray-600"
                     }`}
                   >
-                    Surah {ayat.surah_number} - Ayah {ayat.ayah_number}
+                    {ayat.surah_name_english ? (
+                      <>
+                        Surah {ayat.surah_name_english} ({ayat.surah_name_arabic}) - {ayat.surah_number}:{ayat.ayah_number}
+                      </>
+                    ) : (
+                      <>
+                        Surah {ayat.surah_number} - Ayah {ayat.ayah_number}
+                      </>
+                    )}
                   </p>
                   {ayat.description && (
                     <p
@@ -444,6 +459,8 @@ const Hadith = ({ hadithList, setHadithList }) => {
     text_urdu: "",
     text_english: "",
     description: "",
+    reference_book: "",
+    reference_number: "",
   });
   const [selectedHadiths, setSelectedHadiths] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -462,6 +479,8 @@ const Hadith = ({ hadithList, setHadithList }) => {
         text_urdu: "",
         text_english: "",
         description: "",
+        reference_book: "",
+        reference_number: "",
       });
     }
   };
@@ -575,6 +594,35 @@ const Hadith = ({ hadithList, setHadithList }) => {
           }`}
         />
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+          <input
+            type="text"
+            placeholder="Reference Book (e.g., Sahih Bukhari)"
+            value={newHadith.reference_book}
+            onChange={(e) =>
+              setNewHadith({ ...newHadith, reference_book: e.target.value })
+            }
+            className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md ${
+              theme === "dark"
+                ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
+                : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
+            }`}
+          />
+          <input
+            type="text"
+            placeholder="Reference Number (e.g., Book 1, Hadith 3)"
+            value={newHadith.reference_number}
+            onChange={(e) =>
+              setNewHadith({ ...newHadith, reference_number: e.target.value })
+            }
+            className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-md ${
+              theme === "dark"
+                ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
+                : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
+            }`}
+          />
+        </div>
+
         <button
           onClick={handleAddHadith}
           disabled={!newHadith.text_arabic}
@@ -683,6 +731,18 @@ const Hadith = ({ hadithList, setHadithList }) => {
                       {hadith.description}
                     </p>
                   )}
+                  {(hadith.reference_book || hadith.reference_number) && (
+                    <div
+                      className={`text-xs mt-2 flex items-center gap-1 ${
+                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      }`}
+                    >
+                      <span className="font-medium">Reference:</span>
+                      {hadith.reference_book && <span>{hadith.reference_book}</span>}
+                      {hadith.reference_book && hadith.reference_number && <span>-</span>}
+                      {hadith.reference_number && <span>{hadith.reference_number}</span>}
+                    </div>
+                  )}
                 </div>
                 <button
                   onClick={() => handleDelete(hadith.id)}
@@ -768,12 +828,87 @@ const Review = ({ formData, ayaatList, hadithList }) => {
             {t("aayaat")}
           </h3>
           <p
-            className={`text-xs md:text-sm ${
+            className={`text-xs md:text-sm mb-3 ${
               theme === "dark" ? "text-gray-300" : "text-gray-700"
             }`}
           >
             {t("total_ayats")}: {ayaatList.length}
           </p>
+
+          {ayaatList.length > 0 ? (
+            <div className="space-y-3 max-h-96 overflow-y-auto">
+              {ayaatList.map((ayat, index) => (
+                <div
+                  key={ayat.id}
+                  className={`p-3 rounded-md border ${
+                    theme === "dark"
+                      ? "bg-gray-800 border-gray-600"
+                      : "bg-white border-gray-200"
+                  }`}
+                >
+                  <div className="flex items-start gap-2">
+                    <span
+                      className={`inline-block px-2 py-1 rounded text-xs font-semibold ${
+                        theme === "dark"
+                          ? "bg-primary text-white"
+                          : "bg-primary text-white"
+                      }`}
+                    >
+                      #{index + 1}
+                    </span>
+                    <div className="flex-1">
+                      <p
+                        className={`text-sm md:text-base mb-2 ${
+                          theme === "dark" ? "text-gray-200" : "text-gray-800"
+                        }`}
+                        style={{
+                          direction: "rtl",
+                          textAlign: "right",
+                          fontFamily: "Traditional Arabic, serif",
+                          lineHeight: "1.8"
+                        }}
+                      >
+                        {ayat.ayah_text || "Ayah text not available"}
+                      </p>
+                      {ayat.description && (
+                        <p
+                          className={`text-xs md:text-sm mt-2 italic ${
+                            theme === "dark" ? "text-gray-400" : "text-gray-600"
+                          }`}
+                        >
+                          <span className="font-medium">Description:</span> {ayat.description}
+                        </p>
+                      )}
+                      <div
+                        className={`flex items-center gap-2 mt-2 text-xs ${
+                          theme === "dark" ? "text-gray-500" : "text-gray-500"
+                        }`}
+                      >
+                        <span className="font-medium">Reference:</span>
+                        {ayat.surah_name_english ? (
+                          <span>
+                            Surah {ayat.surah_name_english} ({ayat.surah_name_arabic}) - {ayat.surah_number}:{ayat.ayah_number}
+                          </span>
+                        ) : (
+                          <span>
+                            Surah {ayat.surah_number}, Ayah {ayat.ayah_number}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p
+              className={`text-xs md:text-sm italic ${
+                theme === "dark" ? "text-gray-400" : "text-gray-500"
+              }`}
+            >
+              No ayahs added yet
+            </p>
+          )}
         </div>
 
         <div
@@ -789,12 +924,116 @@ const Review = ({ formData, ayaatList, hadithList }) => {
             {t("hadith")}
           </h3>
           <p
-            className={`text-xs md:text-sm ${
+            className={`text-xs md:text-sm mb-3 ${
               theme === "dark" ? "text-gray-300" : "text-gray-700"
             }`}
           >
             {t("total_hadith")}: {hadithList.length}
           </p>
+
+          {hadithList.length > 0 ? (
+            <div className="space-y-3 max-h-96 overflow-y-auto">
+              {hadithList.map((hadith, index) => (
+                <div
+                  key={hadith.id}
+                  className={`p-3 rounded-md border ${
+                    theme === "dark"
+                      ? "bg-gray-800 border-gray-600"
+                      : "bg-white border-gray-200"
+                  }`}
+                >
+                  <div className="flex items-start gap-2">
+                    <span
+                      className={`inline-block px-2 py-1 rounded text-xs font-semibold ${
+                        theme === "dark"
+                          ? "bg-primary text-white"
+                          : "bg-primary text-white"
+                      }`}
+                    >
+                      #{index + 1}
+                    </span>
+                    <div className="flex-1 space-y-2">
+                      {hadith.text_arabic && (
+                        <div>
+                          <p className="text-xs font-semibold mb-1 text-primary">Arabic:</p>
+                          <p
+                            className={`text-sm md:text-base ${
+                              theme === "dark" ? "text-gray-200" : "text-gray-800"
+                            }`}
+                            style={{
+                              direction: "rtl",
+                              textAlign: "right",
+                              fontFamily: "Traditional Arabic, serif",
+                              lineHeight: "1.8"
+                            }}
+                          >
+                            {hadith.text_arabic}
+                          </p>
+                        </div>
+                      )}
+                      {hadith.text_urdu && (
+                        <div>
+                          <p className="text-xs font-semibold mb-1 text-primary">Urdu:</p>
+                          <p
+                            className={`text-sm ${
+                              theme === "dark" ? "text-gray-200" : "text-gray-800"
+                            }`}
+                            style={{
+                              direction: "rtl",
+                              textAlign: "right"
+                            }}
+                          >
+                            {hadith.text_urdu}
+                          </p>
+                        </div>
+                      )}
+                      {hadith.text_english && (
+                        <div>
+                          <p className="text-xs font-semibold mb-1 text-primary">English:</p>
+                          <p
+                            className={`text-sm ${
+                              theme === "dark" ? "text-gray-200" : "text-gray-800"
+                            }`}
+                          >
+                            {hadith.text_english}
+                          </p>
+                        </div>
+                      )}
+                      {hadith.description && (
+                        <p
+                          className={`text-xs md:text-sm mt-2 italic ${
+                            theme === "dark" ? "text-gray-400" : "text-gray-600"
+                          }`}
+                        >
+                          <span className="font-medium">Description:</span> {hadith.description}
+                        </p>
+                      )}
+                      {(hadith.reference_book || hadith.reference_number) && (
+                        <div
+                          className={`text-xs md:text-sm mt-2 flex items-center gap-1 ${
+                            theme === "dark" ? "text-gray-500" : "text-gray-600"
+                          }`}
+                        >
+                          <span className="font-semibold text-primary">Reference:</span>
+                          {hadith.reference_book && <span>{hadith.reference_book}</span>}
+                          {hadith.reference_book && hadith.reference_number && <span>-</span>}
+                          {hadith.reference_number && <span>{hadith.reference_number}</span>}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p
+              className={`text-xs md:text-sm italic ${
+                theme === "dark" ? "text-gray-400" : "text-gray-500"
+              }`}
+            >
+              No hadiths added yet
+            </p>
+          )}
         </div>
       </div>
     </div>
@@ -951,6 +1190,10 @@ export default function TopicFormWizard() {
           text_urdu: hadith.text_urdu || null,
           text_english: hadith.text_english || null,
           description: hadith.description || null,
+          references: (hadith.reference_book || hadith.reference_number) ? [{
+            book_name: hadith.reference_book || null,
+            reference_number: hadith.reference_number || null,
+          }] : [],
         })),
       };
 

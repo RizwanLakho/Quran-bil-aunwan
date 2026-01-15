@@ -11,16 +11,21 @@ import {
   Mic,
   FastForward,
   Check,
+  Globe,
+  BookOpen,
+  Library,
+  Languages,
+  Type,
 } from "lucide-react";
 import { ThemeContext } from "../context/ThemeContext";
 import { FontContext } from "../context/FontContext";
 import { TranslationContext } from "../context/TranslationContext";
 import { NavigationModeContext } from "../context/NavigationModeContext";
 
-// Language options
+// Language options (matching Header design)
 const languages = [
-  { value: "en", label: "English" },
-  { value: "ur", label: "اردو" },
+  { value: "en", label: "🇬🇧 EN" },
+  { value: "ur", label: "🇵🇰 اردو" },
 ];
 
 // Translator options - matching database translators
@@ -37,15 +42,14 @@ const reciters = [
   { value: "ajmi", label: "Ahmad Al-Ajmi" },
 ];
 
-// Navigation Mode options
-const navigationModes = [
-  { value: "surah", label: "By Surah", icon: "📖" },
-  { value: "juz", label: "By Juz (Para)", icon: "📚" },
-];
-
 export default function QuranSettingsPanel() {
   const { t, i18n } = useTranslation();
   const [language, setLanguage] = useState(i18n.language || "en");
+
+  const navigationModes = [
+    { value: "surah", label: t("by_surah") },
+    { value: "juz", label: t("by_juz_para") },
+  ];
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -145,79 +149,88 @@ export default function QuranSettingsPanel() {
           </div>
         </div>
 
-        {/* Language Switcher with Headless UI */}
-        <div className="flex justify-between items-center">
-          <span className="text-sm md:text-base">{t("language")}</span>
-          <Listbox value={language} onChange={changeLanguage}>
-            <div className="relative">
-              <Listbox.Button
-                className={`relative w-32 cursor-pointer rounded-lg px-3 py-2 text-left text-sm md:text-base font-medium focus:outline-none ${
-                  theme === "dark"
-                    ? "bg-gray-800 text-white border border-gray-700"
-                    : "bg-gray-200 text-gray-800 border border-gray-300"
-                } hover:bg-orange-50 transition-colors flex items-center justify-between`}
+        {/* Language Switcher (matching Header design) */}
+        <div
+          className={`w-full rounded-lg border p-2 md:p-3 transition-colors ${
+            theme === "dark"
+              ? "bg-gray-700 border-gray-600"
+              : "bg-orange-50 border-orange-200"
+          }`}
+        >
+          <div className="flex justify-between items-center gap-2">
+            {/* Left side - Globe icon + Language label */}
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <Globe size={16} className="text-primary flex-shrink-0" />
+              <span
+                className={`font-medium text-xs md:text-sm ${
+                  theme === "dark" ? "text-gray-200" : "text-gray-800"
+                }`}
               >
-                <span className="block truncate">
-                  {selectedLanguage?.label}
-                </span>
-                <ChevronDown
-                  size={16}
-                  className="text-gray-400"
-                  aria-hidden="true"
-                />
-              </Listbox.Button>
+                {t("language")}
+              </span>
+            </div>
 
-              <Transition
-                as={Fragment}
-                leave="transition ease-in duration-100"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-              >
-                <Listbox.Options
-                  className={`absolute right-0 mt-1 max-h-60 w-32 overflow-auto rounded-lg py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50 ${
+            {/* Right side - Language dropdown */}
+            <Listbox value={language} onChange={changeLanguage}>
+              <div className="relative">
+                <Listbox.Button
+                  className={`relative w-24 md:w-28 cursor-pointer rounded-lg px-2 md:px-3 py-1.5 md:py-2 text-xs md:text-sm font-medium focus:outline-none transition-colors flex items-center justify-between gap-1 ${
                     theme === "dark"
-                      ? "bg-gray-800 border border-gray-700"
-                      : "bg-white border border-gray-200"
+                      ? "bg-gray-800 text-white border border-gray-600"
+                      : "bg-white text-gray-800 border border-gray-300"
                   }`}
                 >
-                  {languages.map((lang) => (
-                    <Listbox.Option
-                      key={lang.value}
-                      value={lang.value}
-                      className={({ active }) =>
-                        `relative cursor-pointer select-none py-2 px-3 ${
-                          active
-                            ? "bg-orange-50 text-gray-900"
-                            : theme === "dark"
-                              ? "text-gray-200"
-                              : "text-gray-900"
-                        }`
-                      }
-                    >
-                      {({ selected }) => (
-                        <div className="flex items-center justify-between">
-                          <span
-                            className={`block truncate ${
-                              selected ? "font-semibold" : "font-normal"
-                            }`}
-                          >
-                            {lang.label}
-                          </span>
-                          {selected && (
-                            <Check
-                              size={14}
-                              className="text-primary"
-                              aria-hidden="true"
-                            />
-                          )}
-                        </div>
-                      )}
-                    </Listbox.Option>
-                  ))}
-                </Listbox.Options>
-              </Transition>
-            </div>
-          </Listbox>
+                  <span className="block truncate">
+                    {selectedLanguage?.label}
+                  </span>
+                  <ChevronDown
+                    size={12}
+                    className="text-gray-400 flex-shrink-0"
+                    aria-hidden="true"
+                  />
+                </Listbox.Button>
+
+                <Transition
+                  as={Fragment}
+                  leave="transition ease-in duration-100"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <Listbox.Options
+                    className={`absolute right-0 mt-1 max-h-60 w-24 md:w-28 overflow-auto rounded-lg py-1 text-xs md:text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50 border ${
+                      theme === "dark"
+                        ? "bg-gray-800 border-gray-600"
+                        : "bg-white border-gray-300"
+                    }`}
+                  >
+                    {languages.map((lang) => (
+                      <Listbox.Option
+                        key={lang.value}
+                        value={lang.value}
+                        className={({ active }) =>
+                          `relative cursor-pointer select-none py-2 px-3 transition-colors ${
+                            language === lang.value
+                              ? theme === "dark"
+                                ? "bg-gray-700 text-white font-semibold"
+                                : "bg-orange-100 text-gray-800 font-semibold"
+                              : active
+                                ? theme === "dark"
+                                  ? "bg-gray-700 text-gray-200"
+                                  : "bg-orange-50 text-gray-900"
+                                : theme === "dark"
+                                  ? "text-gray-300 hover:bg-gray-700"
+                                  : "text-gray-700 hover:bg-gray-100"
+                          }`
+                        }
+                      >
+                        <span className="block truncate">{lang.label}</span>
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </Transition>
+              </div>
+            </Listbox>
+          </div>
         </div>
         <div className="my-4 border-t border-gray-200"></div>
 
@@ -225,7 +238,7 @@ export default function QuranSettingsPanel() {
         <div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-primary text-lg md:text-xl">📖</span>
+              <BookOpen className="text-primary" size={18} />
               <h3 className="font-bold text-sm md:text-base">
                 {t("show_translation")}
               </h3>
@@ -254,9 +267,9 @@ export default function QuranSettingsPanel() {
         {/* Navigation Mode */}
         <div>
           <div className="flex items-center gap-2 mb-2 md:mb-3">
-            <span className="text-primary text-lg md:text-xl">🧭</span>
+            <Library className="text-primary" size={18} />
             <h3 className="font-bold text-sm md:text-base">
-              {t("navigation_mode") || "Navigation Mode"}
+              {t("navigation_mode")}
             </h3>
           </div>
           <Listbox value={navigationMode} onChange={setNavigationMode}>
@@ -269,9 +282,11 @@ export default function QuranSettingsPanel() {
                 } hover:bg-orange-50 transition-colors flex items-center justify-between`}
               >
                 <span className="flex items-center gap-2">
-                  <span>
-                    {navigationModes.find((m) => m.value === navigationMode)?.icon}
-                  </span>
+                  {navigationMode === "surah" ? (
+                    <BookOpen className="text-primary" size={16} />
+                  ) : (
+                    <Library className="text-primary" size={16} />
+                  )}
                   <span className="block truncate">
                     {navigationModes.find((m) => m.value === navigationMode)?.label}
                   </span>
@@ -315,7 +330,11 @@ export default function QuranSettingsPanel() {
                       {({ selected }) => (
                         <div className="flex items-center justify-between">
                           <span className="flex items-center gap-2">
-                            <span>{mode.icon}</span>
+                            {mode.value === "surah" ? (
+                              <BookOpen className="text-primary" size={16} />
+                            ) : (
+                              <Library className="text-primary" size={16} />
+                            )}
                             <span
                               className={`block truncate ${
                                 selected ? "font-semibold" : "font-normal"
@@ -344,9 +363,7 @@ export default function QuranSettingsPanel() {
         {/* Quran Font */}
         <div>
           <div className="flex items-center gap-2 mb-2 md:mb-3">
-            <span className="text-primary text-lg md:text-xl font-serif">
-              Aa
-            </span>
+            <BookOpen className="text-primary" size={18} />
             <h3 className="font-bold text-sm md:text-base">
               {t("quran_font")}
             </h3>
@@ -366,7 +383,7 @@ export default function QuranSettingsPanel() {
                     : "text-gray-600 hover:bg-gray-200"
               }`}
             >
-              Uthmani
+              {t("uthmani")}
             </button>
             <button
               onClick={() => setQuranFont("IndoPak")}
@@ -378,7 +395,7 @@ export default function QuranSettingsPanel() {
                     : "text-gray-600 hover:bg-gray-200"
               }`}
             >
-              IndoPak
+              {t("indopak")}
             </button>
             <button
               onClick={() => setQuranFont("Tajweed")}
@@ -390,7 +407,7 @@ export default function QuranSettingsPanel() {
                     : "text-gray-600 hover:bg-gray-200"
               }`}
             >
-              Tajweed
+              {t("tajweed")}
             </button>
           </div>
         </div>
@@ -398,7 +415,7 @@ export default function QuranSettingsPanel() {
         {/* Translation By with Headless UI */}
         <div>
           <div className="flex items-center gap-2 mb-2 md:mb-3">
-            <span className="text-primary text-lg md:text-xl">📋</span>
+            <Languages className="text-primary" size={18} />
             <h3 className="font-bold text-sm md:text-base">
               {t("translation_by")}
             </h3>
@@ -480,7 +497,7 @@ export default function QuranSettingsPanel() {
         {/* Font Size */}
         <div>
           <div className="flex items-center gap-2 mb-2 md:mb-3">
-            <span className="text-primary text-lg md:text-xl">↔️</span>
+            <Type className="text-primary" size={18} />
             <h3 className="font-bold text-sm md:text-base">{t("font_size")}</h3>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
